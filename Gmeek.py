@@ -16,12 +16,12 @@ from jinja2 import Environment, FileSystemLoader
 from transliterate import translit
 from collections import OrderedDict
 ######################################################################################
-i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About"}
-i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于"}
-i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас"}
+i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","link":"Links","linkDesc":"Friend Links","loading":"Loading...","loadError":"Failed to load, please try again later","noLinks":"No links available"}
+i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","link":"友链","linkDesc":"友情链接，互联互通","loading":"加载中...","loadError":"加载失败，请稍后重试","noLinks":"暂无友链"}
+i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","link":"Ссылки","linkDesc":"Дружеские ссылки","loading":"Загрузка...","loadError":"Ошибка загрузки","noLinks":"Нет доступных ссылок"}
 IconBase={
     "post":"M0 3.75C0 2.784.784 2 1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25Zm1.75-.25a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25ZM3.5 6.25a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm.75 2.25h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z",
-    "link":"m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z",
+    "link":"M4.75 2.5a2.25 2.25 0 0 1 2.248 2.25v.004a.75.75 0 0 1-1.5 0v-.004a.75.75 0 0 0-.748-.75.75.75 0 0 0-.75.75v5.5a.75.75 0 0 0 .75.75.75.75 0 0 1 0 1.5 2.25 2.25 0 0 1-2.25-2.25v-5.5A2.25 2.25 0 0 1 4.75 2.5Zm6.5 0a2.25 2.25 0 0 1 2.25 2.25v5.5a2.25 2.25 0 0 1-2.25 2.25.75.75 0 0 1 0-1.5.75.75 0 0 0 .75-.75v-5.5a.75.75 0 0 0-.75-.75.75.75 0 0 1-.748-.75v-.004A2.25 2.25 0 0 1 11.25 2.5ZM8 6.75a.75.75 0 0 1 .75-.75h.005a.75.75 0 0 1 0 1.5H8.75A.75.75 0 0 1 8 6.75Zm-2.75 2a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z",
     "about":"M10.561 8.073a6.005 6.005 0 0 1 3.432 5.142.75.75 0 1 1-1.498.07 4.5 4.5 0 0 0-8.99 0 .75.75 0 0 1-1.498-.07 6.004 6.004 0 0 1 3.431-5.142 3.999 3.999 0 1 1 5.123 0ZM10.5 5a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z",
     "sun":"M8 10.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z",
     "moon":"M9.598 1.591a.75.75 0 01.785-.175 7 7 0 11-8.967 8.967.75.75 0 01.961-.96 5.5 5.5 0 007.046-7.046.75.75 0 01.175-.786zm1.616 1.945a7 7 0 01-7.678 7.678 5.5 5.5 0 107.678-7.678z",
@@ -225,6 +225,17 @@ class GMEEK():
                 "labels": ["about"],
                 "postUrl": "about.html",
                 "description": self.blogBase["aboutConfig"].get("description", ""),
+                "createdAt": int(time.time())
+            }
+
+        # Add link page to singeListJson if link is in singlePage
+        if "link" in self.blogBase["singlePage"]:
+            import time
+            self.blogBase["singeListJson"]["link"]={
+                "postTitle": self.i18n["link"],
+                "labels": ["link"],
+                "postUrl": "link.html",
+                "description": self.i18n.get("linkDesc", "Friend Links"),
                 "createdAt": int(time.time())
             }
 
@@ -439,6 +450,33 @@ class GMEEK():
         self.renderHtml('about.html',aboutBase,{},self.root_dir+"about.html",aboutIcon)
         print("create about.html")
 
+    def createLinkHtml(self):
+        if "link" not in self.blogBase["singlePage"]:
+            print("link not in singlePage, skip link page")
+            return
+
+        linkBase=self.blogBase.copy()
+        linkBase["postTitle"]=self.i18n["link"]
+        linkBase["description"]=self.i18n.get("linkDesc", "Friend Links")
+        linkBase["postUrl"]=self.blogBase["homeUrl"]+"/link.html"
+        linkBase["ogImage"]=self.blogBase["ogImage"]
+        linkBase["commentNum"]=0
+        linkBase["style"]=""
+        linkBase["script"]=""
+        linkBase["head"]=""
+        linkBase["top"]=False
+        linkBase["postSourceUrl"]=""
+        linkBase["repoName"]=self.options.repo_name
+        linkBase["bottomText"]=""
+        linkBase["needComment"]=0
+        linkBase["highlight"]=0
+
+        keys=['sun','moon','sync','home','search','rss']
+        linkIcon=dict(zip(keys, map(IconBase.get, keys)))
+
+        self.renderHtml('link.html',linkBase,{},self.root_dir+"link.html",linkIcon)
+        print("create link.html")
+
     def runAll(self):
         print("====== start create static html ======")
         self.cleanFile()
@@ -454,6 +492,7 @@ class GMEEK():
             self.createPostHtml(issue)
 
         self.createAboutHtml()
+        self.createLinkHtml()
         self.createPlistHtml()
         self.createFeedXml()
         print("====== create static html end ======")
