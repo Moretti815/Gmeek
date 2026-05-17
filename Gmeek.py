@@ -219,10 +219,13 @@ class GMEEK():
         
         # Add about page to singeListJson if aboutConfig exists
         if "aboutConfig" in self.blogBase and "about" in self.blogBase["singlePage"]:
+            import time
             self.blogBase["singeListJson"]["about"]={
                 "postTitle": self.i18n["about"],
                 "labels": ["about"],
-                "postUrl": "about.html"
+                "postUrl": "about.html",
+                "description": self.blogBase["aboutConfig"].get("description", ""),
+                "createdAt": int(time.time())
             }
 
         postNum=len(self.blogBase["postListJson"])
