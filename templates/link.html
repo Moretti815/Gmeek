@@ -292,7 +292,10 @@ function renderFriendLinks(data) {
     const loadingEl = document.getElementById('flinkLoading');
     const errorEl = document.getElementById('flinkError');
 
-    if (!data || !data.link_list || data.link_list.length === 0) {
+    // Support both 'content' (v2 format) and 'link_list' (legacy format)
+    const linkList = data.content || data.link_list || [];
+
+    if (!linkList || linkList.length === 0) {
         loadingEl.style.display = 'none';
         errorEl.style.display = 'block';
         errorEl.textContent = '{{ i18n["noLinks"]|default("暂无友链") }}';
@@ -300,12 +303,12 @@ function renderFriendLinks(data) {
     }
 
     let html = '';
-    data.link_list.forEach(link => {
-        const cover = link.cover || link.screenshot || '';
-        const avatar = link.avatar || link.favicon || '';
-        const name = link.name || link.title || 'Unknown';
-        const desc = link.descr || link.description || '';
-        const url = link.link || link.url || '#';
+    linkList.forEach(link => {
+        const cover = link.snapshot || link.cover || link.screenshot || '';
+        const avatar = link.icon || link.avatar || link.favicon || '';
+        const name = link.title || link.name || 'Unknown';
+        const desc = link.description || link.descr || '';
+        const url = link.url || link.link || '#';
 
         html += `
             <li>
