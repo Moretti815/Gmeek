@@ -342,19 +342,27 @@
     pointer-events: none;
 }
 
-.skills-grid {
+.skills-carousel {
     margin-top: 70px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    position: relative;
+    overflow: hidden;
+    padding: 10px 0;
 }
 
-.skill-category {
+.skills-track {
     display: flex;
-    flex-direction: row;
     gap: 12px;
-    overflow: hidden;
-    flex-wrap: wrap;
+    animation: scrollSkills 20s linear infinite;
+    width: fit-content;
+}
+
+.skills-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scrollSkills {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 .skill-card {
@@ -368,6 +376,7 @@
     align-items: center;
     justify-content: center;
     transition: transform 0.2s ease;
+    flex-shrink: 0;
 }
 
 .skill-card:hover {
@@ -653,6 +662,10 @@
         font-size: 13px;
     }
 
+    .skills-carousel {
+        margin-top: 50px;
+    }
+
     .skill-card {
         width: 50px;
         height: 50px;
@@ -662,6 +675,10 @@
     .skill-card img {
         width: 36px;
         height: 36px;
+    }
+
+    .skills-track {
+        animation-duration: 15s;
     }
 
     .project h3 {
@@ -772,15 +789,24 @@
     <section class="skills-and-projects">
         <div class="skills about-card">
             <h2 class="section-title">技能</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
+            <div class="skills-carousel">
+                <div class="skills-track">
                     {% for skill in about.skills.technical %}
                     <div class="skill-card">
                         <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
                     </div>
                     {% endfor %}
-                </div>
-                <div class="skill-category">
+                    {% for skill in about.skills.general %}
+                    <div class="skill-card">
+                        <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
+                    </div>
+                    {% endfor %}
+                    <!-- Duplicate for seamless loop -->
+                    {% for skill in about.skills.technical %}
+                    <div class="skill-card">
+                        <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
+                    </div>
+                    {% endfor %}
                     {% for skill in about.skills.general %}
                     <div class="skill-card">
                         <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
