@@ -229,15 +229,13 @@
 {% endblock %}
 
 {% block header %}
-<div class="title-left">
-    <a href="{{ blogBase['homeUrl'] }}" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
+<h1 class="postTitle">{{ i18n['link'] }}</h1>
+<div class="title-right">
+    <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
         <svg class="octicon" width="16" height="16">
             <path id="pathHome" fill-rule="evenodd"></path>
         </svg>
     </a>
-    <span class="postTitle">{{ i18n['link'] }}</span>
-</div>
-<div class="title-right">
     <a href="{{ blogBase['homeUrl'] }}/tag.html" id="buttonSearch" class="btn btn-invisible circle" title="{{ i18n['Search'] }}">
         <svg class="octicon" width="16" height="16">
             <path id="pathSearch" fill-rule="evenodd"></path>
@@ -278,9 +276,9 @@
 
 {% block script %}
 <script>
-document.getElementById("pathHome").setAttribute("d", IconList["home"]);
-document.getElementById("pathSearch").setAttribute("d", IconList["search"]);
-document.getElementById("pathRSS").setAttribute("d", IconList["rss"]);
+document.getElementById("pathHome").setAttribute("d",IconList["home"]);
+document.getElementById("pathSearch").setAttribute("d",IconList["search"]);
+document.getElementById("pathRSS").setAttribute("d",IconList["rss"]);
 
 // Friend links data URL
 const FRIEND_LINKS_URL = '{{ blogBase["friendLinksUrl"]|default("https://cdn.jsdmirror.com/gh/Kemeow0815/friends@output/v2/data.json") }}';
