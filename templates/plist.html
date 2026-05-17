@@ -60,7 +60,7 @@
     </a>
     {%- endfor %}
     {% for num in blogBase['singeListJson'] -%}
-    <a href="{{ blogBase['homeUrl'] }}/{{ blogBase['singeListJson'][num]['postUrl'] }}" class="btn btn-invisible circle" title="{{ blogBase['singeListJson'][num]['postTitle'] }}">
+    <a href="{{ blogBase['homeUrl'] }}/{{ blogBase['singeListJson'][num]['labels'][0] }}.html" class="btn btn-invisible circle" title="{{ blogBase['singeListJson'][num]['postTitle'] }}">
         <svg class="octicon" width="16" height="16" >
             <path id="{{ blogBase['singeListJson'][num]['postTitle'] }}" fill-rule="evenodd"></path>
         </svg>

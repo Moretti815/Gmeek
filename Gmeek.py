@@ -16,9 +16,9 @@ from jinja2 import Environment, FileSystemLoader
 from transliterate import translit
 from collections import OrderedDict
 ######################################################################################
-i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","link":"Links","linkDesc":"Friend Links","loading":"Loading...","loadError":"Failed to load, please try again later","noLinks":"No links available"}
-i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","link":"友链","linkDesc":"友情链接，互联互通","loading":"加载中...","loadError":"加载失败，请稍后重试","noLinks":"暂无友链"}
-i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","link":"Ссылки","linkDesc":"Дружеские ссылки","loading":"Загрузка...","loadError":"Ошибка загрузки","noLinks":"Нет доступных ссылок"}
+i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","loading":"Loading","noFriends":"No friends found","loadError":"Failed to load friends"}
+i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","loading":"加载中","noFriends":"暂无友链","loadError":"加载友链失败"}
+i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","loading":"Загрузка","noFriends":"Друзья не найдены","loadError":"Ошибка загрузки"}
 IconBase={
     "post":"M0 3.75C0 2.784.784 2 1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25Zm1.75-.25a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25ZM3.5 6.25a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm.75 2.25h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z",
     "link":"m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z",
@@ -212,7 +212,7 @@ class GMEEK():
 
     def createPlistHtml(self):
         self.blogBase["postListJson"]=dict(sorted(self.blogBase["postListJson"].items(),key=lambda x:(x[1]["top"],x[1]["createdAt"]),reverse=True))#使列表由时间排序
-        keys=list(OrderedDict.fromkeys(['sun', 'moon','sync', 'search', 'rss', 'upload', 'post', 'about', 'link'] + self.blogBase["singlePage"]))
+        keys=list(OrderedDict.fromkeys(['sun', 'moon','sync', 'search', 'rss', 'upload', 'post'] + self.blogBase["singlePage"]))
         plistIcon={**dict(zip(keys, map(IconBase.get, keys))),**self.blogBase["iconList"]}
         keys=['sun','moon','sync','home','search','post']
         tagIcon=dict(zip(keys, map(IconBase.get, keys)))
@@ -228,14 +228,14 @@ class GMEEK():
                 "createdAt": int(time.time())
             }
 
-        # Add friends page to singeListJson if friends is in singlePage
-        if "friends" in self.blogBase["singlePage"]:
+        # Add friends page to singeListJson if friendsConfig exists
+        if "friendsConfig" in self.blogBase and "friends" in self.blogBase["singlePage"]:
             import time
             self.blogBase["singeListJson"]["friends"]={
-                "postTitle": self.i18n["link"],
-                "labels": ["link"],
+                "postTitle": self.i18n["friends"],
+                "labels": ["friends"],
                 "postUrl": "friends.html",
-                "description": self.i18n.get("linkDesc", "Friend Links"),
+                "description": self.blogBase["friendsConfig"].get("description", ""),
                 "createdAt": int(time.time())
             }
 
@@ -451,13 +451,13 @@ class GMEEK():
         print("create about.html")
 
     def createFriendsHtml(self):
-        if "friends" not in self.blogBase["singlePage"]:
-            print("friends not in singlePage, skip friends page")
+        if "friendsConfig" not in self.blogBase:
+            print("friendsConfig not found, skip friends page")
             return
 
         friendsBase=self.blogBase.copy()
-        friendsBase["postTitle"]=self.i18n["link"]
-        friendsBase["description"]=self.i18n.get("linkDesc", "Friend Links")
+        friendsBase["postTitle"]=self.i18n["friends"]
+        friendsBase["description"]=friendsBase["friendsConfig"].get("description", "")
         friendsBase["postUrl"]=self.blogBase["homeUrl"]+"/friends.html"
         friendsBase["ogImage"]=self.blogBase["ogImage"]
         friendsBase["commentNum"]=0
@@ -471,7 +471,7 @@ class GMEEK():
         friendsBase["needComment"]=0
         friendsBase["highlight"]=0
 
-        keys=['sun','moon','sync','home','search','rss']
+        keys=['sun','moon','sync','home']
         friendsIcon=dict(zip(keys, map(IconBase.get, keys)))
 
         self.renderHtml('friends.html',friendsBase,{},self.root_dir+"friends.html",friendsIcon)
