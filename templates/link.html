@@ -292,7 +292,7 @@ function renderFriendLinks(data) {
     const loadingEl = document.getElementById('flinkLoading');
     const errorEl = document.getElementById('flinkError');
 
-    // Support both 'content' (v2 format) and 'link_list' (legacy format)
+    // Support both data structures: {content: [...]} and {link_list: [...]}
     const linkList = data.content || data.link_list || [];
 
     if (!linkList || linkList.length === 0) {
@@ -304,6 +304,7 @@ function renderFriendLinks(data) {
 
     let html = '';
     linkList.forEach(link => {
+        // Support multiple field names for compatibility
         const cover = link.snapshot || link.cover || link.screenshot || '';
         const avatar = link.icon || link.avatar || link.favicon || '';
         const name = link.title || link.name || 'Unknown';
