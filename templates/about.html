@@ -347,6 +347,9 @@
     position: relative;
     overflow: hidden;
     padding: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .skills-track {
@@ -358,6 +361,10 @@
 
 .skills-track:hover {
     animation-play-state: paused;
+}
+
+.skills-track-reverse {
+    animation-direction: reverse;
 }
 
 @keyframes scrollSkills {
@@ -796,17 +803,20 @@
                         <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
                     </div>
                     {% endfor %}
-                    {% for skill in about.skills.general %}
-                    <div class="skill-card">
-                        <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
-                    </div>
-                    {% endfor %}
                     <!-- Duplicate for seamless loop -->
                     {% for skill in about.skills.technical %}
                     <div class="skill-card">
                         <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
                     </div>
                     {% endfor %}
+                </div>
+                <div class="skills-track skills-track-reverse">
+                    {% for skill in about.skills.general %}
+                    <div class="skill-card">
+                        <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
+                    </div>
+                    {% endfor %}
+                    <!-- Duplicate for seamless loop -->
                     {% for skill in about.skills.general %}
                     <div class="skill-card">
                         <img src="{{ skill }}" alt="skill" onerror="this.style.display='none'">
