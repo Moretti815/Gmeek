@@ -216,6 +216,14 @@ class GMEEK():
         plistIcon={**dict(zip(keys, map(IconBase.get, keys))),**self.blogBase["iconList"]}
         keys=['sun','moon','sync','home','search','post']
         tagIcon=dict(zip(keys, map(IconBase.get, keys)))
+        
+        # Add about page to singeListJson if aboutConfig exists
+        if "aboutConfig" in self.blogBase and "about" in self.blogBase["singlePage"]:
+            self.blogBase["singeListJson"]["about"]={
+                "postTitle": self.i18n["about"],
+                "labels": ["about"],
+                "postUrl": "about.html"
+            }
 
         postNum=len(self.blogBase["postListJson"])
         pageFlag=0
