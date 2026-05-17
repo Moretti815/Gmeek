@@ -1,13 +1,14 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<meta name="description" content="{{ i18n['link'] }} - {{ blogBase['displayTitle'] }}">
-<meta property="og:title" content="{{ i18n['link'] }}">
-<meta property="og:description" content="{{ i18n['link'] }} - {{ blogBase['displayTitle'] }}">
+<meta name="description" content="{{ blogBase['friendsDesc'] or '亦师亦友 · 给予帮助的人最可爱！' }}">
+<meta property="og:title" content="{{ i18n['friends'] }}">
+<meta property="og:description" content="{{ blogBase['friendsDesc'] or '亦师亦友 · 给予帮助的人最可爱！' }}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ blogBase['homeUrl'] }}/friends.html">
 <meta property="og:image" content="{{ blogBase['ogImage'] }}">
-<title>{{ i18n['link'] }} - {{ blogBase['displayTitle'] }}</title>
+<title>{{ i18n['friends'] }}</title>
+{{ blogBase['head'] }}
 {% endblock %}
 
 {% block style %}
@@ -16,32 +17,25 @@
 .title-right{display:flex;margin:auto 0 0 auto;}
 .title-right .circle{padding: 14px 16px;margin-right:8px;}
 
-/* Link Page Styles */
-.flink-container {
-    padding: 20px 0;
-}
-
-.flink-header {
+/* 友链页面样式 */
+.friends-header {
+    margin-bottom: 24px;
     text-align: center;
-    margin-bottom: 40px;
-    padding: 30px 20px;
-    background: linear-gradient(135deg, var(--color-canvas-subtle) 0%, var(--color-canvas-default) 100%);
-    border-radius: 16px;
-    border: 1px solid var(--color-border-default);
 }
 
-.flink-header h1 {
-    margin: 0 0 12px 0;
-    font-size: 32px;
+.friends-header h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 8px;
     color: var(--color-fg-default);
 }
 
-.flink-header p {
-    margin: 0;
-    font-size: 16px;
+.friends-header p {
     color: var(--color-fg-muted);
+    font-size: 14px;
 }
 
+/* 友链网格布局 */
 .flink-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -51,38 +45,43 @@
     list-style: none;
 }
 
+/* 友链卡片 */
 .flink-list-item {
     display: block;
-    text-decoration: none;
     background-color: var(--color-canvas-default);
     border: 1px solid var(--color-border-default);
     border-radius: 12px;
     overflow: hidden;
+    text-decoration: none;
+    color: inherit;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
 }
 
 .flink-list-item:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-.flink-card-cover {
+/* 网站截图 */
+.flink-snapshot {
     width: 100%;
     height: 160px;
     object-fit: cover;
-    border-bottom: 1px solid var(--color-border-default);
     background-color: var(--color-canvas-subtle);
+    border-bottom: 1px solid var(--color-border-default);
 }
 
-.flink-card-content {
+/* 卡片内容 */
+.flink-content {
     padding: 16px;
     display: flex;
     align-items: flex-start;
     gap: 12px;
 }
 
-.flink-card-avatar {
+/* 头像 */
+.flink-avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -91,25 +90,25 @@
     border: 2px solid var(--color-border-default);
 }
 
-.flink-card-info {
+/* 文字信息 */
+.flink-info {
     flex: 1;
     min-width: 0;
 }
 
-.flink-card-name {
+.flink-name {
     font-size: 16px;
     font-weight: 600;
     color: var(--color-fg-default);
-    margin: 0 0 6px 0;
+    margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.flink-card-desc {
+.flink-desc {
     font-size: 13px;
     color: var(--color-fg-muted);
-    margin: 0;
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -117,12 +116,12 @@
     overflow: hidden;
 }
 
-/* Status Tag Styles */
+/* 延迟状态标签 */
 .status-tag {
     position: absolute;
     top: 0;
     left: 0;
-    padding: 4px 10px;
+    padding: 3px 10px;
     border-radius: 12px 0 12px 0;
     font-size: 11px;
     color: white;
@@ -136,6 +135,7 @@
     opacity: 0;
 }
 
+/* 延迟状态颜色 */
 .status-tag-green {
     background-color: #1a7f37;
 }
@@ -145,108 +145,125 @@
 }
 
 .status-tag-dark-yellow {
-    background-color: #7d4e00;
+    background-color: #bc4c00;
 }
 
 .status-tag-red {
     background-color: #cf222e;
 }
 
-/* Loading State */
-.flink-loading {
-    text-align: center;
-    padding: 60px 20px;
+/* 文章列表 */
+.flink-posts {
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--color-border-muted);
+}
+
+.flink-post-item {
+    display: block;
+    padding: 8px 0;
+    font-size: 13px;
     color: var(--color-fg-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s ease;
 }
 
-.flink-loading .loading-spinner {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    border: 3px solid var(--color-border-default);
-    border-top-color: var(--color-accent-fg);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 16px;
+.flink-post-item:last-child {
+    border-bottom: none;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.flink-post-item:hover {
+    color: var(--color-accent-fg);
 }
 
-/* Error State */
-.flink-error {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--color-danger-fg);
+.flink-post-date {
+    font-size: 11px;
+    color: var(--color-fg-subtle);
+    margin-left: 8px;
 }
 
-/* Responsive Design */
+/* 标签 */
+.flink-labels {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    z-index: 10;
+}
+
+.flink-label {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    color: white;
+    font-weight: 500;
+}
+
+/* 响应式适配 */
 @media (max-width: 768px) {
-    .postTitle{font-size:28px;}
-
-    .flink-header h1 {
-        font-size: 24px;
-    }
-
-    .flink-header p {
-        font-size: 14px;
-    }
-
     .flink-list {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
         gap: 16px;
     }
 
-    .flink-card-cover {
+    .flink-snapshot {
         height: 140px;
     }
-
-    .flink-card-content {
-        padding: 12px;
-    }
-
-    .flink-card-avatar {
-        width: 40px;
-        height: 40px;
-    }
-
-    .flink-card-name {
-        font-size: 14px;
-    }
-
-    .flink-card-desc {
-        font-size: 12px;
-    }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
+    body {
+        padding: 8px;
+    }
+
+    .postTitle {
+        font-size: 24px;
+    }
+
     .flink-list {
         grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .flink-snapshot {
+        height: 180px;
+    }
+
+    .friends-header h1 {
+        font-size: 22px;
     }
 }
+
+/* 加载动画 */
+.flink-loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-fg-muted);
+}
+
+/* 错误提示 */
+.flink-error {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-danger-fg);
+}
 </style>
+{{ blogBase['style'] }}
 {% endblock %}
 
 {% block header %}
-<h1 class="postTitle">{{ i18n['link'] }}</h1>
+<h1 class="postTitle">{{ i18n['friends'] }}</h1>
 <div class="title-right">
     <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
         <svg class="octicon" width="16" height="16">
             <path id="pathHome" fill-rule="evenodd"></path>
         </svg>
     </a>
-    <a href="{{ blogBase['homeUrl'] }}/tag.html" id="buttonSearch" class="btn btn-invisible circle" title="{{ i18n['Search'] }}">
-        <svg class="octicon" width="16" height="16">
-            <path id="pathSearch" fill-rule="evenodd"></path>
-        </svg>
-    </a>
-    <a href="{{ blogBase['homeUrl'] }}/rss.xml" target="_blank" id="buttonRSS" class="btn btn-invisible circle" title="RSS">
-        <svg class="octicon" width="16" height="16">
-            <path id="pathRSS" fill-rule="evenodd"></path>
-        </svg>
-    </a>
-    <a class="btn btn-invisible circle" onclick="modeSwitch()" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
         <svg class="octicon" width="16" height="16">
             <path id="themeSwitch" fill-rule="evenodd"></path>
         </svg>
@@ -255,175 +272,235 @@
 {% endblock %}
 
 {% block content %}
-<div class="flink-container">
-    <div class="flink-header">
-        <h1>🤝 {{ i18n['link'] }}</h1>
-        <p>{{ i18n['linkDesc']|default('友情链接，互联互通') }}</p>
-    </div>
+<div class="friends-header">
+    <h1>{{ blogBase['friendsTitle'] or '🤝 友链' }}</h1>
+    <p>{{ blogBase['friendsDesc'] or '亦师亦友 · 给予帮助的人最可爱！' }}</p>
+</div>
 
-    <div class="flink-loading" id="flinkLoading">
-        <div class="loading-spinner"></div>
-        <p>{{ i18n['loading']|default('加载中...') }}</p>
-    </div>
-
-    <div class="flink-error" id="flinkError" style="display: none;">
-        <p>{{ i18n['loadError']|default('加载失败，请稍后重试') }}</p>
-    </div>
-
-    <ul class="flink-list" id="flinkList" style="display: none;"></ul>
+<div id="friends-container">
+    <div class="flink-loading">{{ i18n['loading'] or '加载中...' }}</div>
 </div>
 {% endblock %}
 
 {% block script %}
 <script>
-document.getElementById("pathHome").setAttribute("d",IconList["home"]);
-document.getElementById("pathSearch").setAttribute("d",IconList["search"]);
-document.getElementById("pathRSS").setAttribute("d",IconList["rss"]);
+document.getElementById("pathHome").setAttribute("d", IconList["home"]);
 
-// Friend links data URL
-const FRIEND_LINKS_URL = '{{ blogBase["friendLinksUrl"]|default("https://cdn.jsdmirror.com/gh/Kemeow0815/friends@output/v2/data.json") }}';
-const STATUS_CHECK_URL = '{{ blogBase["statusCheckUrl"]|default("https://check-flink.qyliu.top/result.json") }}';
+// 友链数据 URL
+const FRIENDS_DATA_URL = '{{ blogBase["friendsDataUrl"] or "https://cdn.jsdmirror.com/gh/Kemeow0815/friends@output/v2/data.json" }}';
+const LATENCY_DATA_URL = '{{ blogBase["latencyDataUrl"] or "https://check-flink.qyliu.top/result.json" }}';
 
-// Render friend links
-function renderFriendLinks(data) {
-    const listContainer = document.getElementById('flinkList');
-    const loadingEl = document.getElementById('flinkLoading');
-    const errorEl = document.getElementById('flinkError');
+// 缓存配置
+const CACHE_KEY = 'friendsDataCache';
+const CACHE_EXPIRATION = 30 * 60 * 1000; // 30分钟
 
-    // Support both data structures: {content: [...]} and {link_list: [...]}
-    const linkList = data.content || data.link_list || [];
-
-    if (!linkList || linkList.length === 0) {
-        loadingEl.style.display = 'none';
-        errorEl.style.display = 'block';
-        errorEl.textContent = '{{ i18n["noLinks"]|default("暂无友链") }}';
-        return;
+// 获取缓存数据
+function getCachedData() {
+    try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+            const { data, timestamp } = JSON.parse(cached);
+            if (Date.now() - timestamp < CACHE_EXPIRATION) {
+                return data;
+            }
+        }
+    } catch (e) {
+        console.error('Cache read error:', e);
     }
-
-    let html = '';
-    linkList.forEach(link => {
-        // Support multiple field names for compatibility
-        const cover = link.snapshot || link.cover || link.screenshot || '';
-        const avatar = link.icon || link.avatar || link.favicon || '';
-        const name = link.title || link.name || 'Unknown';
-        const desc = link.description || link.descr || '';
-        const url = link.url || link.link || '#';
-
-        html += `
-            <li>
-                <a href="${url}" class="flink-list-item" target="_blank" rel="noopener noreferrer">
-                    <img class="flink-card-cover" src="${cover}" alt="${name}" loading="lazy" onerror="this.style.display='none'">
-                    <div class="flink-card-content">
-                        <img class="flink-card-avatar" src="${avatar}" alt="${name}" loading="lazy" onerror="this.style.display='none'">
-                        <div class="flink-card-info">
-                            <h3 class="flink-card-name">${name}</h3>
-                            <p class="flink-card-desc">${desc}</p>
-                        </div>
-                    </div>
-                </a>
-            </li>
-        `;
-    });
-
-    listContainer.innerHTML = html;
-    loadingEl.style.display = 'none';
-    listContainer.style.display = 'grid';
-
-    // Load status tags
-    loadStatusTags();
+    return null;
 }
 
-// Load status tags with cache
-function loadStatusTags() {
-    const cacheKey = 'flinkStatusData';
-    const cacheExpirationTime = 30 * 60 * 1000; // 30 minutes
-
-    function applyStatusTags(data) {
-        if (!data || !data.link_status) return;
-
-        const linkStatus = data.link_status;
-        document.querySelectorAll('.flink-list-item').forEach(card => {
-            if (!card.href) return;
-            const link = card.href.replace(/\/$/, '');
-
-            const status = linkStatus.find(item => item.link && item.link.replace(/\/$/, '') === link);
-            if (status) {
-                const statusTag = document.createElement('div');
-                statusTag.classList.add('status-tag');
-
-                let latencyText = 'ERR';
-                let className = 'status-tag-red';
-
-                if (status.latency === -1) {
-                    latencyText = 'ERR';
-                } else {
-                    const latencyMs = status.latency * 1000;
-                    latencyText = Math.round(latencyMs) + ' MS';
-
-                    if (status.latency <= 2) {
-                        className = 'status-tag-green';
-                    } else if (status.latency <= 5) {
-                        className = 'status-tag-light-yellow';
-                    } else if (status.latency <= 10) {
-                        className = 'status-tag-dark-yellow';
-                    }
-                }
-
-                statusTag.textContent = latencyText;
-                statusTag.classList.add(className);
-                card.appendChild(statusTag);
-            }
-        });
+// 设置缓存数据
+function setCachedData(data) {
+    try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+            data: data,
+            timestamp: Date.now()
+        }));
+    } catch (e) {
+        console.error('Cache write error:', e);
     }
+}
 
-    function fetchStatusData() {
-        fetch(STATUS_CHECK_URL)
-            .then(response => response.json())
-            .then(data => {
-                applyStatusTags(data);
-                const cacheData = {
-                    data: data,
-                    timestamp: Date.now()
-                };
-                localStorage.setItem(cacheKey, JSON.stringify(cacheData));
-            })
-            .catch(error => console.error('Error fetching status data:', error));
-    }
+// 格式化日期
+function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr;
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+}
 
-    const cachedData = localStorage.getItem(cacheKey);
-    if (cachedData) {
-        try {
-            const { data, timestamp } = JSON.parse(cachedData);
-            if (Date.now() - timestamp < cacheExpirationTime) {
-                applyStatusTags(data);
-                return;
+// 创建友链卡片 HTML
+function createFriendCard(friend, latencyStatus) {
+    const url = friend.url || '#';
+    const icon = friend.icon || '';
+    const snapshot = friend.snapshot || '';
+    const title = friend.title || 'Unknown';
+    const description = friend.description || '';
+    const posts = friend.posts || [];
+    const labels = friend.labels || [];
+
+    let statusClass = 'status-tag-red';
+    let statusText = 'ERR';
+
+    if (latencyStatus) {
+        if (latencyStatus.latency === -1) {
+            statusText = 'ERR';
+        } else {
+            const latency = latencyStatus.latency;
+            statusText = latency < 1 ? Math.round(latency * 1000) + ' MS' : latency.toFixed(1) + ' S';
+            if (latency <= 2) {
+                statusClass = 'status-tag-green';
+            } else if (latency <= 5) {
+                statusClass = 'status-tag-light-yellow';
+            } else if (latency <= 10) {
+                statusClass = 'status-tag-dark-yellow';
             }
-        } catch (e) {
-            console.error('Error parsing cached data:', e);
         }
     }
 
-    fetchStatusData();
+    // 生成标签 HTML
+    const labelsHtml = labels.map(label => {
+        const color = label.color || '666666';
+        return `<span class="flink-label" style="background-color: #${color};">${label.name}</span>`;
+    }).join('');
+
+    // 生成文章列表 HTML
+    const postsHtml = posts.slice(0, 3).map(post => {
+        const postDate = formatDate(post.published);
+        return `<a href="${post.link}" target="_blank" class="flink-post-item" title="${post.title}">${post.title}<span class="flink-post-date">${postDate}</span></a>`;
+    }).join('');
+
+    return `
+        <a href="${url}" target="_blank" class="flink-list-item" data-url="${url.replace(/\/$/, '')}">
+            <div class="status-tag ${statusClass}">${statusText}</div>
+            ${labelsHtml ? `<div class="flink-labels">${labelsHtml}</div>` : ''}
+            <img class="flink-snapshot" src="${snapshot}" alt="${title}" loading="lazy" onerror="this.src='${icon}'">
+            <div class="flink-content">
+                <img class="flink-avatar" src="${icon}" alt="${title}" loading="lazy">
+                <div class="flink-info">
+                    <div class="flink-name">${title}</div>
+                    <div class="flink-desc">${description}</div>
+                </div>
+            </div>
+            ${postsHtml ? `<div class="flink-posts">${postsHtml}</div>` : ''}
+        </a>
+    `;
 }
 
-// Fetch friend links
-function fetchFriendLinks() {
-    fetch(FRIEND_LINKS_URL)
+// 渲染友链列表
+function renderFriends(friendsData, latencyData) {
+    const container = document.getElementById('friends-container');
+    if (!friendsData || !friendsData.content || friendsData.content.length === 0) {
+        container.innerHTML = '<div class="flink-error">{{ i18n["noFriends"] or "暂无友链" }}</div>';
+        return;
+    }
+
+    const latencyMap = {};
+    if (latencyData && latencyData.link_status) {
+        latencyData.link_status.forEach(item => {
+            const key = item.link.replace(/\/$/, '');
+            latencyMap[key] = item;
+        });
+    }
+
+    const friendsHtml = friendsData.content.map(friend => {
+        const urlKey = (friend.url || '').replace(/\/$/, '');
+        const latencyStatus = latencyMap[urlKey];
+        return createFriendCard(friend, latencyStatus);
+    }).join('');
+
+    container.innerHTML = `<div class="flink-list">${friendsHtml}</div>`;
+}
+
+// 加载延迟数据并应用
+function loadLatencyData() {
+    fetch(LATENCY_DATA_URL)
+        .then(response => response.json())
+        .then(data => {
+            document.querySelectorAll('.flink-list-item').forEach(card => {
+                const link = card.getAttribute('data-url');
+                if (!link) return;
+
+                const status = data.link_status?.find(item =>
+                    item.link.replace(/\/$/, '') === link
+                );
+
+                if (status) {
+                    const statusTag = card.querySelector('.status-tag');
+                    if (!statusTag) return;
+
+                    let statusText = 'ERR';
+                    let statusClass = 'status-tag-red';
+
+                    if (status.latency === -1) {
+                        statusText = 'ERR';
+                    } else {
+                        const latency = status.latency;
+                        statusText = latency < 1 ? Math.round(latency * 1000) + ' MS' : latency.toFixed(1) + ' S';
+                        if (latency <= 2) {
+                            statusClass = 'status-tag-green';
+                        } else if (latency <= 5) {
+                            statusClass = 'status-tag-light-yellow';
+                        } else if (latency <= 10) {
+                            statusClass = 'status-tag-dark-yellow';
+                        }
+                    }
+
+                    statusTag.textContent = statusText;
+                    statusTag.className = `status-tag ${statusClass}`;
+                }
+            });
+
+            // 缓存延迟数据
+            try {
+                localStorage.setItem('latencyDataCache', JSON.stringify({
+                    data: data,
+                    timestamp: Date.now()
+                }));
+            } catch (e) {
+                console.error('Latency cache error:', e);
+            }
+        })
+        .catch(error => {
+            console.error('Latency data fetch error:', error);
+        });
+}
+
+// 加载友链数据
+function loadFriendsData() {
+    const cachedData = getCachedData();
+
+    if (cachedData) {
+        renderFriends(cachedData, null);
+        // 后台更新延迟数据
+        loadLatencyData();
+    }
+
+    // 获取最新数据
+    fetch(FRIENDS_DATA_URL)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             return response.json();
         })
-        .then(data => renderFriendLinks(data))
+        .then(data => {
+            setCachedData(data);
+            renderFriends(data, null);
+            loadLatencyData();
+        })
         .catch(error => {
-            console.error('Error fetching friend links:', error);
-            document.getElementById('flinkLoading').style.display = 'none';
-            document.getElementById('flinkError').style.display = 'block';
+            console.error('Friends data fetch error:', error);
+            if (!cachedData) {
+                document.getElementById('friends-container').innerHTML =
+                    '<div class="flink-error">{{ i18n["loadError"] or "加载友链失败" }}</div>';
+            }
         });
 }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', fetchFriendLinks);
+// 页面加载完成后执行
+document.addEventListener('DOMContentLoaded', loadFriendsData);
 </script>
+{{ blogBase['script'] }}
 {% endblock %}
