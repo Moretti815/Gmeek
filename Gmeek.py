@@ -401,6 +401,33 @@ class GMEEK():
             f.close()
             return listJsonName
 
+    def createAboutHtml(self):
+        if "aboutConfig" not in self.blogBase:
+            print("aboutConfig not found, skip about page")
+            return
+
+        aboutBase=self.blogBase.copy()
+        aboutBase["postTitle"]=self.i18n["about"]
+        aboutBase["description"]=aboutBase["aboutConfig"].get("description", "")
+        aboutBase["postUrl"]=self.blogBase["homeUrl"]+"/about.html"
+        aboutBase["ogImage"]=self.blogBase["ogImage"]
+        aboutBase["commentNum"]=0
+        aboutBase["style"]=""
+        aboutBase["script"]=""
+        aboutBase["head"]=""
+        aboutBase["top"]=False
+        aboutBase["postSourceUrl"]=""
+        aboutBase["repoName"]=self.options.repo_name
+        aboutBase["bottomText"]=""
+        aboutBase["needComment"]=0
+        aboutBase["highlight"]=0
+
+        keys=['sun','moon','sync','home']
+        aboutIcon=dict(zip(keys, map(IconBase.get, keys)))
+
+        self.renderHtml('about.html',aboutBase,{},self.root_dir+"about.html",aboutIcon)
+        print("create about.html")
+
     def runAll(self):
         print("====== start create static html ======")
         self.cleanFile()
@@ -415,6 +442,7 @@ class GMEEK():
         for issue in self.blogBase["singeListJson"].values():
             self.createPostHtml(issue)
 
+        self.createAboutHtml()
         self.createPlistHtml()
         self.createFeedXml()
         print("====== create static html end ======")
