@@ -393,6 +393,8 @@ function copyPostLink(){
     });
 }
 
+{%- endif %}
+
 // 切换二维码显示
 function toggleQRCode(){
     const container = document.getElementById('qrcode-container');
@@ -415,7 +417,6 @@ function toggleQRCode(){
         container.dataset.generated = 'true';
     }
 }
-{%- endif %}
 
 {% if blogBase['highlight']!=0 -%}
 document.addEventListener('DOMContentLoaded', () => {
