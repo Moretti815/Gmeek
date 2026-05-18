@@ -139,21 +139,32 @@
 .qrcode-container {
     max-height: 0;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
     margin-bottom: 0;
-    display: flex;
-    justify-content: center;
+    padding: 0;
+    display: block;
 }
 
 .qrcode-container.expanded {
-    max-height: 200px;
+    max-height: 180px;
     margin-bottom: 12px;
+    padding: 8px 0;
+}
+
+#qrcode {
+    display: inline-block;
+    background-color: white;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border-default);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .qrcode-container canvas,
 .qrcode-container img {
-    border-radius: 8px;
-    border: 1px solid var(--color-border-default);
+    display: block;
+    width: 128px;
+    height: 128px;
 }
 
 /* 赞赏区域 */
@@ -398,23 +409,53 @@ function copyPostLink(){
 // 切换二维码显示
 function toggleQRCode(){
     const container = document.getElementById('qrcode-container');
+    const qrcodeDiv = document.getElementById('qrcode');
+
     container.classList.toggle('expanded');
+
     if(container.classList.contains('expanded') && !container.dataset.generated){
-        // 使用 QRCode.js 生成二维码
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
-        script.onload = function(){
-            QRCode.toCanvas(document.getElementById('qrcode'), window.location.href, {
-                width: 128,
-                margin: 2,
-                color: {
-                    dark: getComputedStyle(document.body).getPropertyValue('--color-fg-default').trim() || '#000000',
-                    light: '#00000000'
-                }
-            });
-        };
-        document.head.appendChild(script);
+        // 清空之前的内容
+        qrcodeDiv.innerHTML = '';
+
+        // 检查 QRCode 库是否已加载
+        if(typeof QRCode !== 'undefined'){
+            generateQRCode(qrcodeDiv);
+        } else {
+            // 动态加载 QRCode.js
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+            script.onload = function(){
+                generateQRCode(qrcodeDiv);
+            };
+            script.onerror = function(){
+                qrcodeDiv.innerHTML = '<span style="color:var(--color-danger-fg);font-size:12px;">加载失败</span>';
+            };
+            document.head.appendChild(script);
+        }
         container.dataset.generated = 'true';
+    }
+}
+
+// 生成二维码
+function generateQRCode(container){
+    try {
+        QRCode.toCanvas(container, window.location.href, {
+            width: 128,
+            height: 128,
+            margin: 2,
+            color: {
+                dark: '#000000',
+                light: '#ffffff'
+            }
+        }, function(error){
+            if(error) {
+                console.error('QR Code generation error:', error);
+                container.innerHTML = '<span style="color:var(--color-danger-fg);font-size:12px;">生成失败</span>';
+            }
+        });
+    } catch(e) {
+        console.error('QR Code error:', e);
+        container.innerHTML = '<span style="color:var(--color-danger-fg);font-size:12px;">生成失败</span>';
     }
 }
 
