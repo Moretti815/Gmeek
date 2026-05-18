@@ -166,14 +166,15 @@
     <p>{{ blogBase['fcircleDesc'] or '友链朋友圈 · 看看朋友们都在写什么' }}</p>
     <div class="fcircle-actions">
         <a href="{{ blogBase['homeUrl'] }}/friends.html" class="btn btn-primary">
-            <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+            <svg class="octicon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 5a2 2 0 1 0 4 0a2 2 0 1 0-4 0m0 17v-5l-1-1v-4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4l-1 1v5m6-17a2 2 0 1 0 4 0a2 2 0 1 0-4 0m0 17v-4h-2l2-6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1l2 6h-2v4"/>
             </svg>
             {{ i18n['friends'] or '友链展示' }}
         </a>
         <a href="{{ blogBase['homeUrl'] }}/addlink.html" class="btn">
             <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 2c.076 0 .117.007.175.032.386.146.568.59.39.976l-1.757 3.515a.75.75 0 0 1-1.342 0L3.71 3.008a.75.75 0 0 1 .39-.976.75.75 0 0 1 .976.39L5.25 4.972V1.5a.75.75 0 0 1 1.5 0v3.472l.816-1.632a.75.75 0 0 1 .976-.39ZM7.25 7.5a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5ZM5.5 10.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5a.75.75 0 0 1-.75-.75Zm-2 2.5a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75Z"/>
+                <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
             </svg>
             {{ i18n['applyFriend'] or '申请友链' }}
         </a>
