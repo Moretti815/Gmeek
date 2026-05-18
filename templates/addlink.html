@@ -418,20 +418,20 @@
                 {{ i18n['addlinkUpdateLog'] or '更新记录' }}
             </div>
             <p>{{ blogBase['addlinkUpdateText'] or '2025-07-18规则更新：' }}</p>
+
+            <ol>
+                <li>{{ blogBase['addlinkReq1'] or '如果想直接申请友链，请尽量确保贵站的文章数量大于15篇，这样更能展现您对网站长期维护的决心。' }}</li>
+                <li>{{ blogBase['addlinkReq2'] or '友链友链，先友后链，如果愿意和我多交流，成为朋友（例如多次留言且多次过来玩），完全可以取消15篇文章的限制，前提是贵站满足以下条件：' }}
+                    <ul>
+                        <li>{{ blogBase['addlinkReq2a'] or '站点内容积极向上，无不良广告或违规内容。' }}</li>
+                        <li>{{ blogBase['addlinkReq2b'] or '页面设计美观，展现出长期用心经营的态度。' }}</li>
+                    </ul>
+                </li>
+                <li>{{ blogBase['addlinkReq3'] or '即便取消文章数量的要求，也希望贵站能保持定期更新，这样我们的交流会更有活力！' }}</li>
+            </ol>
+
+            <p>{{ blogBase['addlinkReqThanks'] or '感谢理解，期待与您成为朋友！如果有任何不便，敬请包涵。' }}</p>
         </div>
-
-        <ol>
-            <li>{{ blogBase['addlinkReq1'] or '如果想直接申请友链，请尽量确保贵站的文章数量大于15篇，这样更能展现您对网站长期维护的决心。' }}</li>
-            <li>{{ blogBase['addlinkReq2'] or '友链友链，先友后链，如果愿意和我多交流，成为朋友（例如多次留言且多次过来玩），完全可以取消15篇文章的限制，前提是贵站满足以下条件：' }}
-                <ul>
-                    <li>{{ blogBase['addlinkReq2a'] or '站点内容积极向上，无不良广告或违规内容。' }}</li>
-                    <li>{{ blogBase['addlinkReq2b'] or '页面设计美观，展现出长期用心经营的态度。' }}</li>
-                </ul>
-            </li>
-            <li>{{ blogBase['addlinkReq3'] or '即便取消文章数量的要求，也希望贵站能保持定期更新，这样我们的交流会更有活力！' }}</li>
-        </ol>
-
-        <p>{{ blogBase['addlinkReqThanks'] or '感谢理解，期待与您成为朋友！如果有任何不便，敬请包涵。' }}</p>
 
         <ol start="4">
             <li><strong>{{ i18n['addlinkReqNature'] or '网站性质' }}</strong>：{{ blogBase['addlinkReqNatureText'] or '申请的网站应为非盈利性质，例如个人博客或博客组织等，体现内容分享的初心与乐趣，原则上不接受商业化严重的站点。' }}</li>
