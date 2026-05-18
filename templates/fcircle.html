@@ -35,6 +35,48 @@
     font-size: 14px;
 }
 
+/* 操作按钮 */
+.fcircle-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.fcircle-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--color-border-default);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    cursor: pointer;
+}
+
+.fcircle-actions .btn:hover {
+    background-color: var(--color-canvas-subtle);
+    border-color: var(--color-border-muted);
+    transform: translateY(-1px);
+}
+
+.fcircle-actions .btn-primary {
+    background-color: var(--color-accent-emphasis);
+    color: var(--color-fg-on-emphasis);
+    border-color: var(--color-accent-emphasis);
+}
+
+.fcircle-actions .btn-primary:hover {
+    background-color: var(--color-accent-muted);
+    border-color: var(--color-accent-muted);
+}
+
 /* Friend Circle Lite 容器适配 */
 #friend-circle-lite-root {
     width: 100%;
@@ -122,6 +164,20 @@
 <div class="fcircle-header">
     <h1>{{ blogBase['fcircleTitle'] or '📰 朋友圈' }}</h1>
     <p>{{ blogBase['fcircleDesc'] or '友链朋友圈 · 看看朋友们都在写什么' }}</p>
+    <div class="fcircle-actions">
+        <a href="{{ blogBase['homeUrl'] }}/friends.html" class="btn btn-primary">
+            <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+            </svg>
+            {{ i18n['friends'] or '友链展示' }}
+        </a>
+        <a href="{{ blogBase['homeUrl'] }}/addlink.html" class="btn">
+            <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 2c.076 0 .117.007.175.032.386.146.568.59.39.976l-1.757 3.515a.75.75 0 0 1-1.342 0L3.71 3.008a.75.75 0 0 1 .39-.976.75.75 0 0 1 .976.39L5.25 4.972V1.5a.75.75 0 0 1 1.5 0v3.472l.816-1.632a.75.75 0 0 1 .976-.39ZM7.25 7.5a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5ZM5.5 10.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 0 1.5h-3.5a.75.75 0 0 1-.75-.75Zm-2 2.5a.75.75 0 0 1 .75-.75h7.5a.75.75 0 0 1 0 1.5h-7.5a.75.75 0 0 1-.75-.75Z"/>
+            </svg>
+            {{ i18n['applyFriend'] or '申请友链' }}
+        </a>
+    </div>
 </div>
 
 <div id="friend-circle-lite-root"></div>
