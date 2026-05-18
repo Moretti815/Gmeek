@@ -35,14 +35,6 @@
     font-size: 14px;
 }
 
-/* 友链容器 */
-#friends-container {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow-x: hidden;
-}
-
 /* 友链网格布局 */
 .flink-list {
     display: grid;
@@ -67,8 +59,8 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
     width: 100%;
-    max-width: 100%;
     box-sizing: border-box;
+    min-width: 0;
 }
 
 .flink-list-item:hover {
@@ -79,13 +71,12 @@
 /* 网站截图 */
 .flink-snapshot {
     width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
+    height: 160px;
     object-fit: cover;
-    object-position: top;
     background-color: var(--color-canvas-subtle);
     border-bottom: 1px solid var(--color-border-default);
     display: block;
+    max-width: 100%;
 }
 
 /* 卡片内容 */
@@ -181,10 +172,10 @@
     color: var(--color-fg-muted);
     text-decoration: none;
     border-bottom: 1px solid var(--color-border-muted);
-    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     transition: color 0.2s ease;
+    line-height: 1.5;
 }
 
 .flink-post-item:last-child {
@@ -220,13 +211,6 @@
 }
 
 /* 响应式适配 */
-@media (max-width: 900px) {
-    .flink-list {
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 16px;
-    }
-}
-
 @media (max-width: 768px) {
     .flink-list {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -234,13 +218,15 @@
     }
 
     .flink-snapshot {
-        aspect-ratio: 16 / 9;
+        height: 140px;
     }
 }
 
 @media (max-width: 600px) {
     body {
         padding: 8px;
+        min-width: auto;
+        max-width: 100%;
     }
 
     .postTitle {
@@ -251,26 +237,21 @@
         grid-template-columns: 1fr;
         gap: 12px;
         width: 100%;
-        box-sizing: border-box;
     }
 
     .flink-list-item {
         width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
+        min-width: auto;
     }
 
     .flink-snapshot {
-        aspect-ratio: 16 / 9;
+        height: 180px;
         width: 100%;
-    }
-
-    .friends-header h1 {
-        font-size: 22px;
     }
 
     .flink-content {
         padding: 12px;
+        gap: 10px;
     }
 
     .flink-avatar {
@@ -285,26 +266,27 @@
     .flink-desc {
         font-size: 12px;
     }
-}
 
-@media (max-width: 480px) {
-    .flink-list {
-        grid-template-columns: 1fr;
-        gap: 10px;
+    .flink-posts {
+        padding: 0 12px 12px;
     }
 
-    .flink-snapshot {
-        aspect-ratio: 16 / 9;
+    .flink-post-item {
+        padding: 6px 0;
+        font-size: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
     }
 
-    .flink-content {
-        padding: 10px;
-        gap: 10px;
+    .flink-post-item span.flink-post-date {
+        margin-left: 0;
+        font-size: 11px;
     }
 
-    .flink-avatar {
-        width: 36px;
-        height: 36px;
+    .friends-header h1 {
+        font-size: 22px;
     }
 
     .status-tag {
@@ -318,17 +300,8 @@
     }
 
     .flink-label {
-        padding: 2px 6px;
+        padding: 1px 6px;
         font-size: 10px;
-    }
-
-    .flink-posts {
-        padding: 0 12px 12px;
-    }
-
-    .flink-post-item {
-        padding: 6px 0;
-        font-size: 12px;
     }
 }
 
