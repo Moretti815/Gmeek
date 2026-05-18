@@ -9,6 +9,7 @@
 <meta property="og:image" content="{{ blogBase['ogImage'] }}">
 <title>{{ blogBase['postTitle'] }}</title>
 {% if blogBase['highlight']==1 %}<link href="//unpkg.com/@wooorm/starry-night@2.1.1/style/both.css" rel="stylesheet" />{% endif %}
+<script src="https://unpkg.com/qrcodejs@1.0.0/qrcode.min.js"></script>
 {{ blogBase['head'] }}
 {% endblock %}
 
@@ -311,7 +312,7 @@
         </a>
     </div>
     <div id="qrcode-container" class="qrcode-container">
-        <div id="qrcode"></div>
+        <div id="qrcode-content"></div>
     </div>
     <div class="post-copyright-reward">
         <a href="{{ blogBase['homeUrl'] }}/reward.html">
@@ -409,53 +410,13 @@ function copyPostLink(){
 // 切换二维码显示
 function toggleQRCode(){
     const container = document.getElementById('qrcode-container');
-    const qrcodeDiv = document.getElementById('qrcode');
+    const qrcodeContent = document.getElementById('qrcode-content');
 
     container.classList.toggle('expanded');
 
-    if(container.classList.contains('expanded') && !container.dataset.generated){
-        // 清空之前的内容
-        qrcodeDiv.innerHTML = '';
-
-        // 检查 QRCode 库是否已加载
-        if(typeof QRCode !== 'undefined'){
-            generateQRCode(qrcodeDiv);
-        } else {
-            // 动态加载 QRCode.js
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
-            script.onload = function(){
-                generateQRCode(qrcodeDiv);
-            };
-            script.onerror = function(){
-                qrcodeDiv.innerHTML = '<span style="color:var(--color-danger-fg);font-size:12px;">加载失败</span>';
-            };
-            document.head.appendChild(script);
-        }
-        container.dataset.generated = 'true';
-    }
-}
-
-// 生成二维码
-function generateQRCode(container){
-    try {
-        QRCode.toCanvas(container, window.location.href, {
-            width: 128,
-            height: 128,
-            margin: 2,
-            color: {
-                dark: '#000000',
-                light: '#ffffff'
-            }
-        }, function(error){
-            if(error) {
-                console.error('QR Code generation error:', error);
-                container.innerHTML = '<span style="color:var(--color-danger-fg);font-size:12px;">生成失败</span>';
-            }
-        });
-    } catch(e) {
-        console.error('QR Code error:', e);
-        container.innerHTML = '<span style="color:var(--color-danger-fg);font-size:12px;">生成失败</span>';
+    // 参考 QRCode.astro 的实现
+    if(container.classList.contains('expanded') && qrcodeContent.innerHTML === ''){
+        new QRCode(qrcodeContent, window.location.href);
     }
 }
 
