@@ -1,0 +1,586 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<meta name="description" content="{{ blogBase['addlinkDesc'] or '期待与您建立友好的互联网连接！' }}">
+<meta property="og:title" content="{{ i18n['addlink'] or '申请友链' }}">
+<meta property="og:description" content="{{ blogBase['addlinkDesc'] or '期待与您建立友好的互联网连接！' }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ blogBase['homeUrl'] }}/addlink.html">
+<meta property="og:image" content="{{ blogBase['ogImage'] }}">
+<title>{{ i18n['addlink'] or '申请友链' }}</title>
+{{ blogBase['head'] }}
+{% endblock %}
+
+{% block style %}
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+
+/* 申请友链页面样式 */
+.addlink-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.addlink-header h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--color-fg-default);
+}
+
+.addlink-header p {
+    font-size: 16px;
+    color: var(--color-fg-muted);
+}
+
+/* 操作按钮 */
+.addlink-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.addlink-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--color-border-default);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    cursor: pointer;
+}
+
+.addlink-actions .btn:hover {
+    background-color: var(--color-canvas-subtle);
+    border-color: var(--color-border-muted);
+    transform: translateY(-1px);
+}
+
+.addlink-actions .btn-primary {
+    background-color: var(--color-accent-emphasis);
+    color: var(--color-fg-on-emphasis);
+    border-color: var(--color-accent-emphasis);
+}
+
+.addlink-actions .btn-primary:hover {
+    background-color: var(--color-accent-muted);
+    border-color: var(--color-accent-muted);
+}
+
+/* 内容区域 */
+.addlink-content {
+    margin-top: 24px;
+}
+
+.addlink-section {
+    margin-bottom: 32px;
+}
+
+.addlink-section h2 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--color-border-default);
+    color: var(--color-fg-default);
+}
+
+.addlink-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 20px 0 12px 0;
+    color: var(--color-fg-default);
+}
+
+.addlink-section p {
+    line-height: 1.8;
+    margin-bottom: 12px;
+    color: var(--color-fg-default);
+}
+
+.addlink-section ol,
+.addlink-section ul {
+    padding-left: 24px;
+    margin-bottom: 16px;
+}
+
+.addlink-section li {
+    line-height: 1.8;
+    margin-bottom: 8px;
+    color: var(--color-fg-default);
+}
+
+.addlink-section li ol,
+.addlink-section li ul {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* 提示框 */
+.addlink-notice {
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid var(--color-accent-emphasis);
+    background-color: var(--color-canvas-subtle);
+}
+
+.addlink-notice-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-fg-default);
+}
+
+.addlink-notice p {
+    margin: 0;
+    color: var(--color-fg-muted);
+}
+
+/* Tab 切换 */
+.addlink-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-border-default);
+    margin-bottom: 16px;
+    gap: 4px;
+}
+
+.addlink-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-fg-muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+    bottom: -1px;
+}
+
+.addlink-tab:hover {
+    color: var(--color-fg-default);
+    background-color: var(--color-canvas-subtle);
+    border-radius: 6px 6px 0 0;
+}
+
+.addlink-tab.active {
+    color: var(--color-accent-emphasis);
+    border-bottom-color: var(--color-accent-emphasis);
+    background-color: var(--color-canvas-subtle);
+    border-radius: 6px 6px 0 0;
+}
+
+.addlink-tab-panel {
+    display: none;
+}
+
+.addlink-tab-panel.active {
+    display: block;
+}
+
+/* 代码块 */
+.addlink-code-block {
+    position: relative;
+    background-color: var(--color-canvas-overlay);
+    border: 1px solid var(--color-border-default);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+}
+
+.addlink-code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: var(--color-canvas-subtle);
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.addlink-code-lang {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-fg-muted);
+    text-transform: uppercase;
+}
+
+.addlink-code-copy {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    color: var(--color-fg-muted);
+    background: none;
+    border: 1px solid var(--color-border-default);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.addlink-code-copy:hover {
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+}
+
+.addlink-code-copy.copied {
+    color: var(--color-success-fg);
+    border-color: var(--color-success-fg);
+}
+
+.addlink-code-content {
+    padding: 16px;
+    overflow-x: auto;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-fg-default);
+    white-space: pre;
+    word-wrap: normal;
+}
+
+.addlink-code-content code {
+    font-family: inherit;
+    background: none;
+    padding: 0;
+}
+
+/* 信息表格 */
+.addlink-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+}
+
+.addlink-info-table td {
+    padding: 10px 12px;
+    border: 1px solid var(--color-border-default);
+    vertical-align: top;
+}
+
+.addlink-info-table td:first-child {
+    width: 120px;
+    font-weight: 600;
+    background-color: var(--color-canvas-subtle);
+    color: var(--color-fg-default);
+}
+
+.addlink-info-table td:last-child {
+    color: var(--color-fg-default);
+    word-break: break-all;
+}
+
+/* 文本信息列表 */
+.addlink-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+}
+
+.addlink-info-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-border-muted);
+    display: flex;
+    gap: 8px;
+}
+
+.addlink-info-list li:last-child {
+    border-bottom: none;
+}
+
+.addlink-info-list .label {
+    font-weight: 600;
+    min-width: 80px;
+    color: var(--color-fg-default);
+}
+
+.addlink-info-list .value {
+    color: var(--color-fg-muted);
+    word-break: break-all;
+}
+
+/* 强调文字 */
+.addlink-section strong {
+    color: var(--color-accent-emphasis);
+}
+
+.addlink-section a {
+    color: var(--color-accent-emphasis);
+    text-decoration: none;
+}
+
+.addlink-section a:hover {
+    text-decoration: underline;
+}
+
+/* 移动端适配 */
+@media (max-width: 600px) {
+    .addlink-header h1 {
+        font-size: 22px;
+    }
+
+    .addlink-section h2 {
+        font-size: 18px;
+    }
+
+    .addlink-section h3 {
+        font-size: 16px;
+    }
+
+    .addlink-tab {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .addlink-code-content {
+        font-size: 12px;
+        padding: 12px;
+    }
+
+    .addlink-info-table td:first-child {
+        width: 80px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block header %}
+<a href="{{ blogBase['homeUrl'] }}" class="avatar circle" title="{{ i18n['home'] }}">
+    <img src="{{ blogBase['avatarUrl'] }}" class="circle" style="width: 48px;height: 48px;">
+</a>
+<div style="margin-left:8px;">
+    <div class="postTitle">{{ i18n['addlink'] or '申请友链' }}</div>
+</div>
+<div class="title-right">
+    <a class="btn btn-invisible circle" href="{{ blogBase['homeUrl'] }}" title="{{ i18n['home'] }}">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+        <svg class="octicon" width="16" height="16">
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="addlink-header">
+    <h1>{{ blogBase['addlinkTitle'] or '期待与您建立友好的互联网连接……' }}</h1>
+    <p>{{ blogBase['addlinkDesc'] or '欢迎来到我的博客！如果您想申请友链，请查看以下友链要求。' }}</p>
+    <div class="addlink-actions">
+        <a href="{{ blogBase['homeUrl'] }}/friends.html" class="btn">
+            <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+            </svg>
+            {{ i18n['friends'] or '友链展示' }}
+        </a>
+        <a href="{{ blogBase['homeUrl'] }}/fcircle.html" class="btn btn-primary">
+            <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+            </svg>
+            {{ i18n['fcircle'] or '朋友圈' }}
+        </a>
+    </div>
+</div>
+
+<div class="addlink-content">
+    <!-- 注意事项 -->
+    <div class="addlink-section">
+        <h2>{{ i18n['addlinkNotice'] or '注意事项' }}</h2>
+        <p>{{ blogBase['addlinkNoticeText'] or '欢迎来到我的博客！如果您想申请友链，请点击查看友链要求，若符合要求请以下面代码块中的格式化，发送您网站相关内容，感谢您的赏识！' }}</p>
+    </div>
+
+    <!-- 友链要求 -->
+    <div class="addlink-section">
+        <h2>{{ i18n['addlinkRequirements'] or '友链要求' }}</h2>
+
+        <div class="addlink-notice">
+            <div class="addlink-notice-title">
+                <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 16A8 8 0 1 1 8 0a8 8 0 0 1 0 16Zm.75-11.25a.75.75 0 0 0-1.5 0v2.5h-2.5a.75.75 0 0 0 0 1.5h2.5v2.5a.75.75 0 0 0 1.5 0v-2.5h2.5a.75.75 0 0 0 0-1.5h-2.5v-2.5Z"/>
+                </svg>
+                {{ i18n['addlinkUpdateLog'] or '更新记录' }}
+            </div>
+            <p>{{ blogBase['addlinkUpdateText'] or '2025-07-18规则更新：' }}</p>
+        </div>
+
+        <ol>
+            <li>{{ blogBase['addlinkReq1'] or '如果想直接申请友链，请尽量确保贵站的文章数量大于15篇，这样更能展现您对网站长期维护的决心。' }}</li>
+            <li>{{ blogBase['addlinkReq2'] or '友链友链，先友后链，如果愿意和我多交流，成为朋友（例如多次留言且多次过来玩），完全可以取消15篇文章的限制，前提是贵站满足以下条件：' }}
+                <ul>
+                    <li>{{ blogBase['addlinkReq2a'] or '站点内容积极向上，无不良广告或违规内容。' }}</li>
+                    <li>{{ blogBase['addlinkReq2b'] or '页面设计美观，展现出长期用心经营的态度。' }}</li>
+                </ul>
+            </li>
+            <li>{{ blogBase['addlinkReq3'] or '即便取消文章数量的要求，也希望贵站能保持定期更新，这样我们的交流会更有活力！' }}</li>
+        </ol>
+
+        <p>{{ blogBase['addlinkReqThanks'] or '感谢理解，期待与您成为朋友！如果有任何不便，敬请包涵。' }}</p>
+
+        <ol start="4">
+            <li><strong>{{ i18n['addlinkReqNature'] or '网站性质' }}</strong>：{{ blogBase['addlinkReqNatureText'] or '申请的网站应为非盈利性质，例如个人博客或博客组织等，体现内容分享的初心与乐趣，原则上不接受商业化严重的站点。' }}</li>
+            <li><strong>{{ i18n['addlinkReqContent'] or '内容要求' }}</strong>：{{ blogBase['addlinkReqContentText'] or '博客内容建议以原创为主，避免采集站和严重同质化的内容；同时，需确保网站不包含违法信息、色情或暴力内容。' }}</li>
+            <li><strong>{{ i18n['addlinkReqSpeed'] or '访问体验' }}</strong>：{{ blogBase['addlinkReqSpeedText'] or '希望贵站在国内的访问速度良好，以提供更顺畅的浏览体验。适度的广告或弹窗是可以接受的，但请避免影响用户体验。' }}</li>
+            <li><strong>{{ i18n['addlinkReqStable'] or '稳定性与长期性' }}</strong>：{{ blogBase['addlinkReqStableText'] or '期待友链能够长久稳定，如若贵站链接在一周内无法访问，或者SSL证书过期超过一个月，我可能会在不告知的情况下移除贵站友链，烦请谅解！' }}</li>
+            <li><strong>{{ i18n['addlinkReqMutual'] or '互惠原则' }}</strong>：{{ blogBase['addlinkReqMutualText'] or '为了更好地建立互信，请先在贵站添加本站友链或告知添加时间，方便我及时核实。一般情况下不接受单向友链。' }}</li>
+            <li><strong>{{ i18n['addlinkReqMaintain'] or '友链维护' }}</strong>：{{ blogBase['addlinkReqMaintainText'] or '我会定期维护友链页面，如果发现本站链接被移除，可能会同步取消贵站友链。不过请放心，任何更新都可以联系我协调。' }}</li>
+            <li><strong>{{ i18n['addlinkReqDomain'] or '域名要求' }}</strong>：{{ blogBase['addlinkReqDomainText'] or '对域名没有严格限制，常见免费域名是可以接受的，但需确保贵站内容优质，且避免使用不可信的分发子域名。' }}
+                <ol>
+                    <li>{{ blogBase['addlinkReqDomain1'] or '可接受的免费域名：如 github.io、eu.org、cloudns、cf pages 等。' }}</li>
+                    <li>{{ blogBase['addlinkReqDomain2'] or '暂不接受的免费域名：如 vercel，由于 SNI 阻断的原因暂不考虑使用。' }}</li>
+                    <li>{{ blogBase['addlinkReqDomain3'] or '需要审核的小众二级分发域名：可能存在劫持或安全风险，这类域名本站暂不接受。' }}</li>
+                    <li>{{ blogBase['addlinkReqDomain4'] or '付费域名：常见的顶级域名如 .cn、.com、.fun、.top 等，都完全符合要求。' }}</li>
+                </ol>
+            </li>
+            <li><strong>{{ i18n['addlinkReqCount'] or '文章数量' }}</strong>：{{ blogBase['addlinkReqCountText'] or '为了确保友链的质量，建议申请友链时贵站的文章数量在15篇以上。' }}</li>
+            <li><strong>{{ i18n['addlinkReqName'] or '名称微调' }}</strong>：{{ blogBase['addlinkReqNameText'] or '我可能会根据展示美观适当调整友链名称的长度，您可以随时检查友链页面，如果有修改意见，欢迎联系我沟通！' }}</li>
+            <li><strong>{{ i18n['addlinkReqLaw'] or '法律优先' }}</strong>：{{ blogBase['addlinkReqLawText'] or '以上所有条件均需完全符合法律法规，如有任何冲突，一切以中华人民共和国法律为准。' }}</li>
+        </ol>
+
+        <p>{{ blogBase['addlinkReqEnd'] or '如果您满足这些条件，并愿意与本站建立友链，请在评论区留下格式化信息。我期待与您建立友好的互联网连接！' }}</p>
+    </div>
+
+    <!-- 友链添加 -->
+    <div class="addlink-section">
+        <h2>{{ i18n['addlinkAdd'] or '友链添加' }}</h2>
+        <p>{{ blogBase['addlinkAddText'] or '如果您想在您的网站上添加我的友链，可以使用以下信息：' }}</p>
+
+        <h3>{{ i18n['addlinkSiteInfo'] or '本站信息' }}</h3>
+
+        <!-- Tab 切换 -->
+        <div class="addlink-tabs">
+            <button class="addlink-tab active" data-tab="formatted">{{ i18n['addlinkFormatted'] or '格式化信息' }}</button>
+            <button class="addlink-tab" data-tab="text">{{ i18n['addlinkText'] or '文本信息' }}</button>
+        </div>
+
+        <!-- 格式化信息面板 -->
+        <div class="addlink-tab-panel active" id="tab-formatted">
+            <div class="addlink-code-block">
+                <div class="addlink-code-header">
+                    <span class="addlink-code-lang">YML</span>
+                    <button class="addlink-code-copy" onclick="copyCode(this)">
+                        <svg class="octicon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
+                            <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
+                        </svg>
+                        <span>{{ i18n['copy'] or '复制' }}</span>
+                    </button>
+                </div>
+                <div class="addlink-code-content"><code id="code-yml">- name: {{ blogBase['addlinkSiteName'] or blogBase['title'] or '清羽飞扬' }}
+  link: {{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://blog.liushen.fun/' }}
+  avatar: {{ blogBase['addlinkSiteAvatar'] or blogBase['avatarUrl'] or 'https://blog.liushen.fun/info/avatar.ico' }}
+  descr: {{ blogBase['addlinkSiteDescr'] or blogBase['description'] or '柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜' }}
+  siteshot: {{ blogBase['addlinkSiteSiteshot'] or 'https://blog.liushen.fun/info/siteshot.jpg' }}
+  /*/---下面是选填项---/*/
+  atom(options): {{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://blog.liushen.fun/') + '/atom.xml' }}</code></div>
+            </div>
+        </div>
+
+        <!-- 文本信息面板 -->
+        <div class="addlink-tab-panel" id="tab-text">
+            <ul class="addlink-info-list">
+                <li>
+                    <span class="label">{{ i18n['siteName'] or '网站名称' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteName'] or blogBase['title'] or '清羽飞扬' }}</span>
+                </li>
+                <li>
+                    <span class="label">{{ i18n['siteUrl'] or '网址' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://blog.liushen.fun/' }}</span>
+                </li>
+                <li>
+                    <span class="label">{{ i18n['siteIcon'] or '网站图标' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteAvatar'] or blogBase['avatarUrl'] or 'https://blog.liushen.fun/info/avatar.ico' }}</span>
+                </li>
+                <li>
+                    <span class="label">{{ i18n['siteDesc'] or '网站描述' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteDescr'] or blogBase['description'] or '柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜' }}</span>
+                </li>
+                <li>
+                    <span class="label">{{ i18n['siteScreenshot'] or '网站截图' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteSiteshot'] or 'https://blog.liushen.fun/info/siteshot.jpg' }}</span>
+                </li>
+                <li>
+                    <span class="label">{{ i18n['siteAtom'] or 'Atom(可选)' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://blog.liushen.fun/') + '/atom.xml' }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <p>{{ blogBase['addlinkScreenshotTip'] or '其中网页截图信息如果没有提供，将采用 WordPress 自动 API 进行截图，速度上可能会有延迟，还是建议上传截图。' }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+document.getElementById("pathHome").setAttribute("d", IconList["home"]);
+
+// Tab 切换功能
+document.querySelectorAll('.addlink-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        const targetTab = this.getAttribute('data-tab');
+
+        // 移除所有 active 状态
+        document.querySelectorAll('.addlink-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.addlink-tab-panel').forEach(p => p.classList.remove('active'));
+
+        // 添加当前 active 状态
+        this.classList.add('active');
+        document.getElementById('tab-' + targetTab).classList.add('active');
+    });
+});
+
+// 复制代码功能
+function copyCode(btn) {
+    const codeBlock = btn.closest('.addlink-code-block').querySelector('.addlink-code-content code');
+    const text = codeBlock.innerText;
+
+    navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.querySelector('span').innerText;
+        btn.querySelector('span').innerText = '{{ i18n["copied"] or "已复制" }}';
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+            btn.querySelector('span').innerText = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+    }).catch(err => {
+        console.error('复制失败:', err);
+        // 降级方案
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+
+        const originalText = btn.querySelector('span').innerText;
+        btn.querySelector('span').innerText = '{{ i18n["copied"] or "已复制" }}';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.querySelector('span').innerText = originalText;
+            btn.classList.remove('copied');
+        }, 2000);
+    });
+}
+</script>
+{{ blogBase['script'] }}
+{% endblock %}
