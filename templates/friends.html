@@ -79,10 +79,13 @@
 /* 网站截图 */
 .flink-snapshot {
     width: 100%;
-    height: 160px;
+    height: auto;
+    aspect-ratio: 16 / 9;
     object-fit: cover;
+    object-position: top;
     background-color: var(--color-canvas-subtle);
     border-bottom: 1px solid var(--color-border-default);
+    display: block;
 }
 
 /* 卡片内容 */
@@ -231,7 +234,7 @@
     }
 
     .flink-snapshot {
-        height: 140px;
+        aspect-ratio: 16 / 9;
     }
 }
 
@@ -258,7 +261,7 @@
     }
 
     .flink-snapshot {
-        height: 160px;
+        aspect-ratio: 16 / 9;
         width: 100%;
     }
 
@@ -291,7 +294,7 @@
     }
 
     .flink-snapshot {
-        height: 140px;
+        aspect-ratio: 16 / 9;
     }
 
     .flink-content {
