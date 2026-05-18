@@ -403,7 +403,7 @@
     <!-- 注意事项 -->
     <div class="addlink-section">
         <h2>{{ i18n['addlinkNotice'] or '注意事项' }}</h2>
-        <p>{{ blogBase['addlinkNoticeText'] or '欢迎来到我的博客！如果您想申请友链，请点击查看友链要求，若符合要求请以下面代码块中的格式化，发送您网站相关内容，感谢您的赏识！' }}</p>
+        <p>{{ blogBase['addlinkNoticeText'] or '欢迎来到我的博客！如果您想申请友链，请查看下方的友链要求，若符合要求点击下列按钮添加友链，发送您网站相关内容，感谢您的赏识！' }}</p>
     </div>
 
     <!-- 友链要求 -->
@@ -417,11 +417,11 @@
                 </svg>
                 {{ i18n['addlinkUpdateLog'] or '更新记录' }}
             </div>
-            <p>{{ blogBase['addlinkUpdateText'] or '2025-07-18规则更新：' }}</p>
+            <p>{{ blogBase['addlinkUpdateText'] or '2026-05-18规则更新：' }}</p>
 
             <ol>
-                <li>{{ blogBase['addlinkReq1'] or '如果想直接申请友链，请尽量确保贵站的文章数量大于15篇，这样更能展现您对网站长期维护的决心。' }}</li>
-                <li>{{ blogBase['addlinkReq2'] or '友链友链，先友后链，如果愿意和我多交流，成为朋友（例如多次留言且多次过来玩），完全可以取消15篇文章的限制，前提是贵站满足以下条件：' }}
+                <li>{{ blogBase['addlinkReq1'] or '如果想直接申请友链，请尽量确保贵站的文章数量大于10篇，这样更能展现您对网站长期维护的决心。' }}</li>
+                <li>{{ blogBase['addlinkReq2'] or '友链友链，先友后链，如果愿意和我多交流，成为朋友（例如多次留言且多次过来玩），完全可以取消10篇文章的限制，前提是贵站满足以下条件：' }}
                     <ul>
                         <li>{{ blogBase['addlinkReq2a'] or '站点内容积极向上，无不良广告或违规内容。' }}</li>
                         <li>{{ blogBase['addlinkReq2b'] or '页面设计美观，展现出长期用心经营的态度。' }}</li>
@@ -447,7 +447,7 @@
                         <li>{{ blogBase['addlinkReqDomain4'] or '付费域名：常见的顶级域名如 .cn、.com、.fun、.top 等，都完全符合要求。' }}</li>
                     </ol>
                 </li>
-                <li><strong>{{ i18n['addlinkReqCount'] or '文章数量' }}</strong>：{{ blogBase['addlinkReqCountText'] or '为了确保友链的质量，建议申请友链时贵站的文章数量在15篇以上。' }}</li>
+                <li><strong>{{ i18n['addlinkReqCount'] or '文章数量' }}</strong>：{{ blogBase['addlinkReqCountText'] or '为了确保友链的质量，建议申请友链时贵站的文章数量在10篇以上。' }}</li>
                 <li><strong>{{ i18n['addlinkReqName'] or '名称微调' }}</strong>：{{ blogBase['addlinkReqNameText'] or '我可能会根据展示美观适当调整友链名称的长度，您可以随时检查友链页面，如果有修改意见，欢迎联系我沟通！' }}</li>
                 <li><strong>{{ i18n['addlinkReqLaw'] or '法律优先' }}</strong>：{{ blogBase['addlinkReqLawText'] or '以上所有条件均需完全符合法律法规，如有任何冲突，一切以中华人民共和国法律为准。' }}</li>
             </ol>
@@ -482,13 +482,13 @@
                         <span>{{ i18n['copy'] or '复制' }}</span>
                     </button>
                 </div>
-                <div class="addlink-code-content"><code id="code-yml">- name: {{ blogBase['addlinkSiteName'] or blogBase['title'] or '清羽飞扬' }}
-  link: {{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://blog.liushen.fun/' }}
-  avatar: {{ blogBase['addlinkSiteAvatar'] or blogBase['avatarUrl'] or 'https://blog.liushen.fun/info/avatar.ico' }}
-  descr: {{ blogBase['addlinkSiteDescr'] or blogBase['description'] or '柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜' }}
-  siteshot: {{ blogBase['addlinkSiteSiteshot'] or 'https://blog.liushen.fun/info/siteshot.jpg' }}
+                <div class="addlink-code-content"><code id="code-yml">- name: {{ blogBase['addlinkSiteName'] or blogBase['title'] or 'Moretti\'s Blog' }}
+  link: {{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://moretti815.github.io/blog' }}
+  avatar: {{ blogBase['addlinkSiteAvatar'] or blogBase['avatarUrl'] or 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/kemiao.gif' }}
+  descr: {{ blogBase['addlinkSiteDescr'] or blogBase['description'] or '这是最好的时代，也是最坏的时代。' }}
+  siteshot: {{ blogBase['addlinkSiteSiteshot'] or 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/screenshot.webp' }}
   /*/---下面是选填项---/*/
-  atom(options): {{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://blog.liushen.fun/') + '/atom.xml' }}</code></div>
+  atom(options): {{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://moretti815.github.io/blog') + '/rss.xml' }}</code></div>
             </div>
         </div>
 
@@ -497,19 +497,19 @@
             <ul class="addlink-info-list">
                 <li>
                     <span class="label">{{ i18n['siteName'] or '网站名称' }}</span>
-                    <span class="value">{{ blogBase['addlinkSiteName'] or blogBase['title'] or '清羽飞扬' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteName'] or blogBase['title'] or 'Moretti\'s Blog' }}</span>
                 </li>
                 <li>
                     <span class="label">{{ i18n['siteUrl'] or '网址' }}</span>
-                    <span class="value">{{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://blog.liushen.fun/' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://moretti815.github.io/blog/' }}</span>
                 </li>
                 <li>
                     <span class="label">{{ i18n['siteIcon'] or '网站图标' }}</span>
-                    <span class="value">{{ blogBase['addlinkSiteAvatar'] or blogBase['avatarUrl'] or 'https://blog.liushen.fun/info/avatar.ico' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteAvatar'] or blogBase['avatarUrl'] or 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/kemiao.gif' }}</span>
                 </li>
                 <li>
                     <span class="label">{{ i18n['siteDesc'] or '网站描述' }}</span>
-                    <span class="value">{{ blogBase['addlinkSiteDescr'] or blogBase['description'] or '柳影曳曳，清酒孤灯，扬笔撒墨，心境如霜' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteDescr'] or blogBase['description'] or '这是最好的时代，也是最坏的时代。' }}</span>
                 </li>
                 <li>
                     <span class="label">{{ i18n['siteScreenshot'] or '网站截图' }}</span>
@@ -517,12 +517,12 @@
                 </li>
                 <li>
                     <span class="label">{{ i18n['siteAtom'] or 'Atom(可选)' }}</span>
-                    <span class="value">{{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://blog.liushen.fun/') + '/atom.xml' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://moretti815.github.io/blog') + '/rss.xml' }}</span>
                 </li>
             </ul>
         </div>
 
-        <p>{{ blogBase['addlinkScreenshotTip'] or '其中网页截图信息如果没有提供，将采用 WordPress 自动 API 进行截图，速度上可能会有延迟，还是建议上传截图。' }}</p>
+        <!-- <p>{{ blogBase['addlinkScreenshotTip'] or '其中网页截图信息如果没有提供，将采用 WordPress 自动 API 进行截图，速度上可能会有延迟，还是建议上传截图。' }}</p> -->
     </div>
 </div>
 {% endblock %}
