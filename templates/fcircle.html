@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<meta name="description" content="{{ blogBase['fcircleDesc'] or '友链朋友圈 · 看看朋友们都在写什么' }}">
+<meta property="og:title" content="{{ i18n['fcircle'] }}">
+<meta property="og:description" content="{{ blogBase['fcircleDesc'] or '友链朋友圈 · 看看朋友们都在写什么' }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ blogBase['homeUrl'] }}/fcircle.html">
+<meta property="og:image" content="{{ blogBase['ogImage'] }}">
+<title>{{ i18n['fcircle'] }}</title>
+{{ blogBase['head'] }}
+{% endblock %}
+
+{% block style %}
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+
+/* 朋友圈页面样式 */
+.fcircle-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.fcircle-header h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--color-fg-default);
+}
+
+.fcircle-header p {
+    color: var(--color-fg-muted);
+    font-size: 14px;
+}
+
+/* Friend Circle Lite 容器适配 */
+#friend-circle-lite-root {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* 适配 FCLite 的明暗模式 */
+[data-color-mode="dark"] #friend-circle-lite-root {
+    --fclite-bg: var(--color-canvas-default);
+    --fclite-border: var(--color-border-default);
+    --fclite-text: var(--color-fg-default);
+    --fclite-text-secondary: var(--color-fg-muted);
+    --fclite-link: var(--color-accent-fg);
+}
+
+[data-color-mode="light"] #friend-circle-lite-root {
+    --fclite-bg: var(--color-canvas-default);
+    --fclite-border: var(--color-border-default);
+    --fclite-text: var(--color-fg-default);
+    --fclite-text-secondary: var(--color-fg-muted);
+    --fclite-link: var(--color-accent-fg);
+}
+
+/* 加载动画 */
+.fcircle-loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-fg-muted);
+}
+
+/* 错误提示 */
+.fcircle-error {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-danger-fg);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .fcircle-header h1 {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 8px;
+        min-width: auto;
+        max-width: 100%;
+    }
+
+    .postTitle {
+        font-size: 24px;
+    }
+
+    .fcircle-header h1 {
+        font-size: 22px;
+    }
+
+    .fcircle-header p {
+        font-size: 13px;
+    }
+}
+</style>
+{{ blogBase['style'] }}
+{% endblock %}
+
+{% block header %}
+<h1 class="postTitle">{{ i18n['fcircle'] }}</h1>
+<div class="title-right">
+    <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+        <svg class="octicon" width="16" height="16">
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="fcircle-header">
+    <h1>{{ blogBase['fcircleTitle'] or '📰 朋友圈' }}</h1>
+    <p>{{ blogBase['fcircleDesc'] or '友链朋友圈 · 看看朋友们都在写什么' }}</p>
+</div>
+
+<div id="friend-circle-lite-root"></div>
+{% endblock %}
+
+{% block script %}
+<script>
+document.getElementById("pathHome").setAttribute("d", IconList["home"]);
+
+// Friend Circle Lite 配置
+var fcircleApiUrl = '{{ blogBase["fcircleApiUrl"] or "https://fc.268682.xyz/" }}';
+var fcirclePageNum = parseInt('{{ blogBase["fcirclePageNum"] or 20 }}', 10);
+var fcircleErrorImg = '{{ blogBase["fcircleErrorImg"] or "https://i.p-i.vip/30/20240815-66bced9226a36.webp" }}';
+
+if (typeof UserConfig === 'undefined') {
+    var UserConfig = {
+        private_api_url: fcircleApiUrl,
+        page_turning_number: fcirclePageNum,
+        error_img: fcircleErrorImg
+    }
+}
+</script>
+<link rel="stylesheet" href="{{ blogBase['fcircleCssUrl'] or 'https://fastly.jsdelivr.net/gh/willow-god/Friend-Circle-Lite/main/fclite.min.css' }}">
+<script src="{{ blogBase['fcircleJsUrl'] or 'https://fastly.jsdelivr.net/gh/willow-god/Friend-Circle-Lite/main/fclite.min.js' }}"></script>
+{{ blogBase['script'] }}
+{% endblock %}
