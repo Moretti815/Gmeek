@@ -431,29 +431,29 @@
             </ol>
 
             <p>{{ blogBase['addlinkReqThanks'] or '感谢理解，期待与您成为朋友！如果有任何不便，敬请包涵。' }}</p>
+
+            <ol start="4">
+                <li><strong>{{ i18n['addlinkReqNature'] or '网站性质' }}</strong>：{{ blogBase['addlinkReqNatureText'] or '申请的网站应为非盈利性质，例如个人博客或博客组织等，体现内容分享的初心与乐趣，原则上不接受商业化严重的站点。' }}</li>
+                <li><strong>{{ i18n['addlinkReqContent'] or '内容要求' }}</strong>：{{ blogBase['addlinkReqContentText'] or '博客内容建议以原创为主，避免采集站和严重同质化的内容；同时，需确保网站不包含违法信息、色情或暴力内容。' }}</li>
+                <li><strong>{{ i18n['addlinkReqSpeed'] or '访问体验' }}</strong>：{{ blogBase['addlinkReqSpeedText'] or '希望贵站在国内的访问速度良好，以提供更顺畅的浏览体验。适度的广告或弹窗是可以接受的，但请避免影响用户体验。' }}</li>
+                <li><strong>{{ i18n['addlinkReqStable'] or '稳定性与长期性' }}</strong>：{{ blogBase['addlinkReqStableText'] or '期待友链能够长久稳定，如若贵站链接在一周内无法访问，或者SSL证书过期超过一个月，我可能会在不告知的情况下移除贵站友链，烦请谅解！' }}</li>
+                <li><strong>{{ i18n['addlinkReqMutual'] or '互惠原则' }}</strong>：{{ blogBase['addlinkReqMutualText'] or '为了更好地建立互信，请先在贵站添加本站友链或告知添加时间，方便我及时核实。一般情况下不接受单向友链。' }}</li>
+                <li><strong>{{ i18n['addlinkReqMaintain'] or '友链维护' }}</strong>：{{ blogBase['addlinkReqMaintainText'] or '我会定期维护友链页面，如果发现本站链接被移除，可能会同步取消贵站友链。不过请放心，任何更新都可以联系我协调。' }}</li>
+                <li><strong>{{ i18n['addlinkReqDomain'] or '域名要求' }}</strong>：{{ blogBase['addlinkReqDomainText'] or '对域名没有严格限制，常见免费域名是可以接受的，但需确保贵站内容优质，且避免使用不可信的分发子域名。' }}
+                    <ol>
+                        <li>{{ blogBase['addlinkReqDomain1'] or '可接受的免费域名：如 github.io、eu.org、cloudns、cf pages 等。' }}</li>
+                        <li>{{ blogBase['addlinkReqDomain2'] or '暂不接受的免费域名：如 vercel，由于 SNI 阻断的原因暂不考虑使用。' }}</li>
+                        <li>{{ blogBase['addlinkReqDomain3'] or '需要审核的小众二级分发域名：可能存在劫持或安全风险，这类域名本站暂不接受。' }}</li>
+                        <li>{{ blogBase['addlinkReqDomain4'] or '付费域名：常见的顶级域名如 .cn、.com、.fun、.top 等，都完全符合要求。' }}</li>
+                    </ol>
+                </li>
+                <li><strong>{{ i18n['addlinkReqCount'] or '文章数量' }}</strong>：{{ blogBase['addlinkReqCountText'] or '为了确保友链的质量，建议申请友链时贵站的文章数量在15篇以上。' }}</li>
+                <li><strong>{{ i18n['addlinkReqName'] or '名称微调' }}</strong>：{{ blogBase['addlinkReqNameText'] or '我可能会根据展示美观适当调整友链名称的长度，您可以随时检查友链页面，如果有修改意见，欢迎联系我沟通！' }}</li>
+                <li><strong>{{ i18n['addlinkReqLaw'] or '法律优先' }}</strong>：{{ blogBase['addlinkReqLawText'] or '以上所有条件均需完全符合法律法规，如有任何冲突，一切以中华人民共和国法律为准。' }}</li>
+            </ol>
+
+            <p>{{ blogBase['addlinkReqEnd'] or '如果您满足这些条件，并愿意与本站建立友链，请在评论区留下格式化信息。我期待与您建立友好的互联网连接！' }}</p>
         </div>
-
-        <ol start="4">
-            <li><strong>{{ i18n['addlinkReqNature'] or '网站性质' }}</strong>：{{ blogBase['addlinkReqNatureText'] or '申请的网站应为非盈利性质，例如个人博客或博客组织等，体现内容分享的初心与乐趣，原则上不接受商业化严重的站点。' }}</li>
-            <li><strong>{{ i18n['addlinkReqContent'] or '内容要求' }}</strong>：{{ blogBase['addlinkReqContentText'] or '博客内容建议以原创为主，避免采集站和严重同质化的内容；同时，需确保网站不包含违法信息、色情或暴力内容。' }}</li>
-            <li><strong>{{ i18n['addlinkReqSpeed'] or '访问体验' }}</strong>：{{ blogBase['addlinkReqSpeedText'] or '希望贵站在国内的访问速度良好，以提供更顺畅的浏览体验。适度的广告或弹窗是可以接受的，但请避免影响用户体验。' }}</li>
-            <li><strong>{{ i18n['addlinkReqStable'] or '稳定性与长期性' }}</strong>：{{ blogBase['addlinkReqStableText'] or '期待友链能够长久稳定，如若贵站链接在一周内无法访问，或者SSL证书过期超过一个月，我可能会在不告知的情况下移除贵站友链，烦请谅解！' }}</li>
-            <li><strong>{{ i18n['addlinkReqMutual'] or '互惠原则' }}</strong>：{{ blogBase['addlinkReqMutualText'] or '为了更好地建立互信，请先在贵站添加本站友链或告知添加时间，方便我及时核实。一般情况下不接受单向友链。' }}</li>
-            <li><strong>{{ i18n['addlinkReqMaintain'] or '友链维护' }}</strong>：{{ blogBase['addlinkReqMaintainText'] or '我会定期维护友链页面，如果发现本站链接被移除，可能会同步取消贵站友链。不过请放心，任何更新都可以联系我协调。' }}</li>
-            <li><strong>{{ i18n['addlinkReqDomain'] or '域名要求' }}</strong>：{{ blogBase['addlinkReqDomainText'] or '对域名没有严格限制，常见免费域名是可以接受的，但需确保贵站内容优质，且避免使用不可信的分发子域名。' }}
-                <ol>
-                    <li>{{ blogBase['addlinkReqDomain1'] or '可接受的免费域名：如 github.io、eu.org、cloudns、cf pages 等。' }}</li>
-                    <li>{{ blogBase['addlinkReqDomain2'] or '暂不接受的免费域名：如 vercel，由于 SNI 阻断的原因暂不考虑使用。' }}</li>
-                    <li>{{ blogBase['addlinkReqDomain3'] or '需要审核的小众二级分发域名：可能存在劫持或安全风险，这类域名本站暂不接受。' }}</li>
-                    <li>{{ blogBase['addlinkReqDomain4'] or '付费域名：常见的顶级域名如 .cn、.com、.fun、.top 等，都完全符合要求。' }}</li>
-                </ol>
-            </li>
-            <li><strong>{{ i18n['addlinkReqCount'] or '文章数量' }}</strong>：{{ blogBase['addlinkReqCountText'] or '为了确保友链的质量，建议申请友链时贵站的文章数量在15篇以上。' }}</li>
-            <li><strong>{{ i18n['addlinkReqName'] or '名称微调' }}</strong>：{{ blogBase['addlinkReqNameText'] or '我可能会根据展示美观适当调整友链名称的长度，您可以随时检查友链页面，如果有修改意见，欢迎联系我沟通！' }}</li>
-            <li><strong>{{ i18n['addlinkReqLaw'] or '法律优先' }}</strong>：{{ blogBase['addlinkReqLawText'] or '以上所有条件均需完全符合法律法规，如有任何冲突，一切以中华人民共和国法律为准。' }}</li>
-        </ol>
-
-        <p>{{ blogBase['addlinkReqEnd'] or '如果您满足这些条件，并愿意与本站建立友链，请在评论区留下格式化信息。我期待与您建立友好的互联网连接！' }}</p>
     </div>
 
     <!-- 友链添加 -->
