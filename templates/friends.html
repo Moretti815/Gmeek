@@ -35,6 +35,14 @@
     font-size: 14px;
 }
 
+/* 友链容器 */
+#friends-container {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
 /* 友链网格布局 */
 .flink-list {
     display: grid;
@@ -43,6 +51,8 @@
     padding: 0;
     margin: 0;
     list-style: none;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* 友链卡片 */
@@ -56,6 +66,9 @@
     color: inherit;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .flink-list-item:hover {
@@ -204,6 +217,13 @@
 }
 
 /* 响应式适配 */
+@media (max-width: 900px) {
+    .flink-list {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+    }
+}
+
 @media (max-width: 768px) {
     .flink-list {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -227,14 +247,85 @@
     .flink-list {
         grid-template-columns: 1fr;
         gap: 12px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .flink-list-item {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .flink-snapshot {
-        height: 180px;
+        height: 160px;
+        width: 100%;
     }
 
     .friends-header h1 {
         font-size: 22px;
+    }
+
+    .flink-content {
+        padding: 12px;
+    }
+
+    .flink-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .flink-name {
+        font-size: 15px;
+    }
+
+    .flink-desc {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .flink-list {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .flink-snapshot {
+        height: 140px;
+    }
+
+    .flink-content {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .flink-avatar {
+        width: 36px;
+        height: 36px;
+    }
+
+    .status-tag {
+        padding: 2px 8px;
+        font-size: 10px;
+    }
+
+    .flink-labels {
+        top: 6px;
+        right: 6px;
+    }
+
+    .flink-label {
+        padding: 2px 6px;
+        font-size: 10px;
+    }
+
+    .flink-posts {
+        padding: 0 12px 12px;
+    }
+
+    .flink-post-item {
+        padding: 6px 0;
+        font-size: 12px;
     }
 }
 
