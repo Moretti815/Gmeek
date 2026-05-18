@@ -292,10 +292,11 @@
 }
 
 .addlink-info-list li {
-    padding: 8px 0;
+    padding: 10px 0;
     border-bottom: 1px solid var(--color-border-muted);
     display: flex;
-    gap: 8px;
+    gap: 12px;
+    align-items: baseline;
 }
 
 .addlink-info-list li:last-child {
@@ -304,13 +305,15 @@
 
 .addlink-info-list .label {
     font-weight: 600;
-    min-width: 80px;
+    min-width: 90px;
     color: var(--color-fg-default);
+    flex-shrink: 0;
 }
 
 .addlink-info-list .value {
     color: var(--color-fg-muted);
     word-break: break-all;
+    flex: 1;
 }
 
 /* 强调文字 */
@@ -460,6 +463,15 @@
     <div class="addlink-section">
         <h2>{{ i18n['addlinkAdd'] or '友链添加' }}</h2>
         <p>{{ blogBase['addlinkAddText'] or '如果您想在您的网站上添加我的友链，可以使用以下信息：' }}</p>
+
+        <div class="addlink-actions" style="margin-bottom: 24px;">
+            <a href="https://github.com/Kemeow0815/friends/issues/new?template=template_friend.yaml" target="_blank" class="btn btn-primary">
+                <svg class="octicon" width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.26 13a2 2 0 0 1 .01-2.01A3 3 0 0 0 9 5H5a3 3 0 0 0 0 6h.08a6 6 0 0 0 0 2H5A5 5 0 0 1 5 3h4a5 5 0 0 1 .26 10m1.48-6a2 2 0 0 1-.01 2.01A3 3 0 0 0 11 15h4a3 3 0 0 0 0-6h-.08a6 6 0 0 0 0-2H15a5 5 0 0 1 0 10h-4a5 5 0 0 1-.26-10"/>
+                </svg>
+                {{ i18n['applyFriendLink'] or '申请友链' }}
+            </a>
+        </div>
 
         <h3>{{ i18n['addlinkSiteInfo'] or '本站信息' }}</h3>
 
