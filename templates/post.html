@@ -26,150 +26,179 @@
 /* 文章底部版权信息 */
 .post-copyright {
     margin: 32px 0;
-    padding: 20px;
-    background-color: var(--color-canvas-subtle);
+    padding: 16px 20px;
+    background-color: var(--color-canvas-default);
     border: 1px solid var(--color-border-default);
     border-radius: 12px;
     position: relative;
     overflow: hidden;
 }
 
-.post-copyright::before {
+/* 右上角装饰性版权图标 */
+.post-copyright::after {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--color-accent-emphasis), var(--color-success-emphasis));
+    top: 12px;
+    right: 16px;
+    width: 64px;
+    height: 64px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 24 24'%3E%3Cpath fill='%23d1d5db' d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8'/%3E%3Cpath fill='%23d1d5db' d='M13.88 13.23c-.4.32-.83.48-1.28.48c-.53 0-.96-.17-1.29-.52c-.33-.35-.5-.8-.5-1.36s.17-1.02.5-1.38c.33-.36.76-.54 1.29-.54c.45 0 .88.16 1.28.49l.72-.87c-.57-.48-1.23-.72-1.98-.72c-.87 0-1.58.28-2.14.84s-.84 1.3-.84 2.18s.28 1.59.84 2.15s1.27.84 2.14.84c.78 0 1.46-.26 2.04-.78z'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    pointer-events: none;
+}
+
+/* 标题和链接区域 */
+.post-copyright-header {
+    margin-bottom: 12px;
 }
 
 .post-copyright-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--color-fg-default);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    line-height: 1.5;
 }
 
-.post-copyright-content {
+.post-copyright-url {
+    font-size: 13px;
+    color: var(--color-fg-muted);
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+/* 信息行 - 横向排列 */
+.post-copyright-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 24px;
+    margin-bottom: 16px;
+}
+
+.post-copyright-info-item {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
 }
 
-.post-copyright-item {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    font-size: 14px;
-    line-height: 1.6;
-}
-
-.post-copyright-item .label {
-    font-weight: 600;
-    color: var(--color-fg-default);
-    min-width: 80px;
-    flex-shrink: 0;
-}
-
-.post-copyright-item .value {
+.post-copyright-info-item .label {
+    font-size: 13px;
     color: var(--color-fg-muted);
-    word-break: break-all;
-    flex: 1;
+    line-height: 1.4;
 }
 
-.post-copyright-item a {
-    color: var(--color-accent-emphasis);
+.post-copyright-info-item .value {
+    font-size: 13px;
+    color: var(--color-fg-default);
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.post-copyright-info-item a {
+    color: var(--color-fg-default);
     text-decoration: none;
+    font-weight: 500;
 }
 
-.post-copyright-item a:hover {
+.post-copyright-info-item a:hover {
     text-decoration: underline;
 }
 
+/* 功能按钮区域 */
 .post-copyright-actions {
     display: flex;
-    gap: 12px;
-    margin-top: 16px;
+    gap: 8px;
+    margin-bottom: 12px;
     flex-wrap: wrap;
 }
 
-.post-copyright-actions .btn {
+.post-copyright-actions .btn-icon {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    border: 1px solid var(--color-border-default);
-    background-color: var(--color-canvas-default);
-    color: var(--color-fg-default);
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--color-canvas-subtle);
+    color: var(--color-fg-muted);
     cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    text-decoration: none;
 }
 
-.post-copyright-actions .btn:hover {
-    background-color: var(--color-canvas-overlay);
-    border-color: var(--color-border-muted);
+.post-copyright-actions .btn-icon:hover {
+    background-color: var(--color-border-muted);
+    color: var(--color-fg-default);
     transform: translateY(-1px);
 }
 
-.post-copyright-actions .btn-primary {
-    background-color: var(--color-accent-emphasis);
-    color: var(--color-fg-on-emphasis);
-    border-color: var(--color-accent-emphasis);
+/* 二维码容器 */
+.qrcode-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-bottom: 0;
+    display: flex;
+    justify-content: center;
 }
 
-.post-copyright-actions .btn-primary:hover {
-    background-color: var(--color-accent-muted);
-    border-color: var(--color-accent-muted);
+.qrcode-container.expanded {
+    max-height: 200px;
+    margin-bottom: 12px;
 }
 
+.qrcode-container canvas,
+.qrcode-container img {
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default);
+}
+
+/* 赞赏区域 */
 .post-copyright-reward {
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--color-border-muted);
-    text-align: center;
+    margin: 0 -20px -16px;
+    padding: 10px 20px;
+    border-top: 1px solid var(--color-border-default);
+    background-color: var(--color-canvas-subtle);
+    border-radius: 0 0 11px 11px;
 }
 
 .post-copyright-reward a {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 24px;
-    background-color: var(--color-accent-emphasis);
-    color: var(--color-fg-on-emphasis);
+    justify-content: space-between;
+    color: var(--color-fg-muted);
     text-decoration: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
+    font-size: 13px;
+    transition: color 0.2s ease;
 }
 
 .post-copyright-reward a:hover {
-    background-color: var(--color-accent-muted);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    color: var(--color-fg-default);
 }
 
+.post-copyright-reward .reward-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* 移动端适配 */
 @media (max-width: 600px) {
     body {padding: 8px;}
     .postTitle{font-size:24px;}
     .post-copyright {
-        padding: 16px;
+        padding: 14px 16px;
         margin: 24px 0;
     }
-    .post-copyright-item {
-        flex-direction: column;
-        gap: 4px;
+    .post-copyright-info {
+        gap: 12px 20px;
     }
-    .post-copyright-item .label {
-        min-width: auto;
+    .post-copyright-reward {
+        margin: 0 -16px -14px;
+        padding: 10px 16px;
     }
 }
 {% if blogBase['highlight']!=0 -%}
@@ -183,8 +212,7 @@
     border-radius: 3px;
     padding: 5px 8px;
     font-size: 12px;
-}
-{%- endif %}
+}{% endif %}
 </style>
 {{ blogBase['style'] }}
 
@@ -220,47 +248,67 @@
 
 <!-- 文章版权信息 -->
 <div class="post-copyright">
-    <div class="post-copyright-title">
-        <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
-        </svg>
-        {{ i18n['copyright'] or '版权信息' }}
+    <div class="post-copyright-header">
+        <div class="post-copyright-title">{{ blogBase['postTitle'] }}</div>
+        <div class="post-copyright-url">{{ blogBase['postUrl'] }}</div>
     </div>
-    <div class="post-copyright-content">
-        <div class="post-copyright-item">
-            <span class="label">{{ i18n['author'] or '作者' }}</span>
+    <div class="post-copyright-info">
+        <div class="post-copyright-info-item">
+            <span class="label">{{ i18n['author'] or 'Author' }}</span>
             <span class="value">{{ blogBase['author'] or blogBase['title'] }}</span>
         </div>
-        <div class="post-copyright-item">
-            <span class="label">{{ i18n['postUrl'] or '链接' }}</span>
-            <span class="value"><a href="{{ blogBase['postUrl'] }}">{{ blogBase['postUrl'] }}</a></span>
+        {% if blogBase['publishDate'] %}
+        <div class="post-copyright-info-item">
+            <span class="label">{{ i18n['publishedAt'] or 'Published at' }}</span>
+            <span class="value">{{ blogBase['publishDate'] }}</span>
         </div>
-        <div class="post-copyright-item">
-            <span class="label">{{ i18n['license'] or '声明' }}</span>
-            <span class="value">{{ i18n['copyrightNotice'] or '本博客所有文章除特别声明外，均采用 CC BY-NC-SA 4.0 许可协议。' }}</span>
+        {% endif %}
+        <div class="post-copyright-info-item">
+            <span class="label">{{ i18n['license'] or 'Copyright' }}</span>
+            <span class="value"><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a></span>
         </div>
     </div>
     <div class="post-copyright-actions">
-        <button class="btn" onclick="copyPostLink()">
-            <svg class="octicon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
-                <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
+        <button class="btn-icon" onclick="copyPostLink()" title="{{ i18n['copyLink'] or 'Copy link' }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
             </svg>
-            {{ i18n['copyLink'] or '复制链接' }}
         </button>
-        <a href="https://service.weibo.com/share/share.php?url={{ blogBase['postUrl']|urlencode }}&title={{ blogBase['postTitle']|urlencode }}" target="_blank" class="btn">
-            <svg class="octicon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+        <button class="btn-icon" onclick="toggleQRCode()" title="{{ i18n['getQRCode'] or 'Get QR code' }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
             </svg>
-            {{ i18n['shareWeibo'] or '分享到微博' }}
+        </button>
+        <a href="https://service.weibo.com/share/share.php?url={{ blogBase['postUrl']|urlencode }}&title={{ blogBase['postTitle']|urlencode }}" target="_blank" class="btn-icon" title="{{ i18n['shareWeibo'] or 'Share to Weibo' }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10.098 20.323c-3.977.391-7.414-1.406-7.672-4.02-.259-2.609 2.759-5.047 6.74-5.441 3.979-.394 7.413 1.404 7.671 4.018.259 2.6-2.759 5.049-6.739 5.443zM9.05 17.219c-.384.616-1.208.884-1.829.602-.612-.279-.793-.991-.406-1.593.379-.595 1.176-.861 1.793-.601.622.263.82.972.442 1.592zm1.27-1.627c-.141.237-.449.353-.689.253-.236-.09-.313-.361-.177-.586.138-.227.436-.346.672-.24.239.09.315.36.194.573zm.176-2.719c-1.893-.493-4.033.45-4.857 2.118-.836 1.704-.026 3.591 1.886 4.21 1.983.64 4.318-.341 5.132-2.179.8-1.793-.201-3.642-2.161-4.149zm7.563-1.224c-.346-.105-.579-.18-.405-.649.375-1.018.415-1.896.003-2.521-.771-1.17-2.882-1.109-5.276-.034 0 0-.756.332-.563-.27.37-1.207.315-2.212-.261-2.795-1.306-1.319-4.779.047-7.76 3.047C1.655 10.641.987 12.792.987 14.608c0 3.479 4.469 5.598 8.842 5.598 5.727 0 9.537-3.329 9.537-5.973 0-1.599-1.35-2.507-2.307-2.584zm1.907-5.092c-.766-.856-1.908-1.187-2.96-.961-.359.076-.583.428-.506.788.077.359.428.583.788.506.597-.127 1.263.064 1.706.559.443.495.572 1.177.389 1.78-.098.341.097.698.438.796.341.098.698-.097.796-.438.283-.983.073-2.121-.651-3.03zm2.033-2.239C20.106.908 17.16-.037 14.594.462c-.37.07-.611.428-.541.798.07.37.428.611.798.541 1.916-.376 4.152.338 5.564 1.919 1.413 1.582 1.761 3.676 1.177 5.516-.112.356.085.735.441.847.356.112.735-.085.847-.441.706-2.248.271-4.849-1.501-6.829z"/>
+            </svg>
         </a>
+        <a href="https://x.com/intent/tweet?text={{ blogBase['postTitle']|urlencode }}&url={{ blogBase['postUrl']|urlencode }}" target="_blank" class="btn-icon" title="{{ i18n['shareX'] or 'Share to X' }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+        </a>
+        <a href="https://bsky.app/intent/compose?text={{ blogBase['postTitle']|urlencode }}%0A{{ blogBase['postUrl']|urlencode }}" target="_blank" class="btn-icon" title="{{ i18n['shareBluesky'] or 'Share to Bluesky' }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.5 15.5h-2v-7h2v7zm5 0h-2v-4h-2v-3h4v7z"/>
+            </svg>
+        </a>
+    </div>
+    <div id="qrcode-container" class="qrcode-container">
+        <div id="qrcode"></div>
     </div>
     <div class="post-copyright-reward">
         <a href="{{ blogBase['homeUrl'] }}/reward.html">
-            <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+            <span class="reward-text">{{ i18n['buyMeCoffee'] or 'Buy me a cup of coffee' }} ☕</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
             </svg>
-            {{ i18n['buyMeCoffee'] or 'Buy me a coffee ☕' }}
         </a>
     </div>
 </div>
@@ -274,18 +322,16 @@
 {% block script %}
 <script>
 document.getElementById("pathHome").setAttribute("d",IconList["home"]);
-{% if blogBase['showPostSource']==1 -%}
-document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
-{%- endif %}
+{% if blogBase['showPostSource']==1 %}document.getElementById("pathIssue").setAttribute("d",IconList["github"]);{% endif %}
 {% if blogBase['commentNum']>0 -%}
-cmButton=document.getElementById("cmButton");
-span=document.createElement("span");
-span.setAttribute("class","Counter");
-span.innerHTML="{{ blogBase['commentNum'] }}";
-cmButton.appendChild(span);
+    cmButton=document.getElementById("cmButton");
+    span=document.createElement("span");
+    span.setAttribute("class","Counter");
+    span.innerHTML="{{ blogBase['commentNum'] }}";
+    cmButton.appendChild(span);
 {%- endif %}
 
-{% if blogBase['needComment']==1 -%}
+{% if blogBase['needComment']==1 %}
 function openComments(){
     cm=document.getElementById("comments");
     cmButton=document.getElementById("cmButton");
@@ -299,13 +345,13 @@ function openComments(){
     script.setAttribute("src","https://utteranc.es/client.js");
     script.setAttribute("repo","{{ blogBase['repoName'] }}");
     script.setAttribute("issue-term","title");
-    {% if blogBase['themeMode']=='manual' -%}
+    {% if blogBase['themeMode']=='manual' %}
     if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
     else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
     else{script.setAttribute("theme","preferred-color-scheme");}
-    {%- else -%}
+    {% else %}
     script.setAttribute("theme","{{ blogBase['nightTheme'] }}");
-    {%- endif %}
+    {% endif %}
     script.setAttribute("crossorigin","anonymous");
     script.setAttribute("async","");
     cm.appendChild(script);
@@ -328,13 +374,11 @@ function iFrameLoading(){
 // 复制文章链接
 function copyPostLink(){
     navigator.clipboard.writeText(window.location.href).then(() => {
-        const btn = document.querySelector('.post-copyright-actions .btn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<svg class="octicon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg> {{ i18n["copied"] or "已复制" }}';
-        btn.style.color = 'var(--color-success-fg)';
+        const btn = document.querySelector('.post-copyright-actions .btn-icon');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success-fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
         setTimeout(() => {
-            btn.innerHTML = originalText;
-            btn.style.color = '';
+            btn.innerHTML = originalHTML;
         }, 2000);
     }).catch(err => {
         console.error('复制失败:', err);
@@ -348,10 +392,33 @@ function copyPostLink(){
         document.body.removeChild(textarea);
     });
 }
+
+// 切换二维码显示
+function toggleQRCode(){
+    const container = document.getElementById('qrcode-container');
+    container.classList.toggle('expanded');
+    if(container.classList.contains('expanded') && !container.dataset.generated){
+        // 使用 QRCode.js 生成二维码
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+        script.onload = function(){
+            QRCode.toCanvas(document.getElementById('qrcode'), window.location.href, {
+                width: 128,
+                margin: 2,
+                color: {
+                    dark: getComputedStyle(document.body).getPropertyValue('--color-fg-default').trim() || '#000000',
+                    light: '#00000000'
+                }
+            });
+        };
+        document.head.appendChild(script);
+        container.dataset.generated = 'true';
+    }
+}
 {%- endif %}
 
 {% if blogBase['highlight']!=0 -%}
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     const createClipboardHTML = (codeContent, additionalClasses = '') => `
         <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
         <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">

@@ -17,143 +17,300 @@
 .title-right{display:flex;margin:auto 0 0 auto;}
 .title-right .circle{padding: 14px 16px;margin-right:8px;}
 
-/* 赞赏页面样式 */
+/* 赞赏页面主容器 */
+.reward-container {
+    padding: 24px;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+/* 页面头部 */
 .reward-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 24px;
-    text-align: center;
+}
+
+.reward-header-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background-color: var(--color-accent-emphasis);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-fg-on-emphasis);
 }
 
 .reward-header h1 {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: bold;
-    margin-bottom: 8px;
     color: var(--color-fg-default);
+    margin: 0;
 }
 
-.reward-header p {
-    color: var(--color-fg-muted);
-    font-size: 14px;
-}
-
-/* 赞赏说明 */
+/* 介绍区域 */
 .reward-intro {
-    text-align: center;
-    margin-bottom: 32px;
-    padding: 20px;
-    background-color: var(--color-canvas-subtle);
-    border-radius: 12px;
-    border: 1px solid var(--color-border-default);
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border-default);
 }
 
 .reward-intro p {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-fg-default);
+}
+
+.reward-intro .reward-intro-sub {
+    font-size: 14px;
+    color: var(--color-fg-muted);
     margin: 0;
-    line-height: 1.8;
-    color: var(--color-fg-default);
-    font-size: 15px;
 }
 
-/* 二维码区域 */
-.reward-qrcode-section {
-    margin-bottom: 40px;
+/* 支付方式区域 */
+.reward-payment-section {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border-default);
 }
 
-.reward-qrcode-section h2 {
-    font-size: 22px;
+.reward-section-title {
+    font-size: 18px;
     font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
     color: var(--color-fg-default);
+    margin-bottom: 16px;
 }
 
-.reward-qrcode-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
-    max-width: 600px;
-    margin: 0 auto;
+.reward-payment-grid {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    flex-wrap: wrap;
 }
 
-.reward-qrcode-item {
+.reward-payment-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    padding: 20px;
-    background-color: var(--color-canvas-default);
-    border: 1px solid var(--color-border-default);
-    border-radius: 12px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.reward-qrcode-item:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-
-.reward-qrcode-item img {
-    width: 100%;
-    max-width: 200px;
-    height: auto;
-    border-radius: 8px;
+.reward-payment-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 12px;
 }
 
-.reward-qrcode-item .qrcode-label {
+.reward-payment-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border-default);
+}
+
+.reward-payment-icon.alipay {
+    background-color: #1677FF;
+    color: white;
+}
+
+.reward-payment-icon.wechat {
+    background-color: #07C160;
+    color: white;
+}
+
+
+
+.reward-payment-info h3 {
     font-size: 16px;
     font-weight: 600;
     color: var(--color-fg-default);
+    margin: 0 0 2px 0;
 }
 
-.reward-qrcode-item .qrcode-hint {
+.reward-payment-info p {
     font-size: 13px;
     color: var(--color-fg-muted);
-    margin-top: 4px;
+    margin: 0;
+}
+
+.reward-qrcode-wrapper {
+    margin-left: 0;
+}
+
+.reward-qrcode {
+    width: 160px;
+    height: 160px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default);
+    overflow: hidden;
+    background-color: var(--color-canvas-default);
+}
+
+.reward-qrcode img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.reward-qrcode a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+}
+
+/* 其他支持方式 */
+.reward-other-section {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.reward-other-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.reward-other-item {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border-muted);
+    transition: background-color 0.2s ease;
+}
+
+.reward-other-item:last-child {
+    border-bottom: none;
+}
+
+.reward-other-item:hover {
+    background-color: var(--color-canvas-subtle);
+    margin: 0 -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 6px;
+}
+
+.reward-other-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.reward-other-icon {
+    color: var(--color-accent-emphasis);
+}
+
+.reward-other-header span {
+    font-weight: 600;
+    color: var(--color-fg-default);
+    font-size: 14px;
+}
+
+.reward-other-item p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--color-fg-muted);
+    padding-left: 28px;
+}
+
+/* 赞赏者区域 */
+.reward-sponsors-section {
+    margin-bottom: 24px;
+}
+
+.reward-sponsors-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.reward-sponsors-header svg {
+    color: var(--color-accent-emphasis);
+}
+
+.reward-sponsors-header h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-fg-default);
+    margin: 0;
+}
+
+/* 提交信息提示 */
+.reward-submit-info {
+    font-size: 13px;
+    color: var(--color-fg-muted);
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.reward-submit-info a {
+    color: var(--color-accent-emphasis);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.reward-submit-info a:hover {
+    text-decoration: underline;
 }
 
 /* 赞赏者列表 */
-.reward-sponsors-section {
-    margin-bottom: 40px;
-}
-
-.reward-sponsors-section h2 {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-align: center;
-    color: var(--color-fg-default);
-}
-
 .reward-sponsors-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
-    padding: 0;
-    margin: 0;
-    list-style: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .reward-sponsor-item {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px;
-    background-color: var(--color-canvas-default);
-    border: 1px solid var(--color-border-default);
-    border-radius: 12px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border-muted);
+    transition: background-color 0.2s ease;
     text-decoration: none;
     color: inherit;
 }
 
+.reward-sponsor-item:last-child {
+    border-bottom: none;
+}
+
 .reward-sponsor-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-canvas-subtle);
+    margin: 0 -12px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 6px;
 }
 
 .reward-sponsor-avatar {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     object-fit: cover;
+    border: 1px solid var(--color-border-default);
     flex-shrink: 0;
-    border: 2px solid var(--color-border-default);
+}
+
+.reward-sponsor-avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-canvas-subtle);
+    border: 1px solid var(--color-border-default);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-fg-muted);
+    flex-shrink: 0;
 }
 
 .reward-sponsor-info {
@@ -162,45 +319,47 @@
 }
 
 .reward-sponsor-name {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--color-fg-default);
-    margin-bottom: 4px;
+    margin-bottom: 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.reward-sponsor-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
+.reward-sponsor-date {
+    font-size: 12px;
     color: var(--color-fg-muted);
 }
 
 .reward-sponsor-amount {
+    font-size: 13px;
     font-weight: 600;
     color: var(--color-accent-emphasis);
+    flex-shrink: 0;
 }
 
 /* 加载状态 */
 .reward-loading {
     text-align: center;
-    padding: 40px;
+    padding: 32px;
     color: var(--color-fg-muted);
+    font-size: 14px;
 }
 
 .reward-error {
     text-align: center;
-    padding: 40px;
+    padding: 32px;
     color: var(--color-danger-fg);
+    font-size: 14px;
 }
 
 .reward-empty {
     text-align: center;
-    padding: 40px;
+    padding: 32px;
     color: var(--color-fg-muted);
+    font-size: 14px;
     font-style: italic;
 }
 
@@ -248,17 +407,26 @@
 
 /* 响应式适配 */
 @media (max-width: 768px) {
+    .reward-container {
+        padding: 16px;
+    }
+
     .reward-header h1 {
-        font-size: 24px;
+        font-size: 20px;
     }
 
-    .reward-qrcode-grid {
+    .reward-payment-grid {
         grid-template-columns: 1fr;
-        max-width: 300px;
     }
 
-    .reward-sponsors-list {
-        grid-template-columns: 1fr;
+    .reward-qrcode-wrapper {
+        margin-left: 0;
+        margin-top: 12px;
+    }
+
+    .reward-qrcode {
+        width: 140px;
+        height: 140px;
     }
 }
 
@@ -273,16 +441,30 @@
         font-size: 24px;
     }
 
-    .reward-header h1 {
-        font-size: 22px;
+    .reward-container {
+        padding: 12px;
     }
 
-    .reward-intro {
-        padding: 16px;
+    .reward-header {
+        margin-bottom: 20px;
+    }
+
+    .reward-intro p {
+        font-size: 15px;
+    }
+
+    .reward-payment-header {
+        margin-bottom: 8px;
     }
 
     .reward-sponsor-item {
-        padding: 12px;
+        padding: 10px 0;
+    }
+
+    .reward-sponsor-avatar,
+    .reward-sponsor-avatar-placeholder {
+        width: 36px;
+        height: 36px;
     }
 }
 </style>
@@ -306,68 +488,144 @@
 {% endblock %}
 
 {% block content %}
-<div class="reward-header">
-    <h1>{{ blogBase['rewardTitle'] or '☕ 赞赏支持' }}</h1>
-    <p>{{ blogBase['rewardDesc'] or '感谢每一位支持我的朋友！' }}</p>
-</div>
-
-<!-- 赞赏说明 -->
-<div class="reward-intro">
-    <p>{{ blogBase['rewardIntro'] or '如果我的文章对您有所帮助，欢迎通过以下方式支持我，这将是我持续创作的动力！' }}</p>
-</div>
-
-<!-- 赞赏二维码 -->
-<div class="reward-qrcode-section">
-    <h2>{{ i18n['rewardQrcode'] or '赞赏方式' }}</h2>
-    <div class="reward-qrcode-grid">
-        {% if blogBase['rewardWechatQrcode'] %}
-        <div class="reward-qrcode-item">
-            <img src="{{ blogBase['rewardWechatQrcode'] }}" alt="微信支付">
-            <div class="qrcode-label">{{ i18n['wechatPay'] or '微信支付' }}</div>
-            <div class="qrcode-hint">{{ i18n['scanWechat'] or '微信扫码赞赏' }}</div>
+<div class="reward-container">
+    <!-- 页面头部 -->
+    <div class="reward-header">
+        <div class="reward-header-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
         </div>
-        {% endif %}
-        {% if blogBase['rewardAlipayQrcode'] %}
-        <div class="reward-qrcode-item">
-            <img src="{{ blogBase['rewardAlipayQrcode'] }}" alt="支付宝">
-            <div class="qrcode-label">{{ i18n['alipay'] or '支付宝' }}</div>
-            <div class="qrcode-hint">{{ i18n['scanAlipay'] or '支付宝扫码赞赏' }}</div>
-        </div>
-        {% endif %}
-        {% if blogBase['rewardAfdianUrl'] %}
-        <div class="reward-qrcode-item">
-            <a href="{{ blogBase['rewardAfdianUrl'] }}" target="_blank" style="text-decoration: none; color: inherit;">
-                <img src="{{ blogBase['rewardAfdianQrcode'] or 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/afdian.png' }}" alt="爱发电">
-                <div class="qrcode-label">{{ i18n['afdian'] or '爱发电' }}</div>
-                <div class="qrcode-hint">{{ i18n['clickAfdian'] or '点击前往爱发电' }}</div>
-            </a>
-        </div>
-        {% endif %}
+        <h1>{{ blogBase['rewardTitle'] or '赞助支持' }}</h1>
     </div>
-</div>
 
-<!-- 赞赏者列表 -->
-<div class="reward-sponsors-section">
-    <h2>{{ i18n['rewardSponsors'] or '赞赏者名单' }}</h2>
-    <div id="reward-sponsors-container">
-        <div class="reward-loading">{{ i18n['loading'] or '加载中...' }}</div>
+    <!-- 介绍区域 -->
+    <div class="reward-intro">
+        <p>{{ blogBase['rewardDesc'] or '如果您觉得我的内容对您有帮助，欢迎通过以下方式支持我的创作。您的每一份支持都是我持续创作的动力！' }}</p>
+        <p class="reward-intro-sub">{{ blogBase['rewardSubDesc'] or '所有赞助将用于网站维护、服务器费用以及内容创作。' }}</p>
     </div>
-</div>
 
-<!-- 操作按钮 -->
-<div class="reward-actions">
-    <a href="{{ blogBase['homeUrl'] }}" class="btn">
-        <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z"/>
-        </svg>
-        {{ i18n['home'] or '首页' }}
-    </a>
-    <a href="{{ blogBase['rewardSponsorUrl'] or 'https://github.com/Kemeow0815/sponsors' }}" target="_blank" class="btn btn-primary">
-        <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
-        </svg>
-        {{ i18n['beSponsor'] or '成为赞赏者' }}
-    </a>
+    <!-- 支付方式 -->
+    <div class="reward-payment-section">
+        <h2 class="reward-section-title">{{ i18n['paymentMethods'] or '支付方式' }}</h2>
+        <div class="reward-payment-grid">
+            {% if blogBase['rewardAlipayQrcode'] %}
+            <div class="reward-payment-item">
+                <div class="reward-payment-header">
+                    <div class="reward-payment-icon alipay">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M5.5 2h13A2.5 2.5 0 0 1 21 4.5v15a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 19.5v-15A2.5 2.5 0 0 1 5.5 2zm0 2A.5.5 0 0 0 5 4.5v15a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-15a.5.5 0 0 0-.5-.5h-13zm2.5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 0 2H9a1 1 0 0 1-1-1zm0 4a1 1 0 0 1 1-1h6a1 1 0 0 1 0 2H9a1 1 0 0 1-1-1zm0 4a1 1 0 0 1 1-1h4a1 1 0 0 1 0 2H9a1 1 0 0 1-1-1z"/>
+                        </svg>
+                    </div>
+                    <div class="reward-payment-info">
+                        <h3>{{ i18n['alipay'] or '支付宝' }}</h3>
+                        <p>{{ i18n['scanToPay'] or '扫码支付' }}</p>
+                    </div>
+                </div>
+                <div class="reward-qrcode-wrapper">
+                    <div class="reward-qrcode">
+                        <img src="{{ blogBase['rewardAlipayQrcode'] }}" alt="{{ i18n['alipay'] or '支付宝' }}">
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if blogBase['rewardWechatQrcode'] %}
+            <div class="reward-payment-item">
+                <div class="reward-payment-header">
+                    <div class="reward-payment-icon wechat">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.5 2C4.91 2 2 4.462 2 7.5c0 1.634.872 3.09 2.225 4.057-.092.633-.48 1.657-1.362 2.306 0 0 1.786.183 3.303-.773.75.202 1.553.31 2.384.31.133 0 .265-.003.396-.01-.15.423-.23.87-.23 1.327 0 2.884 2.99 5.224 6.678 5.224.687 0 1.35-.084 1.975-.24 1.318.793 2.884.63 2.884.63-.766-.576-1.1-1.452-1.184-1.998C20.49 16.73 22 14.772 22 12.5c0-2.884-2.99-5.224-6.678-5.224-.133 0-.265.003-.396.01.15-.423.23-.87.23-1.327C15.156 4.075 12.166 2 8.5 2z"/>
+                        </svg>
+                    </div>
+                    <div class="reward-payment-info">
+                        <h3>{{ i18n['wechatPay'] or '微信支付' }}</h3>
+                        <p>{{ i18n['scanToPay'] or '扫码支付' }}</p>
+                    </div>
+                </div>
+                <div class="reward-qrcode-wrapper">
+                    <div class="reward-qrcode">
+                        <img src="{{ blogBase['rewardWechatQrcode'] }}" alt="{{ i18n['wechatPay'] or '微信支付' }}">
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+
+        </div>
+    </div>
+
+    <!-- 其他支持方式 -->
+    <div class="reward-other-section">
+        <h2 class="reward-section-title">{{ i18n['otherSupport'] or '其他支持方式' }}</h2>
+        <div class="reward-other-list">
+            <div class="reward-other-item">
+                <div class="reward-other-header">
+                    <svg class="reward-other-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                    </svg>
+                    <span>{{ i18n['shareRecommend'] or '分享推荐' }}</span>
+                </div>
+                <p>{{ i18n['shareRecommendDesc'] or '将我的博客分享给更多朋友' }}</p>
+            </div>
+
+            <div class="reward-other-item">
+                <div class="reward-other-header">
+                    <svg class="reward-other-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/>
+                    </svg>
+                    <span>{{ i18n['commentInteract'] or '留言互动' }}</span>
+                </div>
+                <p>{{ i18n['commentInteractDesc'] or '在文章下方留下您的想法' }}</p>
+            </div>
+
+            <div class="reward-other-item">
+                <div class="reward-other-header">
+                    <svg class="reward-other-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                    </svg>
+                    <span>{{ i18n['followSubscribe'] or '关注订阅' }}</span>
+                </div>
+                <p>{{ i18n['followSubscribeDesc'] or '订阅RSS或关注社交媒体' }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 赞赏者名单 -->
+    <div class="reward-sponsors-section">
+        <div class="reward-sponsors-header">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            </svg>
+            <h2>{{ i18n['rewardSponsors'] or '已赞助的小伙伴' }}</h2>
+        </div>
+
+        <div class="reward-submit-info">
+            {{ i18n['sponsorSubmitInfo'] or '如果您已赞助，并且想加入赞助名单，' }}
+            <a href="{{ blogBase['rewardSponsorSubmitUrl'] or 'https://github.com/Kemeow0815/sponsors' }}" target="_blank">{{ i18n['clickToSubmit'] or '请点击这里提交' }}</a>
+        </div>
+
+        <div id="reward-sponsors-container">
+            <div class="reward-loading">{{ i18n['loading'] or '加载中...' }}</div>
+        </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div class="reward-actions">
+        <a href="{{ blogBase['homeUrl'] }}" class="btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+            </svg>
+            {{ i18n['home'] or '首页' }}
+        </a>
+        <a href="{{ blogBase['rewardSponsorUrl'] or 'https://github.com/Kemeow0815/sponsors' }}" target="_blank" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+            {{ i18n['beSponsor'] or '成为赞赏者' }}
+        </a>
+    </div>
 </div>
 {% endblock %}
 
@@ -402,20 +660,27 @@ async function loadSponsors() {
         const listHtml = sponsors.map(sponsor => {
             const avatarUrl = sponsor.avatar || '{{ blogBase["avatarUrl"] }}';
             const sponsorUrl = sponsor.url || '#';
-            const name = sponsor.name || '匿名';
+            const name = sponsor.name || '{{ i18n["anonymous"] or "匿名" }}';
             const date = sponsor.date || '';
             const amount = sponsor.amount || '';
 
+            const avatarHtml = avatarUrl
+                ? `<img src="${avatarUrl}" alt="${name}" class="reward-sponsor-avatar" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`
+                : '';
+
             return `
                 <a href="${sponsorUrl}" target="_blank" class="reward-sponsor-item">
-                    <img src="${avatarUrl}" alt="${name}" class="reward-sponsor-avatar" onerror="this.src='{{ blogBase["avatarUrl"] }}'">
+                    ${avatarHtml}
+                    <div class="reward-sponsor-avatar-placeholder" style="${avatarUrl ? 'display:none;' : ''}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </div>
                     <div class="reward-sponsor-info">
                         <div class="reward-sponsor-name">${name}</div>
-                        <div class="reward-sponsor-meta">
-                            <span class="reward-sponsor-amount">${amount}</span>
-                            <span>${date}</span>
-                        </div>
+                        <div class="reward-sponsor-date">${date}</div>
                     </div>
+                    <div class="reward-sponsor-amount">${amount}</div>
                 </a>
             `;
         }).join('');
