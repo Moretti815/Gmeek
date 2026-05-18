@@ -22,9 +22,155 @@
 #cmButton{height:48px;margin-top:48px;}
 #comments{margin-top:64px;}
 .g-emoji{font-size:24px;}
+
+/* 文章底部版权信息 */
+.post-copyright {
+    margin: 32px 0;
+    padding: 20px;
+    background-color: var(--color-canvas-subtle);
+    border: 1px solid var(--color-border-default);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.post-copyright::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-accent-emphasis), var(--color-success-emphasis));
+}
+
+.post-copyright-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.post-copyright-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.post-copyright-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.post-copyright-item .label {
+    font-weight: 600;
+    color: var(--color-fg-default);
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.post-copyright-item .value {
+    color: var(--color-fg-muted);
+    word-break: break-all;
+    flex: 1;
+}
+
+.post-copyright-item a {
+    color: var(--color-accent-emphasis);
+    text-decoration: none;
+}
+
+.post-copyright-item a:hover {
+    text-decoration: underline;
+}
+
+.post-copyright-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.post-copyright-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--color-border-default);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    cursor: pointer;
+}
+
+.post-copyright-actions .btn:hover {
+    background-color: var(--color-canvas-overlay);
+    border-color: var(--color-border-muted);
+    transform: translateY(-1px);
+}
+
+.post-copyright-actions .btn-primary {
+    background-color: var(--color-accent-emphasis);
+    color: var(--color-fg-on-emphasis);
+    border-color: var(--color-accent-emphasis);
+}
+
+.post-copyright-actions .btn-primary:hover {
+    background-color: var(--color-accent-muted);
+    border-color: var(--color-accent-muted);
+}
+
+.post-copyright-reward {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border-muted);
+    text-align: center;
+}
+
+.post-copyright-reward a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    background-color: var(--color-accent-emphasis);
+    color: var(--color-fg-on-emphasis);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.post-copyright-reward a:hover {
+    background-color: var(--color-accent-muted);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 @media (max-width: 600px) {
     body {padding: 8px;}
     .postTitle{font-size:24px;}
+    .post-copyright {
+        padding: 16px;
+        margin: 24px 0;
+    }
+    .post-copyright-item {
+        flex-direction: column;
+        gap: 4px;
+    }
+    .post-copyright-item .label {
+        min-width: auto;
+    }
 }
 {% if blogBase['highlight']!=0 -%}
 .copy-feedback {
@@ -37,7 +183,8 @@
     border-radius: 3px;
     padding: 5px 8px;
     font-size: 12px;
-}{% endif %}
+}
+{%- endif %}
 </style>
 {{ blogBase['style'] }}
 
@@ -70,6 +217,54 @@
 {% block content %}
 <div class="markdown-body" id="postBody">{{ blogBase['postBody'] }}</div>
 <div style="font-size:small;margin-top:8px;float:right;">{{ blogBase['bottomText'] }}</div>
+
+<!-- 文章版权信息 -->
+<div class="post-copyright">
+    <div class="post-copyright-title">
+        <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+        </svg>
+        {{ i18n['copyright'] or '版权信息' }}
+    </div>
+    <div class="post-copyright-content">
+        <div class="post-copyright-item">
+            <span class="label">{{ i18n['author'] or '作者' }}</span>
+            <span class="value">{{ blogBase['author'] or blogBase['title'] }}</span>
+        </div>
+        <div class="post-copyright-item">
+            <span class="label">{{ i18n['postUrl'] or '链接' }}</span>
+            <span class="value"><a href="{{ blogBase['postUrl'] }}">{{ blogBase['postUrl'] }}</a></span>
+        </div>
+        <div class="post-copyright-item">
+            <span class="label">{{ i18n['license'] or '声明' }}</span>
+            <span class="value">{{ i18n['copyrightNotice'] or '本博客所有文章除特别声明外，均采用 CC BY-NC-SA 4.0 许可协议。' }}</span>
+        </div>
+    </div>
+    <div class="post-copyright-actions">
+        <button class="btn" onclick="copyPostLink()">
+            <svg class="octicon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
+                <path d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
+            </svg>
+            {{ i18n['copyLink'] or '复制链接' }}
+        </button>
+        <a href="https://service.weibo.com/share/share.php?url={{ blogBase['postUrl']|urlencode }}&title={{ blogBase['postTitle']|urlencode }}" target="_blank" class="btn">
+            <svg class="octicon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+            </svg>
+            {{ i18n['shareWeibo'] or '分享到微博' }}
+        </a>
+    </div>
+    <div class="post-copyright-reward">
+        <a href="{{ blogBase['homeUrl'] }}/reward.html">
+            <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+            </svg>
+            {{ i18n['buyMeCoffee'] or 'Buy me a coffee ☕' }}
+        </a>
+    </div>
+</div>
+
 {% if blogBase['needComment']==1 %}
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">{{ i18n['comments'] }}</button>
 <div class="comments" id="comments"></div>
@@ -79,16 +274,18 @@
 {% block script %}
 <script>
 document.getElementById("pathHome").setAttribute("d",IconList["home"]);
-{% if blogBase['showPostSource']==1 %}document.getElementById("pathIssue").setAttribute("d",IconList["github"]);{% endif %}
+{% if blogBase['showPostSource']==1 -%}
+document.getElementById("pathIssue").setAttribute("d",IconList["github"]);
+{%- endif %}
 {% if blogBase['commentNum']>0 -%}
-    cmButton=document.getElementById("cmButton");
-    span=document.createElement("span");
-    span.setAttribute("class","Counter");
-    span.innerHTML="{{ blogBase['commentNum'] }}";
-    cmButton.appendChild(span);
+cmButton=document.getElementById("cmButton");
+span=document.createElement("span");
+span.setAttribute("class","Counter");
+span.innerHTML="{{ blogBase['commentNum'] }}";
+cmButton.appendChild(span);
 {%- endif %}
 
-{% if blogBase['needComment']==1 %}
+{% if blogBase['needComment']==1 -%}
 function openComments(){
     cm=document.getElementById("comments");
     cmButton=document.getElementById("cmButton");
@@ -102,13 +299,13 @@ function openComments(){
     script.setAttribute("src","https://utteranc.es/client.js");
     script.setAttribute("repo","{{ blogBase['repoName'] }}");
     script.setAttribute("issue-term","title");
-    {% if blogBase['themeMode']=='manual' %}
+    {% if blogBase['themeMode']=='manual' -%}
     if(localStorage.getItem("meek_theme")=="dark"){script.setAttribute("theme","dark-blue");}
     else if(localStorage.getItem("meek_theme")=="light") {script.setAttribute("theme","github-light");}
     else{script.setAttribute("theme","preferred-color-scheme");}
-    {% else %}
+    {%- else -%}
     script.setAttribute("theme","{{ blogBase['nightTheme'] }}");
-    {% endif %}
+    {%- endif %}
     script.setAttribute("crossorigin","anonymous");
     script.setAttribute("async","");
     cm.appendChild(script);
@@ -127,10 +324,34 @@ function iFrameLoading(){
         }
     }
 }
+
+// 复制文章链接
+function copyPostLink(){
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = document.querySelector('.post-copyright-actions .btn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<svg class="octicon" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0Z"/></svg> {{ i18n["copied"] or "已复制" }}';
+        btn.style.color = 'var(--color-success-fg)';
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.color = '';
+        }, 2000);
+    }).catch(err => {
+        console.error('复制失败:', err);
+        const textarea = document.createElement('textarea');
+        textarea.value = window.location.href;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+    });
+}
 {%- endif %}
 
 {% if blogBase['highlight']!=0 -%}
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     const createClipboardHTML = (codeContent, additionalClasses = '') => `
         <pre class="notranslate"><code class="notranslate">${codeContent}</code></pre>
         <div class="clipboard-container position-absolute right-0 top-0 ${additionalClasses}">

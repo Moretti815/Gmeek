@@ -16,9 +16,9 @@ from jinja2 import Environment, FileSystemLoader
 from transliterate import translit
 from collections import OrderedDict
 ######################################################################################
-i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends"}
-i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败"}
-i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","fcircle":"Круг друзей","applyFriend":"Подать заявку","addlink":"Подать заявку","loading":"Загрузка...","noFriends":"Пока нет друзей","loadError":"Не удалось загрузить друзей"}
+i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","reward":"Reward","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends","noSponsors":"No sponsors yet, be the first to support me!","rewardQrcode":"Reward Methods","wechatPay":"WeChat Pay","scanWechat":"Scan with WeChat","alipay":"Alipay","scanAlipay":"Scan with Alipay","afdian":"Afdian","clickAfdian":"Go to Afdian","rewardSponsors":"Sponsors","beSponsor":"Become a Sponsor"}
+i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","reward":"赞赏","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败","noSponsors":"暂无赞赏者，成为第一个支持我的人吧！","rewardQrcode":"赞赏方式","wechatPay":"微信支付","scanWechat":"微信扫码赞赏","alipay":"支付宝","scanAlipay":"支付宝扫码赞赏","afdian":"爱发电","clickAfdian":"点击前往爱发电","rewardSponsors":"赞赏者名单","beSponsor":"成为赞赏者"}
+i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","fcircle":"Круг друзей","applyFriend":"Подать заявку","addlink":"Подать заявку","reward":"Награда","loading":"Загрузка...","noFriends":"Пока нет друзей","loadError":"Не удалось загрузить друзей","noSponsors":"Пока нет спонсоров, станьте первым!","rewardQrcode":"Способы награды","wechatPay":"WeChat Pay","scanWechat":"Сканировать WeChat","alipay":"Alipay","scanAlipay":"Сканировать Alipay","afdian":"Afdian","clickAfdian":"Перейти на Afdian","rewardSponsors":"Спонсоры","beSponsor":"Стать спонсором"}
 IconBase={
     "post":"M0 3.75C0 2.784.784 2 1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25Zm1.75-.25a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25ZM3.5 6.25a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm.75 2.25h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z",
     "link":"m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z",
@@ -259,6 +259,17 @@ class GMEEK():
                 "labels": ["addlink"],
                 "postUrl": "addlink.html",
                 "description": self.blogBase.get("addlinkDesc", "期待与您建立友好的互联网连接！"),
+                "createdAt": int(time.time())
+            }
+
+        # Add reward page to singeListJson
+        if "reward" in self.blogBase["singlePage"]:
+            import time
+            self.blogBase["singeListJson"]["reward"]={
+                "postTitle": self.i18n["reward"],
+                "labels": ["reward"],
+                "postUrl": "reward.html",
+                "description": self.blogBase.get("rewardDesc", "感谢每一位支持我的朋友！"),
                 "createdAt": int(time.time())
             }
 
@@ -542,6 +553,29 @@ class GMEEK():
         self.renderHtml('addlink.html',addlinkBase,{},self.root_dir+"addlink.html",addlinkIcon)
         print("create addlink.html")
 
+    def createRewardHtml(self):
+        rewardBase=self.blogBase.copy()
+        rewardBase["postTitle"]=self.i18n["reward"]
+        rewardBase["description"]=rewardBase.get("rewardDesc", "感谢每一位支持我的朋友！")
+        rewardBase["postUrl"]=self.blogBase["homeUrl"]+"/reward.html"
+        rewardBase["ogImage"]=self.blogBase["ogImage"]
+        rewardBase["commentNum"]=0
+        rewardBase["style"]=""
+        rewardBase["script"]=""
+        rewardBase["head"]=""
+        rewardBase["top"]=False
+        rewardBase["postSourceUrl"]=""
+        rewardBase["repoName"]=self.options.repo_name
+        rewardBase["bottomText"]=""
+        rewardBase["needComment"]=0
+        rewardBase["highlight"]=0
+
+        keys=['sun','moon','sync','home']
+        rewardIcon=dict(zip(keys, map(IconBase.get, keys)))
+
+        self.renderHtml('reward.html',rewardBase,{},self.root_dir+"reward.html",rewardIcon)
+        print("create reward.html")
+
     def runAll(self):
         print("====== start create static html ======")
         self.cleanFile()
@@ -560,6 +594,7 @@ class GMEEK():
         self.createFriendsHtml()
         self.createFcircleHtml()
         self.createAddlinkHtml()
+        self.createRewardHtml()
         self.createPlistHtml()
         self.createFeedXml()
         print("====== create static html end ======")

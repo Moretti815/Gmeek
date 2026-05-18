@@ -1,0 +1,439 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<meta name="description" content="{{ blogBase['rewardDesc'] or '感谢每一位支持我的朋友！' }}">
+<meta property="og:title" content="{{ i18n['reward'] }}">
+<meta property="og:description" content="{{ blogBase['rewardDesc'] or '感谢每一位支持我的朋友！' }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ blogBase['homeUrl'] }}/reward.html">
+<meta property="og:image" content="{{ blogBase['ogImage'] }}">
+<title>{{ i18n['reward'] }}</title>
+{{ blogBase['head'] }}
+{% endblock %}
+
+{% block style %}
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+
+/* 赞赏页面样式 */
+.reward-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.reward-header h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--color-fg-default);
+}
+
+.reward-header p {
+    color: var(--color-fg-muted);
+    font-size: 14px;
+}
+
+/* 赞赏说明 */
+.reward-intro {
+    text-align: center;
+    margin-bottom: 32px;
+    padding: 20px;
+    background-color: var(--color-canvas-subtle);
+    border-radius: 12px;
+    border: 1px solid var(--color-border-default);
+}
+
+.reward-intro p {
+    margin: 0;
+    line-height: 1.8;
+    color: var(--color-fg-default);
+    font-size: 15px;
+}
+
+/* 二维码区域 */
+.reward-qrcode-section {
+    margin-bottom: 40px;
+}
+
+.reward-qrcode-section h2 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--color-fg-default);
+}
+
+.reward-qrcode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.reward-qrcode-item {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reward-qrcode-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.reward-qrcode-item img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.reward-qrcode-item .qrcode-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+}
+
+.reward-qrcode-item .qrcode-hint {
+    font-size: 13px;
+    color: var(--color-fg-muted);
+    margin-top: 4px;
+}
+
+/* 赞赏者列表 */
+.reward-sponsors-section {
+    margin-bottom: 40px;
+}
+
+.reward-sponsors-section h2 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: var(--color-fg-default);
+}
+
+.reward-sponsors-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.reward-sponsor-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+}
+
+.reward-sponsor-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.reward-sponsor-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--color-border-default);
+}
+
+.reward-sponsor-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.reward-sponsor-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.reward-sponsor-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--color-fg-muted);
+}
+
+.reward-sponsor-amount {
+    font-weight: 600;
+    color: var(--color-accent-emphasis);
+}
+
+/* 加载状态 */
+.reward-loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-fg-muted);
+}
+
+.reward-error {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-danger-fg);
+}
+
+.reward-empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--color-fg-muted);
+    font-style: italic;
+}
+
+/* 操作按钮 */
+.reward-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+}
+
+.reward-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--color-border-default);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    cursor: pointer;
+}
+
+.reward-actions .btn:hover {
+    background-color: var(--color-canvas-subtle);
+    border-color: var(--color-border-muted);
+    transform: translateY(-1px);
+}
+
+.reward-actions .btn-primary {
+    background-color: var(--color-accent-emphasis);
+    color: var(--color-fg-on-emphasis);
+    border-color: var(--color-accent-emphasis);
+}
+
+.reward-actions .btn-primary:hover {
+    background-color: var(--color-accent-muted);
+    border-color: var(--color-accent-muted);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .reward-header h1 {
+        font-size: 24px;
+    }
+
+    .reward-qrcode-grid {
+        grid-template-columns: 1fr;
+        max-width: 300px;
+    }
+
+    .reward-sponsors-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 8px;
+        min-width: auto;
+        max-width: 100%;
+    }
+
+    .postTitle {
+        font-size: 24px;
+    }
+
+    .reward-header h1 {
+        font-size: 22px;
+    }
+
+    .reward-intro {
+        padding: 16px;
+    }
+
+    .reward-sponsor-item {
+        padding: 12px;
+    }
+}
+</style>
+{{ blogBase['style'] }}
+{% endblock %}
+
+{% block header %}
+<h1 class="postTitle">{{ i18n['reward'] }}</h1>
+<div class="title-right">
+    <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+        <svg class="octicon" width="16" height="16">
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="reward-header">
+    <h1>{{ blogBase['rewardTitle'] or '☕ 赞赏支持' }}</h1>
+    <p>{{ blogBase['rewardDesc'] or '感谢每一位支持我的朋友！' }}</p>
+</div>
+
+<!-- 赞赏说明 -->
+<div class="reward-intro">
+    <p>{{ blogBase['rewardIntro'] or '如果我的文章对您有所帮助，欢迎通过以下方式支持我，这将是我持续创作的动力！' }}</p>
+</div>
+
+<!-- 赞赏二维码 -->
+<div class="reward-qrcode-section">
+    <h2>{{ i18n['rewardQrcode'] or '赞赏方式' }}</h2>
+    <div class="reward-qrcode-grid">
+        {% if blogBase['rewardWechatQrcode'] %}
+        <div class="reward-qrcode-item">
+            <img src="{{ blogBase['rewardWechatQrcode'] }}" alt="微信支付">
+            <div class="qrcode-label">{{ i18n['wechatPay'] or '微信支付' }}</div>
+            <div class="qrcode-hint">{{ i18n['scanWechat'] or '微信扫码赞赏' }}</div>
+        </div>
+        {% endif %}
+        {% if blogBase['rewardAlipayQrcode'] %}
+        <div class="reward-qrcode-item">
+            <img src="{{ blogBase['rewardAlipayQrcode'] }}" alt="支付宝">
+            <div class="qrcode-label">{{ i18n['alipay'] or '支付宝' }}</div>
+            <div class="qrcode-hint">{{ i18n['scanAlipay'] or '支付宝扫码赞赏' }}</div>
+        </div>
+        {% endif %}
+        {% if blogBase['rewardAfdianUrl'] %}
+        <div class="reward-qrcode-item">
+            <a href="{{ blogBase['rewardAfdianUrl'] }}" target="_blank" style="text-decoration: none; color: inherit;">
+                <img src="{{ blogBase['rewardAfdianQrcode'] or 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/afdian.png' }}" alt="爱发电">
+                <div class="qrcode-label">{{ i18n['afdian'] or '爱发电' }}</div>
+                <div class="qrcode-hint">{{ i18n['clickAfdian'] or '点击前往爱发电' }}</div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- 赞赏者列表 -->
+<div class="reward-sponsors-section">
+    <h2>{{ i18n['rewardSponsors'] or '赞赏者名单' }}</h2>
+    <div id="reward-sponsors-container">
+        <div class="reward-loading">{{ i18n['loading'] or '加载中...' }}</div>
+    </div>
+</div>
+
+<!-- 操作按钮 -->
+<div class="reward-actions">
+    <a href="{{ blogBase['homeUrl'] }}" class="btn">
+        <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z"/>
+        </svg>
+        {{ i18n['home'] or '首页' }}
+    </a>
+    <a href="{{ blogBase['rewardSponsorUrl'] or 'https://github.com/Kemeow0815/sponsors' }}" target="_blank" class="btn btn-primary">
+        <svg class="octicon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.612 10.867l.981-3.408c.073-.264.267-.477.526-.563.26-.086.546-.04.764.124l2.394 1.785c.433.323.6.89.42 1.394l-.981 3.408c-.073.264-.267.477-.526.563-.26.086-.546.04-.764-.124l-2.394-1.785a1.125 1.125 0 0 1-.42-1.394ZM10 11.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5.25 8.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm5.5-3.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"/>
+        </svg>
+        {{ i18n['beSponsor'] or '成为赞赏者' }}
+    </a>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+document.getElementById("pathHome").setAttribute("d", IconList["home"]);
+
+// 赞赏者数据 URL
+const SPONSORS_DATA_URL = '{{ blogBase["rewardSponsorsDataUrl"] or "https://cdn.jsdmirror.com/gh/Kemeow0815/sponsors@main/data/sponsors/sponsors.json" }}';
+
+// 加载赞赏者数据
+async function loadSponsors() {
+    const container = document.getElementById('reward-sponsors-container');
+
+    try {
+        const response = await fetch(SPONSORS_DATA_URL);
+        if (!response.ok) {
+            throw new Error('Failed to load sponsors data');
+        }
+
+        const data = await response.json();
+        const sponsors = data.sponsors || [];
+
+        if (sponsors.length === 0) {
+            container.innerHTML = '<div class="reward-empty">{{ i18n["noSponsors"] or "暂无赞赏者，成为第一个支持我的人吧！" }}</div>';
+            return;
+        }
+
+        // 按日期倒序排列
+        sponsors.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        const listHtml = sponsors.map(sponsor => {
+            const avatarUrl = sponsor.avatar || '{{ blogBase["avatarUrl"] }}';
+            const sponsorUrl = sponsor.url || '#';
+            const name = sponsor.name || '匿名';
+            const date = sponsor.date || '';
+            const amount = sponsor.amount || '';
+
+            return `
+                <a href="${sponsorUrl}" target="_blank" class="reward-sponsor-item">
+                    <img src="${avatarUrl}" alt="${name}" class="reward-sponsor-avatar" onerror="this.src='{{ blogBase["avatarUrl"] }}'">
+                    <div class="reward-sponsor-info">
+                        <div class="reward-sponsor-name">${name}</div>
+                        <div class="reward-sponsor-meta">
+                            <span class="reward-sponsor-amount">${amount}</span>
+                            <span>${date}</span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }).join('');
+
+        container.innerHTML = `<div class="reward-sponsors-list">${listHtml}</div>`;
+
+    } catch (error) {
+        console.error('Load sponsors error:', error);
+        container.innerHTML = '<div class="reward-error">{{ i18n["loadError"] or "加载赞赏者数据失败，请稍后重试。" }}</div>';
+    }
+}
+
+// 页面加载完成后执行
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadSponsors);
+} else {
+    loadSponsors();
+}
+</script>
+{{ blogBase['script'] }}
+{% endblock %}
