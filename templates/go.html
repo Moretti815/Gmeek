@@ -334,10 +334,10 @@
         <div class="safego-title">{{ blogBase['safego']['title'] }}</div>
         <div class="safego-subtitle">{{ blogBase['safego']['subtitle'] }}</div>
         
-        <div class="safego-url-label">{{ i18n['jumpTo'] if 'jumpTo' in i18n else 'You are about to jump to:' }}</div>
+        <div class="safego-url-label">{{ i18n['jumpTo'] if 'jumpTo' in i18n else '您即将跳转到：' }}</div>
         <div class="safego-url-box">
             <span class="safego-url-text" id="jump-url-text"></span>
-            <button class="safego-copy-btn" onclick="copyToClipboard()" aria-label="{{ i18n['copy'] if 'copy' in i18n else 'Copy' }}">
+            <button class="safego-copy-btn" onclick="copyToClipboard()" aria-label="{{ i18n['copy'] if 'copy' in i18n else '复制' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                     <path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/>
                 </svg>
@@ -345,7 +345,7 @@
         </div>
         
         <div class="safego-countdown" id="countdown-text">
-            {{ i18n['willJumpIn'] if 'willJumpIn' in i18n else 'Will jump in' }} <span class="safego-countdown-number" id="countdown">{{ blogBase['safego']['countdownTime'] }}</span> {{ i18n['seconds'] if 'seconds' in i18n else 'seconds' }}
+            {{ i18n['willJumpIn'] if 'willJumpIn' in i18n else '将在' }} <span class="safego-countdown-number" id="countdown">{{ blogBase['safego']['countdownTime'] }}</span> {{ i18n['seconds'] if 'seconds' in i18n else '秒后跳转，请自行确认链接安全性' }}
         </div>
         
         {%- if blogBase['safego']['countdownTime'] > 0 -%}
@@ -355,8 +355,8 @@
         {%- endif -%}
         
         <div class="safego-buttons">
-            <button class="safego-btn safego-btn-cancel" onclick="goBack()">{{ i18n['cancel'] if 'cancel' in i18n else 'Cancel' }}</button>
-            <button class="safego-btn safego-btn-confirm" onclick="jumpNow()">{{ i18n['jumpNow'] if 'jumpNow' in i18n else 'Jump Now' }}</button>
+            <button class="safego-btn safego-btn-cancel" onclick="goBack()">{{ i18n['cancel'] if 'cancel' in i18n else '回到上页' }}</button>
+            <button class="safego-btn safego-btn-confirm" onclick="jumpNow()">{{ i18n['jumpNow'] if 'jumpNow' in i18n else '立即前往' }}</button>
         </div>
     </div>
 </div>
@@ -463,19 +463,19 @@
             clearInterval(countdownInterval);
             countdownInterval = null;
         }
-        
-        // 优先使用 document.referrer 返回来源页
-        if (document.referrer && document.referrer !== window.location.href) {
-            window.location.href = document.referrer;
-            return;
-        }
-        
-        // 其次使用 history.back()
+
+        // 优先使用 history.back() 返回来源页（最自然的返回方式）
         if (window.history.length > 1) {
             window.history.back();
             return;
         }
-        
+
+        // 其次使用 document.referrer
+        if (document.referrer && document.referrer !== window.location.href) {
+            window.location.href = document.referrer;
+            return;
+        }
+
         // 最后回到首页
         window.location.href = '{{ blogBase["homeUrl"] }}';
     }
@@ -500,9 +500,9 @@
         var toast = document.getElementById("copy-toast");
         
         function showToast(success) {
-            toast.textContent = success ? 
-                '{{ i18n["copySuccess"] if "copySuccess" in i18n else "Copied!" }}' : 
-                '{{ i18n["copyFailed"] if "copyFailed" in i18n else "Copy Failed" }}';
+            toast.textContent = success ?
+                '{{ i18n["copySuccess"] if "copySuccess" in i18n else "已复制！" }}' :
+                '{{ i18n["copyFailed"] if "copyFailed" in i18n else "复制失败" }}';
             toast.classList.add("show");
             setTimeout(function() {
                 toast.classList.remove("show");
