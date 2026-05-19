@@ -332,8 +332,35 @@
 
 /* 移动端适配 */
 @media (max-width: 600px) {
+    body {
+        padding: 12px;
+    }
+
+    .addlink-header {
+        margin-bottom: 20px;
+    }
+
     .addlink-header h1 {
-        font-size: 22px;
+        font-size: 20px;
+        line-height: 1.4;
+    }
+
+    .addlink-header p {
+        font-size: 14px;
+    }
+
+    .addlink-actions {
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .addlink-actions .btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
+    .addlink-section {
+        margin-bottom: 24px;
     }
 
     .addlink-section h2 {
@@ -357,17 +384,25 @@
     .addlink-info-table td:first-child {
         width: 80px;
     }
+
+    .addlink-notice {
+        padding: 12px;
+    }
+
+    .addlink-info-list li {
+        padding: 8px 0;
+        gap: 8px;
+    }
+
+    .addlink-info-list .label {
+        min-width: 70px;
+    }
 }
 </style>
 {% endblock %}
 
 {% block header %}
-<a href="{{ blogBase['homeUrl'] }}" class="avatar circle" title="{{ i18n['home'] }}">
-    <img src="{{ blogBase['avatarUrl'] }}" class="circle" style="width: 48px;height: 48px;">
-</a>
-<div style="margin-left:8px;">
-    <div class="postTitle">{{ i18n['addlink'] or '申请友链' }}</div>
-</div>
+<div class="postTitle">{{ i18n['addlink'] or '申请友链' }}</div>
 <div class="title-right">
     <a class="btn btn-invisible circle" href="{{ blogBase['homeUrl'] }}" title="{{ i18n['home'] }}">
         <svg class="octicon" width="16" height="16">
