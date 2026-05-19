@@ -458,7 +458,7 @@ function waitForPreloader() {
     const preloader = document.getElementById('preloader');
     
     // 如果加载动画不存在或已隐藏，显示内容并开始倒计时
-    if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none') {
+    if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
         showContent();
         startCountdownAfterPreloader();
         return;
@@ -467,6 +467,15 @@ function waitForPreloader() {
     // 先显示内容（倒计时显示但不开始）
     showContent();
     
+    let countdownStarted = false;
+    
+    function startIfNotStarted() {
+        if (!countdownStarted) {
+            countdownStarted = true;
+            startCountdownAfterPreloader();
+        }
+    }
+    
     // 创建 MutationObserver 监听加载动画的隐藏
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
@@ -474,7 +483,7 @@ function waitForPreloader() {
                 if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
                     observer.disconnect();
                     // 加载动画结束后才开始倒计时
-                    startCountdownAfterPreloader();
+                    startIfNotStarted();
                 }
             }
         });
@@ -485,11 +494,11 @@ function waitForPreloader() {
         attributeFilter: ['class', 'style'] 
     });
     
-    // 备用方案：最多等待 800ms（加载动画最小显示时间 500ms + 过渡时间 300ms）
+    // 备用方案：最多等待 3.5 秒（与 base.html 的最大等待时间一致）
     setTimeout(function() {
         observer.disconnect();
-        startCountdownAfterPreloader();
-    }, 800);
+        startIfNotStarted();
+    }, 3500);
 }
 </script>
 {% endblock %}
