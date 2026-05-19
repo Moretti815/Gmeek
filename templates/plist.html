@@ -71,6 +71,17 @@
     50% { opacity: 0.6; }
 }
 
+@keyframes memos-slideIn {
+    0% { 
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .memos-timeline-content {
     flex: 1;
     overflow: hidden;
@@ -253,6 +264,60 @@ document.getElementById("{{ blogBase['singeListJson'][num]['postTitle'] }}").set
 const MEMOS_API_URL = 'https://m.314926.xyz/api/v1/memos';
 const MEMOS_PAGE_URL = '{{ blogBase["homeUrl"] }}/memos.html';
 
+let memosCarouselInterval = null;
+let currentMemoIndex = 0;
+let publicMemos = [];
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatMemoContent(memo) {
+    let text = memo.content || '';
+    
+    // Strip HTML tags and markdown
+    text = text.replace(/<[^>]*>/g, '').replace(/!\[.*?\]\(.*?\)/g, '[图片]').replace(/\[.*?\]\(.*?\)/g, '$1');
+    
+    // Truncate text
+    if (text.length > 60) {
+        text = text.substring(0, 60) + '...';
+    }
+    
+    const hasImage = memo.resources && memo.resources.some(r => r.type && r.type.startsWith('image/'));
+    
+    return {
+        text: escapeHtml(text),
+        hasImage: hasImage
+    };
+}
+
+function renderMemoItem(memo, index) {
+    const contentEl = document.getElementById('memos-timeline-content');
+    const formatted = formatMemoContent(memo);
+    
+    contentEl.innerHTML = `
+        <span class="memos-item memos-item-slide" style="animation: memos-slideIn 0.5s ease;">
+            <span class="memos-item-text">${formatted.text}</span>
+            ${formatted.hasImage ? '<span class="memos-item-image"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>图片</span>' : ''}
+        </span>
+    `;
+}
+
+function startCarousel() {
+    if (publicMemos.length <= 1) return;
+    
+    if (memosCarouselInterval) {
+        clearInterval(memosCarouselInterval);
+    }
+    
+    memosCarouselInterval = setInterval(() => {
+        currentMemoIndex = (currentMemoIndex + 1) % publicMemos.length;
+        renderMemoItem(publicMemos[currentMemoIndex], currentMemoIndex);
+    }, 4000); // 每4秒切换
+}
+
 async function loadMemosTimeline() {
     const container = document.getElementById('memos-timeline');
     const contentEl = document.getElementById('memos-timeline-content');
@@ -272,49 +337,41 @@ async function loadMemosTimeline() {
         }
         
         // Filter only public memos
-        const publicMemos = memos.filter(m => m.visibility === 'PUBLIC');
+        publicMemos = memos.filter(m => m.visibility === 'PUBLIC');
         
         if (publicMemos.length === 0) {
             contentEl.innerHTML = '<span class="memos-loading">暂无公开动态</span>';
             return;
         }
         
-        // Display the latest memo
-        const latestMemo = publicMemos[0];
-        let text = latestMemo.content || '';
+        // Display first memo
+        currentMemoIndex = 0;
+        renderMemoItem(publicMemos[0], 0);
         
-        // Strip HTML tags and markdown
-        text = text.replace(/<[^>]*>/g, '').replace(/!\[.*?\]\(.*?\)/g, '[图片]').replace(/\[.*?\]\(.*?\)/g, '$1');
-        
-        // Truncate text
-        if (text.length > 60) {
-            text = text.substring(0, 60) + '...';
-        }
-        
-        const hasImage = latestMemo.resources && latestMemo.resources.some(r => r.type && r.type.startsWith('image/'));
-        
-        contentEl.innerHTML = `
-            <span class="memos-item">
-                <span class="memos-item-text">${escapeHtml(text)}</span>
-                ${hasImage ? '<span class="memos-item-image"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>图片</span>' : ''}
-            </span>
-        `;
+        // Start carousel
+        startCarousel();
         
         // Click to navigate
         container.addEventListener('click', () => {
             window.location.href = MEMOS_PAGE_URL;
         });
         
+        // Pause on hover
+        container.addEventListener('mouseenter', () => {
+            if (memosCarouselInterval) {
+                clearInterval(memosCarouselInterval);
+                memosCarouselInterval = null;
+            }
+        });
+        
+        container.addEventListener('mouseleave', () => {
+            startCarousel();
+        });
+        
     } catch (error) {
         console.error('Failed to load memos:', error);
         contentEl.innerHTML = '<span class="memos-loading">加载失败</span>';
     }
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 // Initialize
