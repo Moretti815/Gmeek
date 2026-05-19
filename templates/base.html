@@ -52,6 +52,9 @@ let themeSettings={
     "auto": ["auto","sync","","preferred-color-scheme"]
 };
 
+// 当前主题模式：light / dark / auto
+let currentThemeMode = theme;
+
 // 系统主题监听器
 let systemThemeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 let systemThemeListener = null;
@@ -87,41 +90,48 @@ function stopSystemThemeListener() {
     }
 }
 
-function changeTheme(mode, icon, color, utheme){
-    document.documentElement.setAttribute("data-color-mode",mode);
-    document.getElementById("themeSwitch").setAttribute("d",value=IconList[icon]);
-    document.getElementById("themeSwitch").parentNode.style.color=color;
-    if(utterancesLoad==1){utterancesTheme(utheme);}
-    
-    // 如果是 auto 模式，启动系统主题监听
-    if (mode === "auto") {
-        startSystemThemeListener();
-    } else {
-        stopSystemThemeListener();
+function applyTheme(mode) {
+    // 应用主题设置，更新图标和颜色
+    if (themeSettings[mode]) {
+        let icon = themeSettings[mode][1];
+        let color = themeSettings[mode][2];
+        document.getElementById("themeSwitch").setAttribute("d", IconList[icon]);
+        document.getElementById("themeSwitch").parentNode.style.color = color;
     }
 }
 
+function changeTheme(mode, icon, color, utheme){
+    document.documentElement.setAttribute("data-color-mode", mode);
+    document.getElementById("themeSwitch").setAttribute("d", value=IconList[icon]);
+    document.getElementById("themeSwitch").parentNode.style.color = color;
+    if(utterancesLoad==1){utterancesTheme(utheme);}
+}
+
 function modeSwitch(){
-    let currentMode=document.documentElement.getAttribute('data-color-mode');
     let newMode;
     
     // 循环：light -> dark -> auto -> light
-    if (currentMode === "light") {
+    if (currentThemeMode === "light") {
         newMode = "dark";
-    } else if (currentMode === "dark") {
+    } else if (currentThemeMode === "dark") {
         newMode = "auto";
     } else {
         newMode = "light";
     }
     
+    // 更新当前模式
+    currentThemeMode = newMode;
     localStorage.setItem("meek_theme", newMode);
     
     if (newMode === "auto") {
         // 切换到 auto 模式，立即应用当前系统主题
+        stopSystemThemeListener();
         let systemTheme = getSystemTheme();
-        changeTheme("auto", "sync", "", "preferred-color-scheme");
         document.documentElement.setAttribute("data-color-mode", systemTheme);
+        applyTheme("auto");
+        startSystemThemeListener();
     } else if (themeSettings[newMode]) {
+        stopSystemThemeListener();
         changeTheme(...themeSettings[newMode]);
     }
 }
@@ -137,7 +147,8 @@ if (theme === "auto") {
     // 如果是 auto 模式，应用当前系统主题并启动监听
     let systemTheme = getSystemTheme();
     document.documentElement.setAttribute("data-color-mode", systemTheme);
-    changeTheme("auto", "sync", "", "preferred-color-scheme");
+    applyTheme("auto");
+    startSystemThemeListener();
 } else if (themeSettings[theme]) {
     changeTheme(...themeSettings[theme]);
 }
