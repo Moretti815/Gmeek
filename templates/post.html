@@ -197,6 +197,23 @@
     gap: 6px;
 }
 
+/* 文章底部元信息区域 */
+.post-meta-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: small;
+}
+
+.page-view-count {
+    color: var(--color-fg-muted);
+}
+
+.bottom-text {
+    color: var(--color-fg-muted);
+}
+
 /* 移动端适配 */
 @media (max-width: 600px) {
     body {padding: 12px;}
@@ -225,6 +242,11 @@
         margin: 0 -14px -12px;
         padding: 8px 14px;
         border-radius: 0 0 9px 9px;
+    }
+    .post-meta-footer {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px 12px;
     }
 }
 {% if blogBase['highlight']!=0 -%}
@@ -338,7 +360,14 @@
     </div>
 </div>
 
-<div style="font-size:small;margin-top:8px;float:right;">{{ blogBase['bottomText'] }}</div>
+<div class="post-meta-footer">
+    <div id="busuanzi_container_page_pv" class="page-view-count" style="display:none;">
+        <span class="page-view-label">{{ i18n['pageViews'] or '本文浏览量' }}</span>
+        <span id="busuanzi_value_page_pv"></span>
+        <span class="page-view-unit">{{ i18n['pageViewsUnit'] or '次' }}</span>
+    </div>
+    <div class="bottom-text">{{ blogBase['bottomText'] }}</div>
+</div>
 
 {% if blogBase['needComment']==1 %}
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">{{ i18n['comments'] }}</button>
