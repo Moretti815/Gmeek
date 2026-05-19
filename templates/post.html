@@ -199,30 +199,32 @@
 
 /* 移动端适配 */
 @media (max-width: 600px) {
-    body {padding: 8px;}
+    body {padding: 12px;}
     .postTitle{font-size:24px;}
     .post-copyright {
-        padding: 14px 16px;
-        margin: 24px 0;
+        padding: 12px 14px;
+        margin: 20px 0;
+        border-radius: 10px;
     }
     .post-copyright-info {
         flex-direction: row;
-        gap: 12px 16px;
+        gap: 10px 14px;
     }
     .post-copyright-info-item {
         flex-direction: row;
         align-items: center;
-        gap: 6px;
+        gap: 4px;
     }
     .post-copyright-info-item .label {
-        font-size: 14px;
+        font-size: 13px;
     }
     .post-copyright-info-item .value {
-        font-size: 14px;
+        font-size: 13px;
     }
     .post-copyright-reward {
-        margin: 0 -16px -14px;
-        padding: 10px 16px;
+        margin: 0 -14px -12px;
+        padding: 8px 14px;
+        border-radius: 0 0 9px 9px;
     }
 }
 {% if blogBase['highlight']!=0 -%}
