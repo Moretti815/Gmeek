@@ -238,6 +238,10 @@ if (theme === "auto") {
         
         setTimeout(function() {
             preloader.classList.add('hidden');
+            preloader.style.display = 'none';
+            
+            // 触发自定义事件通知加载动画已结束
+            window.dispatchEvent(new CustomEvent('preloaderHidden'));
             
             // 动画完全结束后移除元素
             setTimeout(function() {

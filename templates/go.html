@@ -570,28 +570,33 @@
     function waitForPreloader() {
         const preloader = document.getElementById('preloader');
 
-        // 如果没有加载动画或已隐藏，直接开始倒计时
-        if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none') {
+        // 如果没有加载动画，直接开始倒计时
+        if (!preloader) {
             startCountdown();
             return;
         }
 
-        let countdownStarted = false;
-        
-        function startCountdownOnce() {
-            if (!countdownStarted) {
-                countdownStarted = true;
-                startCountdown();
-            }
+        // 如果加载动画已经隐藏，直接开始倒计时
+        if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.offsetParent === null) {
+            startCountdown();
+            return;
         }
 
-        // 监听加载动画隐藏（属性变化）
+        // 监听自定义事件
+        function onPreloaderHidden() {
+            window.removeEventListener('preloaderHidden', onPreloaderHidden);
+            startCountdown();
+        }
+        window.addEventListener('preloaderHidden', onPreloaderHidden);
+
+        // 同时监听 DOM 变化（兼容旧逻辑）
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'attributes') {
                     if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
                         observer.disconnect();
-                        startCountdownOnce();
+                        window.removeEventListener('preloaderHidden', onPreloaderHidden);
+                        startCountdown();
                     }
                 }
             });
@@ -602,29 +607,11 @@
             attributeFilter: ['class', 'style']
         });
 
-        // 监听加载动画被移除
-        const parentObserver = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'childList') {
-                    mutation.removedNodes.forEach(function(node) {
-                        if (node.id === 'preloader') {
-                            parentObserver.disconnect();
-                            startCountdownOnce();
-                        }
-                    });
-                }
-            });
-        });
-
-        if (preloader.parentNode) {
-            parentObserver.observe(preloader.parentNode, { childList: true });
-        }
-
         // 备用方案：最多等待 2 秒
         setTimeout(function() {
             observer.disconnect();
-            parentObserver.disconnect();
-            startCountdownOnce();
+            window.removeEventListener('preloaderHidden', onPreloaderHidden);
+            startCountdown();
         }, 2000);
     }
 
