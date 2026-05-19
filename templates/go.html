@@ -526,7 +526,10 @@
         if (countdownInterval) {
             clearInterval(countdownInterval);
         }
-        if (window.history.length > 1) {
+        // 优先使用 document.referrer 返回来源页面
+        if (document.referrer && document.referrer !== window.location.href) {
+            window.location.href = document.referrer;
+        } else if (window.history.length > 1) {
             window.history.back();
         } else {
             window.location.href = '{{ blogBase["homeUrl"] }}';

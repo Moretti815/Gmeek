@@ -462,8 +462,7 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
                 const goUrl = SAFEGO_CONFIG.goPagePath + '?' + SAFEGO_CONFIG.urlParamName + '=' + encodedUrl;
                 link.setAttribute('href', goUrl);
                 link.setAttribute('data-safego-processed', 'true');
-                link.setAttribute('target', '_blank');
-                link.setAttribute('rel', 'noopener noreferrer');
+                // 不设置 target="_blank"，在当前页打开中转页，以便正确返回
             }
         });
     }
