@@ -885,6 +885,10 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+// Set header icons
+document.getElementById("pathHome").setAttribute("d", IconList["home"]);
+document.getElementById("themeSwitch").setAttribute("d", IconList["sun"]);
+
 // Initialize on page load - 每次页面加载都会重新获取数据
 document.addEventListener('DOMContentLoaded', initMemos);
 </script>
