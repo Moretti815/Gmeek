@@ -371,10 +371,18 @@
         countdownTime: {{ blogBase['safego']['countdownTime'] }},
         enableBase64: {{ 'true' if blogBase['safego']['enableBase64Encode'] else 'false' }}
     };
-    
+
     let countdown = SAFEGO_CONFIG.countdownTime;
     let countdownInterval = null;
     let jumpUrl = '';
+
+    // 中转页不需要加载动画，立即移除以确保内容可见
+    (function() {
+        var preloader = document.getElementById('preloader');
+        if (preloader && preloader.parentNode) {
+            preloader.parentNode.removeChild(preloader);
+        }
+    })();
     
     function getQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
