@@ -202,19 +202,7 @@
 {% endblock %}
 
 {% block header %}
-<h1 class="postTitle">{{ i18n['safego'] if 'safego' in i18n else 'Safe Go' }}</h1>
-<div class="title-right">
-    <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
-        <svg class="octicon" width="16" height="16">
-            <path id="pathHome" fill-rule="evenodd"></path>
-        </svg>
-    </a>
-    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
-        <svg class="octicon" width="16" height="16" >
-            <path id="themeSwitch" fill-rule="evenodd"></path>
-        </svg>
-    </a>
-</div>
+<!-- 中转页不显示顶部按钮，主题模式跟随跳转前页面 -->
 {% endblock %}
 
 {% block content %}
@@ -282,7 +270,7 @@
 
 {% block script %}
 <script>
-document.getElementById("pathHome").setAttribute("d", IconList["home"]);
+// 中转页不需要设置首页按钮图标
 
 // SafeGo Logic
 const SAFEGO_CONFIG = {
