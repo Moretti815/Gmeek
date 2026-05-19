@@ -202,7 +202,7 @@
 {% endblock %}
 
 {% block header %}
-<!-- 中转页不显示顶部按钮，主题模式跟随跳转前页面 -->
+<h1 class="postTitle">{{ i18n['safego'] if 'safego' in i18n else 'Safe Go' }}</h1>
 {% endblock %}
 
 {% block content %}
@@ -270,7 +270,7 @@
 
 {% block script %}
 <script>
-// 中转页不需要设置首页按钮图标
+document.getElementById("pathHome").setAttribute("d", IconList["home"]);
 
 // SafeGo Logic
 const SAFEGO_CONFIG = {
