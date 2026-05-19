@@ -58,8 +58,8 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 }
 
 #preloader img {
-    width: 80px;
-    height: 80px;
+    width: 160px;
+    height: 160px;
     object-fit: contain;
 }
 
@@ -71,14 +71,35 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
 /* 移动端适配 */
 @media (max-width: 768px) {
     #preloader img {
-        width: 60px;
-        height: 60px;
+        width: 120px;
+        height: 120px;
     }
+}
+
+/* 树枝背景样式 */
+#branch-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+#branch-canvas {
+    width: 100%;
+    height: 100%;
 }
 </style>
 {% block style %}{% endblock %}
 
 <body>
+    <!-- 树枝背景 -->
+    <div id="branch-background">
+        <canvas id="branch-canvas"></canvas>
+    </div>
     <!-- 加载动画 -->
     <div id="preloader">
         <img src="https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/preloader.gif" alt="Loading...">
@@ -233,6 +254,139 @@ if (theme === "auto") {
 })();
 
 console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
+
+// 树枝背景动画 - 参考 BackgrounRandom.astro
+(function() {
+    const canvas = document.getElementById('branch-canvas');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    const r180 = Math.PI;
+    const r90 = Math.PI / 2;
+    const r15 = Math.PI / 12;
+    const MIN_BRANCH = 30;
+    const len = 6;
+    
+    let steps = [];
+    let prevSteps = [];
+    let size = { width: window.innerWidth, height: window.innerHeight };
+    
+    function randomMiddle() {
+        return Math.random() * 0.6 + 0.2;
+    }
+    
+    function initCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        canvas.style.width = size.width + 'px';
+        canvas.style.height = size.height + 'px';
+        canvas.width = dpr * size.width;
+        canvas.height = dpr * size.height;
+        ctx.scale(dpr, dpr);
+    }
+    
+    function polar2cart(x, y, r, theta) {
+        const dx = r * Math.cos(theta);
+        const dy = r * Math.sin(theta);
+        return [x + dx, y + dy];
+    }
+    
+    function step(x, y, rad, counter) {
+        counter = counter || { value: 0 };
+        const length = Math.random() * len;
+        counter.value += 1;
+        
+        const [nx, ny] = polar2cart(x, y, length, rad);
+        
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(nx, ny);
+        ctx.stroke();
+        
+        const rad1 = rad + Math.random() * r15;
+        const rad2 = rad - Math.random() * r15;
+        
+        if (nx < -100 || nx > size.width + 100 || ny < -100 || ny > size.height + 100) return;
+        
+        const rate = counter.value <= MIN_BRANCH ? 0.8 : 0.5;
+        
+        if (Math.random() < rate) steps.push(function() { step(nx, ny, rad1, counter); });
+        if (Math.random() < rate) steps.push(function() { step(nx, ny, rad2, counter); });
+    }
+    
+    function frame() {
+        prevSteps = steps;
+        steps = [];
+        
+        if (!prevSteps.length) return;
+        
+        prevSteps.forEach(function(i) {
+            if (Math.random() < 0.5) steps.push(i);
+            else i();
+        });
+        
+        requestAnimationFrame(frame);
+    }
+    
+    function getBranchColor() {
+        const isDark = document.documentElement.getAttribute('data-color-mode') === 'dark';
+        // 使用 CSS 变量获取主题色，适配明暗模式
+        const style = getComputedStyle(document.documentElement);
+        const accent = style.getPropertyValue('--color-accent-fg').trim() || (isDark ? '#58a6ff' : '#0969da');
+        // 解析 HSL 并降低透明度
+        if (accent.startsWith('#')) {
+            const r = parseInt(accent.slice(1, 3), 16);
+            const g = parseInt(accent.slice(3, 5), 16);
+            const b = parseInt(accent.slice(5, 7), 16);
+            return 'rgba(' + r + ', ' + g + ', ' + b + ', 0.12)';
+        }
+        return isDark ? 'rgba(88, 166, 255, 0.12)' : 'rgba(9, 105, 218, 0.12)';
+    }
+    
+    function start() {
+        const color = getBranchColor();
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = color;
+        prevSteps = [];
+        steps = [
+            function() { step(randomMiddle() * size.width, -5, r90); },
+            function() { step(randomMiddle() * size.width, size.height + 5, -r90); },
+            function() { step(-5, randomMiddle() * size.height, 0); },
+            function() { step(size.width + 5, randomMiddle() * size.height, r180); }
+        ];
+        if (size.width < 500) steps = steps.slice(0, 2);
+        requestAnimationFrame(frame);
+    }
+    
+    initCanvas();
+    start();
+    
+    // 窗口大小改变时重新绘制
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            if (window.innerWidth === size.width) return;
+            size.width = window.innerWidth;
+            size.height = window.innerHeight;
+            initCanvas();
+            start();
+        }, 200);
+    });
+    
+    // 主题切换时更新颜色
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'data-color-mode') {
+                start();
+            }
+        });
+    });
+    observer.observe(document.documentElement, { attributes: true });
+})();
 </script>
 {% block script %}{% endblock %}
 </html>
