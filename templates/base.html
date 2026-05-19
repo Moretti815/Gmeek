@@ -227,18 +227,24 @@ if (theme === "auto") {
 (function() {
     const preloader = document.getElementById('preloader');
     if (!preloader) return;
-    
+
     // 最小显示时间（毫秒）- 确保动画至少显示一段时间，避免闪烁
     const minDisplayTime = 500;
     const startTime = Date.now();
-    
+    let hidden = false;
+
     function hidePreloader() {
+        if (hidden) return;
+        hidden = true;
+
         const elapsedTime = Date.now() - startTime;
         const remainingTime = Math.max(0, minDisplayTime - elapsedTime);
-        
+
         setTimeout(function() {
             preloader.classList.add('hidden');
-            
+            preloader.style.display = 'none';
+            window.dispatchEvent(new CustomEvent('preloaderHidden'));
+
             // 动画完全结束后移除元素
             setTimeout(function() {
                 if (preloader.parentNode) {
@@ -247,13 +253,16 @@ if (theme === "auto") {
             }, 500); // 与 CSS transition 时间一致
         }, remainingTime);
     }
-    
+
     // 页面加载完成后隐藏动画
     if (document.readyState === 'complete') {
         hidePreloader();
     } else {
         window.addEventListener('load', hidePreloader);
     }
+
+    // 备用方案：最多等待 3 秒，确保即使资源加载失败也不会一直显示
+    setTimeout(hidePreloader, 3000);
 })();
 {%- endif -%}
 

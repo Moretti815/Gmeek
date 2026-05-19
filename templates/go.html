@@ -521,37 +521,46 @@
     // 适配加载动画：等待加载动画结束后再开始倒计时
     function waitForPreloader() {
         var preloader = document.getElementById('preloader');
-        
+
         // 如果加载动画不存在或已隐藏，直接开始倒计时
         if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.visibility === 'hidden') {
             startCountdown();
             return;
         }
-        
+
+        // 监听自定义事件 preloaderHidden
+        function onPreloaderHidden() {
+            window.removeEventListener('preloaderHidden', onPreloaderHidden);
+            startCountdown();
+        }
+        window.addEventListener('preloaderHidden', onPreloaderHidden);
+
         // 创建 MutationObserver 监听加载动画的隐藏
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'attributes') {
                     if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.visibility === 'hidden' || preloader.style.opacity === '0') {
                         observer.disconnect();
+                        window.removeEventListener('preloaderHidden', onPreloaderHidden);
                         startCountdown();
                     }
                 }
             });
         });
-        
-        observer.observe(preloader, { 
-            attributes: true, 
-            attributeFilter: ['class', 'style'] 
+
+        observer.observe(preloader, {
+            attributes: true,
+            attributeFilter: ['class', 'style']
         });
-        
-        // 备用方案：最多等待 2 秒
+
+        // 备用方案：最多等待 3.5 秒（确保 base.html 的 3 秒强制隐藏先执行）
         setTimeout(function() {
             observer.disconnect();
+            window.removeEventListener('preloaderHidden', onPreloaderHidden);
             startCountdown();
-        }, 2000);
+        }, 3500);
     }
-    
+
     // 立即尝试开始（如果页面已经加载完成）
     if (document.readyState === 'complete') {
         waitForPreloader();
