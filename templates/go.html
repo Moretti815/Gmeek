@@ -342,6 +342,7 @@ function isValidUrl(url) {
 }
 
 function showContent() {
+    // 先显示内容（但不开始倒计时）
     document.getElementById('go-loading').style.display = 'none';
     document.getElementById('go-content').style.display = 'block';
     document.getElementById('go-divider').style.display = 'block';
@@ -351,10 +352,20 @@ function showContent() {
     document.getElementById('go-target-url').textContent = targetUrl;
     document.getElementById('go-actions').style.display = 'flex';
     
+    // 显示倒计时区域（但不开始计时）
     if (SAFEGO_CONFIG.countdownTime > 0) {
         document.getElementById('go-countdown').style.display = 'block';
-        startCountdown();
+        document.getElementById('countdown-number').textContent = SAFEGO_CONFIG.countdownTime;
     }
+}
+
+function startCountdownAfterPreloader() {
+    // 延迟一点时间确保加载动画完全消失后再开始倒计时
+    setTimeout(function() {
+        if (SAFEGO_CONFIG.countdownTime > 0) {
+            startCountdown();
+        }
+    }, 100);
 }
 
 function startCountdown() {
@@ -416,11 +427,21 @@ function goBack() {
         clearInterval(countdownInterval);
     }
     
-    if (document.referrer && document.referrer.includes(window.location.hostname)) {
-        history.back();
-    } else {
-        window.location.href = '{{ blogBase["homeUrl"] }}';
+    // 优先使用 sessionStorage 中记录的来源页面
+    const sourcePage = sessionStorage.getItem('safego_source');
+    if (sourcePage && sourcePage !== window.location.href) {
+        window.location.href = sourcePage;
+        return;
     }
+    
+    // 其次使用 document.referrer
+    if (document.referrer && !document.referrer.includes('/go.html')) {
+        window.location.href = document.referrer;
+        return;
+    }
+    
+    // 最后回到主页
+    window.location.href = '{{ blogBase["homeUrl"] }}';
 }
 
 // Initialize
@@ -442,11 +463,15 @@ document.addEventListener('DOMContentLoaded', function() {
 function waitForPreloader() {
     const preloader = document.getElementById('preloader');
     
-    // 如果加载动画不存在或已隐藏，直接显示内容
+    // 如果加载动画不存在或已隐藏，显示内容并开始倒计时
     if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none') {
         showContent();
+        startCountdownAfterPreloader();
         return;
     }
+    
+    // 先显示内容（倒计时显示但不开始）
+    showContent();
     
     // 创建 MutationObserver 监听加载动画的隐藏
     const observer = new MutationObserver(function(mutations) {
@@ -454,7 +479,8 @@ function waitForPreloader() {
             if (mutation.type === 'attributes') {
                 if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
                     observer.disconnect();
-                    showContent();
+                    // 加载动画结束后才开始倒计时
+                    startCountdownAfterPreloader();
                 }
             }
         });
@@ -465,11 +491,11 @@ function waitForPreloader() {
         attributeFilter: ['class', 'style'] 
     });
     
-    // 备用方案：最多等待 1.5 秒（加载动画最大时间）
+    // 备用方案：最多等待 800ms（加载动画最小显示时间 500ms + 过渡时间 300ms）
     setTimeout(function() {
         observer.disconnect();
-        showContent();
-    }, 1500);
+        startCountdownAfterPreloader();
+    }, 800);
 }
 </script>
 {% endblock %}

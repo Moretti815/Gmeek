@@ -479,6 +479,13 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
                 link.setAttribute('data-safego-processed', 'true');
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
+                
+                // 点击时记录来源页面
+                link.addEventListener('click', function() {
+                    try {
+                        sessionStorage.setItem('safego_source', window.location.href);
+                    } catch (e) {}
+                });
             }
         });
     }
