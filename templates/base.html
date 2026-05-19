@@ -100,10 +100,12 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     <div id="branch-background">
         <canvas id="branch-canvas"></canvas>
     </div>
+    {%- if blogBase.get('enablePreloader', true) -%}
     <!-- 加载动画 -->
     <div id="preloader">
         <img src="https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/preloader.gif" alt="Loading...">
     </div>
+    {%- endif -%}
     <div id="header">{% block header %}{% endblock %}</div>
     <div id="content">{% block content %}{% endblock %}</div>
     <div id="footer">{% include 'footer.html' %}</div>
@@ -220,6 +222,7 @@ if (theme === "auto") {
 }
 {%- endif %}
 
+{%- if blogBase.get('enablePreloader', true) -%}
 // 加载动画控制
 (function() {
     const preloader = document.getElementById('preloader');
@@ -252,6 +255,7 @@ if (theme === "auto") {
         window.addEventListener('load', hidePreloader);
     }
 })();
+{%- endif -%}
 
 console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meekdai/Gmeek \n","padding:5px 0;background:#02d81d;color:#fff");
 
