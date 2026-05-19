@@ -407,7 +407,7 @@
 {% block script %}
 <script>
 // Timetable Data URL
-const TIMETABLE_DATA_URL = '{{ blogBase["homeUrl"] }}/static/大三下.json';
+const TIMETABLE_DATA_URL = '{{ blogBase["homeUrl"] }}/%E5%A4%A7%E4%B8%89%E4%B8%8B.json';
 
 // State
 let timetableData = null;
@@ -459,12 +459,10 @@ async function initTimetable() {
         console.error('Failed to load timetable:', error);
         document.getElementById('timetable-desktop').innerHTML = `
             <div class="timetable-error">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"/>
-                    <line x1="12" y1="8" x2="12" y2="12"/>
-                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M12.884 2.532c-.346-.654-1.422-.654-1.768 0l-9 17A1 1 0 0 0 3 21h18a.998.998 0 0 0 .883-1.467zM13 18h-2v-2h2zm-2-4V9h2l.001 5z"/>
                 </svg>
-                <p>{{ i18n['loadError'] if 'loadError' in i18n else 'Failed to load timetable' }}</p>
+                <p>{{ i18n['timetableLoadError'] if 'timetableLoadError' in i18n else 'Failed to load timetable' }}</p>
             </div>
         `;
     }
