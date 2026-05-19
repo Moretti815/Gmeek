@@ -464,15 +464,15 @@
             countdownInterval = null;
         }
 
-        // 优先使用 history.back() 返回来源页（最自然的返回方式）
-        if (window.history.length > 1) {
-            window.history.back();
+        // 优先使用 document.referrer 返回来源页
+        if (document.referrer && document.referrer !== window.location.href) {
+            window.location.href = document.referrer;
             return;
         }
 
-        // 其次使用 document.referrer
-        if (document.referrer && document.referrer !== window.location.href) {
-            window.location.href = document.referrer;
+        // 其次尝试 history.back()
+        if (window.history.length > 1) {
+            window.history.back();
             return;
         }
 
