@@ -16,9 +16,9 @@ from jinja2 import Environment, FileSystemLoader
 from transliterate import translit
 from collections import OrderedDict
 ######################################################################################
-i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","reward":"Reward","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends","noSponsors":"No sponsors yet, be the first to support me!","rewardQrcode":"Reward Methods","wechatPay":"WeChat Pay","scanWechat":"Scan with WeChat","alipay":"Alipay","scanAlipay":"Scan with Alipay","afdian":"Afdian","clickAfdian":"Go to Afdian","rewardSponsors":"Sponsors","beSponsor":"Become a Sponsor","memos":"Memos","memosSubtitle":"Record every moment of life","all":"All","noMemos":"No memos yet","loadMore":"Load More","retry":"Retry","noFilteredMemos":"No memos match this filter","justNow":"Just now","minutesAgo":"minutes ago","hoursAgo":"hours ago","daysAgo":"days ago","monthsAgo":"months ago","yearsAgo":"years ago","pinned":"Pinned"}
-i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","reward":"赞赏","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败","noSponsors":"暂无赞赏者，成为第一个支持我的人吧！","rewardQrcode":"赞赏方式","wechatPay":"微信支付","scanWechat":"微信扫码赞赏","alipay":"支付宝","scanAlipay":"支付宝扫码赞赏","afdian":"爱发电","clickAfdian":"点击前往爱发电","rewardSponsors":"赞赏者名单","beSponsor":"成为赞赏者","memos":"碎碎念","memosSubtitle":"记录生活的每一个瞬间","all":"全部","noMemos":"暂无动态","loadMore":"加载更多","retry":"重试","noFilteredMemos":"没有匹配该标签的动态","justNow":"刚刚","minutesAgo":"分钟前","hoursAgo":"小时前","daysAgo":"天前","monthsAgo":"个月前","yearsAgo":"年前","pinned":"置顶"}
-i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","fcircle":"Круг друзей","applyFriend":"Подать заявку","addlink":"Подать заявку","reward":"Награда","loading":"Загрузка...","noFriends":"Пока нет друзей","loadError":"Не удалось загрузить друзей","noSponsors":"Пока нет спонсоров, станьте первым!","rewardQrcode":"Способы награды","wechatPay":"WeChat Pay","scanWechat":"Сканировать WeChat","alipay":"Alipay","scanAlipay":"Сканировать Alipay","afdian":"Afdian","clickAfdian":"Перейти на Afdian","rewardSponsors":"Спонсоры","beSponsor":"Стать спонсором","memos":"Мемо","memosSubtitle":"Записывайте каждый момент жизни","all":"Все","noMemos":"Пока нет записей","loadMore":"Загрузить еще","retry":"Повторить","noFilteredMemos":"Нет записей по этому фильтру","justNow":"Только что","minutesAgo":"минут назад","hoursAgo":"часов назад","daysAgo":"дней назад","monthsAgo":"месяцев назад","yearsAgo":"лет назад","pinned":"Закреплено"}
+i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","reward":"Reward","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends","noSponsors":"No sponsors yet, be the first to support me!","rewardQrcode":"Reward Methods","wechatPay":"WeChat Pay","scanWechat":"Scan with WeChat","alipay":"Alipay","scanAlipay":"Scan with Alipay","afdian":"Afdian","clickAfdian":"Go to Afdian","rewardSponsors":"Sponsors","beSponsor":"Become a Sponsor","memos":"Memos","memosSubtitle":"Record every moment of life","all":"All","noMemos":"No memos yet","loadMore":"Load More","retry":"Retry","noFilteredMemos":"No memos match this filter","justNow":"Just now","minutesAgo":"minutes ago","hoursAgo":"hours ago","daysAgo":"days ago","monthsAgo":"months ago","yearsAgo":"years ago","pinned":"Pinned","timetable":"Timetable","timetableSubtitle":"Course Schedule","totalWeeks":"Total","weeks":"weeks","week":"Week","currentWeek":"Current Week","node":"Node","nodes":"Nodes","monday":"Monday","tuesday":"Tuesday","wednesday":"Wednesday","thursday":"Thursday","friday":"Friday","saturday":"Saturday","sunday":"Sunday","time":"Time","room":"Room","teacher":"Teacher","notSet":"Not set","noCourses":"No courses this week","unknownCourse":"Unknown Course","weeksShort":"wks"}
+i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","reward":"赞赏","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败","noSponsors":"暂无赞赏者，成为第一个支持我的人吧！","rewardQrcode":"赞赏方式","wechatPay":"微信支付","scanWechat":"微信扫码赞赏","alipay":"支付宝","scanAlipay":"支付宝扫码赞赏","afdian":"爱发电","clickAfdian":"点击前往爱发电","rewardSponsors":"赞赏者名单","beSponsor":"成为赞赏者","memos":"碎碎念","memosSubtitle":"记录生活的每一个瞬间","all":"全部","noMemos":"暂无动态","loadMore":"加载更多","retry":"重试","noFilteredMemos":"没有匹配该标签的动态","justNow":"刚刚","minutesAgo":"分钟前","hoursAgo":"小时前","daysAgo":"天前","monthsAgo":"个月前","yearsAgo":"年前","pinned":"置顶","timetable":"课程表","timetableSubtitle":"课程安排","totalWeeks":"共","weeks":"周","week":"第","currentWeek":"当前周","node":"节次","nodes":"第","monday":"周一","tuesday":"周二","wednesday":"周三","thursday":"周四","friday":"周五","saturday":"周六","sunday":"周日","time":"时间","room":"教室","teacher":"教师","notSet":"未填写","noCourses":"本周暂无课程","unknownCourse":"未知课程","weeksShort":"周"}
+i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","fcircle":"Круг друзей","applyFriend":"Подать заявку","addlink":"Подать заявку","reward":"Награда","loading":"Загрузка...","noFriends":"Пока нет друзей","loadError":"Не удалось загрузить друзей","noSponsors":"Пока нет спонсоров, станьте первым!","rewardQrcode":"Способы награды","wechatPay":"WeChat Pay","scanWechat":"Сканировать WeChat","alipay":"Alipay","scanAlipay":"Сканировать Alipay","afdian":"Afdian","clickAfdian":"Перейти на Afdian","rewardSponsors":"Спонсоры","beSponsor":"Стать спонсором","memos":"Мемо","memosSubtitle":"Записывайте каждый момент жизни","all":"Все","noMemos":"Пока нет записей","loadMore":"Загрузить еще","retry":"Повторить","noFilteredMemos":"Нет записей по этому фильтру","justNow":"Только что","minutesAgo":"минут назад","hoursAgo":"часов назад","daysAgo":"дней назад","monthsAgo":"месяцев назад","yearsAgo":"лет назад","pinned":"Закреплено","timetable":"Расписание","timetableSubtitle":"Расписание занятий","totalWeeks":"Всего","weeks":"недель","week":"Неделя","currentWeek":"Текущая неделя","node":"Пара","nodes":"Пары","monday":"Понедельник","tuesday":"Вторник","wednesday":"Среда","thursday":"Четверг","friday":"Пятница","saturday":"Суббота","sunday":"Воскресенье","time":"Время","room":"Аудитория","teacher":"Преподаватель","notSet":"Не указано","noCourses":"На этой неделе нет занятий","unknownCourse":"Неизвестный курс","weeksShort":"нед"}
 IconBase={
     "post":"M0 3.75C0 2.784.784 2 1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25Zm1.75-.25a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25ZM3.5 6.25a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm.75 2.25h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z",
     "link":"m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z",
@@ -284,6 +284,17 @@ class GMEEK():
                 "createdAt": int(time.time())
             }
 
+        # Add timetable page to singeListJson
+        if "timetable" in self.blogBase["singlePage"]:
+            import time
+            self.blogBase["singeListJson"]["timetable"]={
+                "postTitle": self.i18n.get("timetable", "Timetable"),
+                "labels": ["timetable"],
+                "postUrl": "timetable.html",
+                "description": self.blogBase.get("timetableDesc", "Course Schedule"),
+                "createdAt": int(time.time())
+            }
+
         postNum=len(self.blogBase["postListJson"])
         pageFlag=0
         while True:
@@ -518,6 +529,29 @@ class GMEEK():
         self.renderHtml('friends.html',friendsBase,{},self.root_dir+"friends.html",friendsIcon)
         print("create friends.html")
 
+    def createTimetableHtml(self):
+        timetableBase=self.blogBase.copy()
+        timetableBase["postTitle"]=self.i18n.get("timetable", "Timetable")
+        timetableBase["description"]=timetableBase.get("timetableDesc", "Course Schedule")
+        timetableBase["postUrl"]=self.blogBase["homeUrl"]+"/timetable.html"
+        timetableBase["ogImage"]=self.blogBase["ogImage"]
+        timetableBase["commentNum"]=0
+        timetableBase["style"]=""
+        timetableBase["script"]=""
+        timetableBase["head"]=""
+        timetableBase["top"]=False
+        timetableBase["postSourceUrl"]=""
+        timetableBase["repoName"]=self.options.repo_name
+        timetableBase["bottomText"]=""
+        timetableBase["needComment"]=0
+        timetableBase["highlight"]=0
+
+        keys=['sun','moon','sync','home']
+        timetableIcon=dict(zip(keys, map(IconBase.get, keys)))
+
+        self.renderHtml('timetable.html',timetableBase,{},self.root_dir+"timetable.html",timetableIcon)
+        print("create timetable.html")
+
     def createFcircleHtml(self):
         fcircleBase=self.blogBase.copy()
         fcircleBase["postTitle"]=self.i18n["fcircle"]
@@ -626,6 +660,7 @@ class GMEEK():
 
         self.createAboutHtml()
         self.createFriendsHtml()
+        self.createTimetableHtml()
         self.createFcircleHtml()
         self.createAddlinkHtml()
         self.createRewardHtml()

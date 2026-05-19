@@ -1,0 +1,735 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<meta name="description" content="{{ i18n['timetable'] if 'timetable' in i18n else 'Timetable' }}">
+<meta property="og:title" content="{{ i18n['timetable'] if 'timetable' in i18n else 'Timetable' }}">
+<meta property="og:description" content="{{ i18n['timetableSubtitle'] if 'timetableSubtitle' in i18n else 'Course Schedule' }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ blogBase['homeUrl'] }}/timetable.html">
+<meta property="og:image" content="{{ blogBase['ogImage'] }}">
+<title>{{ i18n['timetable'] if 'timetable' in i18n else 'Timetable' }} - {{ blogBase['displayTitle'] }}</title>
+{% endblock %}
+
+{% block style %}
+<style>
+/* Header Styles - same as about.html */
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+
+/* Timetable Page Styles */
+#timetable-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header Section */
+.timetable-header {
+    margin-bottom: 24px;
+}
+
+.timetable-title-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.timetable-info h1 {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+    color: var(--color-fg-default);
+}
+
+.timetable-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-fg-muted);
+    font-size: 14px;
+}
+
+.timetable-meta .dot {
+    color: var(--color-fg-muted);
+}
+
+/* Week Navigation */
+.week-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.week-nav-buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.week-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border-default);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.week-btn:hover:not(:disabled) {
+    background-color: var(--color-canvas-subtle);
+    border-color: var(--color-accent-emphasis);
+}
+
+.week-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.week-display {
+    min-width: 100px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0 12px;
+}
+
+.current-week-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    background-color: var(--color-accent-emphasis);
+    color: white;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Desktop Table View */
+.timetable-desktop {
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.timetable-table-wrapper {
+    overflow-x: auto;
+}
+
+.timetable-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.timetable-table th,
+.timetable-table td {
+    border: 1px solid var(--color-border-default);
+    padding: 12px;
+    vertical-align: top;
+}
+
+.timetable-table th {
+    background-color: var(--color-canvas-subtle);
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+}
+
+.timetable-table th:first-child {
+    width: 100px;
+    min-width: 100px;
+}
+
+.node-cell {
+    background-color: var(--color-canvas-subtle);
+}
+
+.node-info .node-number {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.node-info .node-time {
+    font-size: 12px;
+    color: var(--color-fg-muted);
+}
+
+/* Course Card */
+.course-card {
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    border-left: 4px solid;
+    background-color: var(--color-canvas-subtle);
+    transition: transform 0.2s ease;
+}
+
+.course-card:last-child {
+    margin-bottom: 0;
+}
+
+.course-card:hover {
+    transform: translateX(2px);
+}
+
+.course-name {
+    font-weight: 600;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+.course-details {
+    font-size: 12px;
+    color: var(--color-fg-muted);
+    line-height: 1.5;
+}
+
+.course-details div {
+    margin-bottom: 2px;
+}
+
+.empty-cell {
+    text-align: center;
+    color: var(--color-fg-muted);
+    font-size: 12px;
+    padding: 20px;
+}
+
+/* Mobile Card View */
+.timetable-mobile {
+    display: none;
+    space-y: 16px;
+}
+
+.day-card {
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.day-card-header {
+    padding: 16px;
+    background-color: var(--color-canvas-subtle);
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.day-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.day-card-content {
+    padding: 16px;
+}
+
+.day-card-empty {
+    padding: 24px;
+    text-align: center;
+    color: var(--color-fg-muted);
+    font-size: 14px;
+}
+
+.mobile-course-card {
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-left: 4px solid;
+    background-color: var(--color-canvas-subtle);
+}
+
+.mobile-course-card:last-child {
+    margin-bottom: 0;
+}
+
+.mobile-course-name {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.mobile-course-details {
+    font-size: 13px;
+    color: var(--color-fg-muted);
+    line-height: 1.6;
+}
+
+.mobile-course-details div {
+    margin-bottom: 4px;
+}
+
+/* Loading State */
+.timetable-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: var(--color-fg-muted);
+}
+
+.timetable-loading svg {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 16px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Error State */
+.timetable-error {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--color-danger-fg, #cf222e);
+}
+
+.timetable-error svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+}
+
+/* Mobile Adaptation */
+@media (max-width: 768px) {
+    .timetable-desktop {
+        display: none;
+    }
+
+    .timetable-mobile {
+        display: block;
+    }
+
+    .timetable-title-section {
+        flex-direction: column;
+    }
+
+    .timetable-info h1 {
+        font-size: 24px;
+    }
+
+    .week-nav {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block header %}
+<h1 class="postTitle">{{ i18n['timetable'] if 'timetable' in i18n else 'Timetable' }}</h1>
+<div class="title-right">
+    <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="timetable-container">
+    <div class="timetable-header">
+        <div class="timetable-title-section">
+            <div class="timetable-info">
+                <h1 id="table-name">{{ i18n['loading'] if 'loading' in i18n else 'Loading...' }}</h1>
+                <div class="timetable-meta">
+                    <span id="max-week">{{ i18n['loading'] if 'loading' in i18n else 'Loading...' }}</span>
+                    <span class="dot">·</span>
+                    <span id="page-views"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="week-nav">
+            <div class="week-nav-buttons">
+                <button class="week-btn" id="prev-week" onclick="goToPreviousWeek()" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+                <span class="week-display" id="week-display">{{ i18n['loading'] if 'loading' in i18n else 'Loading...' }}</span>
+                <button class="week-btn" id="next-week" onclick="goToNextWeek()" disabled>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+            <span class="current-week-badge" id="current-week-badge" style="display: none;">
+                {{ i18n['currentWeek'] if 'currentWeek' in i18n else 'Current Week' }}
+            </span>
+        </div>
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="timetable-desktop" id="timetable-desktop">
+        <div class="timetable-table-wrapper">
+            <table class="timetable-table" id="timetable-table">
+                <thead>
+                    <tr id="table-header">
+                        <th>{{ i18n['node'] if 'node' in i18n else 'Node' }}</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Card View -->
+    <div class="timetable-mobile" id="timetable-mobile">
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+// Timetable Data URL
+const TIMETABLE_DATA_URL = '{{ blogBase["homeUrl"] }}/static/大三下.json';
+
+// State
+let timetableData = null;
+let currentWeek = 1;
+let maxWeek = 1;
+let actualCurrentWeek = 1;
+
+// Weekday labels
+const WEEKDAY_LABELS = {
+    1: '{{ i18n["monday"] if "monday" in i18n else "Monday" }}',
+    2: '{{ i18n["tuesday"] if "tuesday" in i18n else "Tuesday" }}',
+    3: '{{ i18n["wednesday"] if "wednesday" in i18n else "Wednesday" }}',
+    4: '{{ i18n["thursday"] if "thursday" in i18n else "Thursday" }}',
+    5: '{{ i18n["friday"] if "friday" in i18n else "Friday" }}',
+    6: '{{ i18n["saturday"] if "saturday" in i18n else "Saturday" }}',
+    7: '{{ i18n["sunday"] if "sunday" in i18n else "Sunday" }}'
+};
+
+// Initialize
+document.addEventListener('DOMContentLoaded', initTimetable);
+
+// Set header icons
+document.getElementById("pathHome").setAttribute("d", IconList["home"]);
+document.getElementById("themeSwitch").setAttribute("d", IconList["sun"]);
+
+async function initTimetable() {
+    try {
+        const response = await fetch(TIMETABLE_DATA_URL + '?_t=' + Date.now());
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        timetableData = await response.json();
+        
+        // Calculate current week
+        actualCurrentWeek = resolveCurrentWeek(timetableData.settings.startDate, timetableData.settings.maxWeek);
+        maxWeek = timetableData.settings.maxWeek;
+        
+        // Get week from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestedWeek = parseInt(urlParams.get('week'));
+        if (requestedWeek && requestedWeek >= 1 && requestedWeek <= maxWeek) {
+            currentWeek = requestedWeek;
+        } else {
+            currentWeek = actualCurrentWeek;
+        }
+        
+        renderTimetable();
+    } catch (error) {
+        console.error('Failed to load timetable:', error);
+        document.getElementById('timetable-desktop').innerHTML = `
+            <div class="timetable-error">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <p>{{ i18n['loadError'] if 'loadError' in i18n else 'Failed to load timetable' }}</p>
+            </div>
+        `;
+    }
+}
+
+function resolveCurrentWeek(startDateText, maxWeek) {
+    const startDate = parseDate(startDateText);
+    if (!startDate) return 1;
+    
+    const now = new Date();
+    const msPerDay = 24 * 60 * 60 * 1000;
+    const diffDays = Math.floor((now.getTime() - startDate.getTime()) / msPerDay);
+    const week = Math.floor(diffDays / 7) + 1;
+    
+    if (week < 1) return 1;
+    if (week > maxWeek) return maxWeek;
+    return week;
+}
+
+function parseDate(ymd) {
+    const parts = ymd.split('-').map(Number);
+    if (parts.length !== 3 || parts.some(isNaN)) return null;
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+function shouldShowWeekend(week) {
+    const weekendConfig = timetableData.settings.weekendDisplay;
+    if (!weekendConfig || !weekendConfig.enabled) {
+        return {
+            showSat: timetableData.settings.showSat,
+            showSun: timetableData.settings.showSun
+        };
+    }
+    
+    const showSat = weekendConfig.weeks.includes(week) && weekendConfig.days.includes('sat');
+    const showSun = weekendConfig.weeks.includes(week) && weekendConfig.days.includes('sun');
+    
+    return { showSat, showSun };
+}
+
+function renderTimetable() {
+    if (!timetableData) return;
+    
+    const settings = timetableData.settings;
+    const { showSat, showSun } = shouldShowWeekend(currentWeek);
+    
+    // Update header info
+    document.getElementById('table-name').textContent = settings.tableName || '{{ i18n["timetable"] if "timetable" in i18n else "Timetable" }}';
+    document.getElementById('max-week').textContent = '{{ i18n["totalWeeks"] if "totalWeeks" in i18n else "Total" }} ' + maxWeek + ' {{ i18n["weeks"] if "weeks" in i18n else "weeks" }}';
+    document.getElementById('week-display').textContent = '{{ i18n["week"] if "week" in i18n else "Week" }} ' + currentWeek;
+    
+    // Update current week badge
+    const badge = document.getElementById('current-week-badge');
+    if (currentWeek === actualCurrentWeek) {
+        badge.style.display = 'inline-flex';
+    } else {
+        badge.style.display = 'none';
+    }
+    
+    // Update navigation buttons
+    document.getElementById('prev-week').disabled = currentWeek <= 1;
+    document.getElementById('next-week').disabled = currentWeek >= maxWeek;
+    
+    // Build day columns
+    const dayColumns = [
+        { day: 1, label: WEEKDAY_LABELS[1] },
+        { day: 2, label: WEEKDAY_LABELS[2] },
+        { day: 3, label: WEEKDAY_LABELS[3] },
+        { day: 4, label: WEEKDAY_LABELS[4] },
+        { day: 5, label: WEEKDAY_LABELS[5] }
+    ];
+    if (showSat) dayColumns.push({ day: 6, label: WEEKDAY_LABELS[6] });
+    if (showSun) dayColumns.push({ day: 7, label: WEEKDAY_LABELS[7] });
+    
+    // Build node rows (show every 2 nodes)
+    const nodeRows = timetableData.timeTable
+        .filter(item => item.node % 2 === 1)
+        .map(item => ({
+            node: item.node,
+            startTime: item.startTime,
+            endTime: timetableData.timeTable.find(n => n.node === Math.min(item.node + 1, timetableData.timeTable.length))?.endTime || item.endTime
+        }));
+    
+    // Build course map
+    const courseMap = new Map(timetableData.courses.map(c => [c.id, c]));
+    
+    // Group courses by day
+    const coursesByDay = {};
+    dayColumns.forEach(col => coursesByDay[col.day] = []);
+    
+    timetableData.schedules.forEach(schedule => {
+        if (schedule.day < 1 || schedule.day > 7) return;
+        if (currentWeek < schedule.startWeek || currentWeek > schedule.endWeek) return;
+        if (!(schedule.day in coursesByDay)) return;
+        
+        const course = courseMap.get(schedule.id);
+        const courseName = course?.courseName || '{{ i18n["unknownCourse"] if "unknownCourse" in i18n else "Unknown Course" }} #' + schedule.id;
+        const color = parseColor(course?.color) || generateColor(courseName, schedule.id);
+        
+        coursesByDay[schedule.day].push({
+            ...schedule,
+            courseName,
+            color,
+            endNode: Math.min(schedule.startNode + schedule.step - 1, timetableData.timeTable.length)
+        });
+    });
+    
+    // Sort courses by start node
+    Object.keys(coursesByDay).forEach(day => {
+        coursesByDay[day].sort((a, b) => a.startNode - b.startNode);
+    });
+    
+    // Render desktop table
+    renderDesktopTable(dayColumns, nodeRows, coursesByDay);
+    
+    // Render mobile cards
+    renderMobileCards(dayColumns, coursesByDay, nodeRows);
+    
+    // Update URL
+    updateUrl();
+}
+
+function renderDesktopTable(dayColumns, nodeRows, coursesByDay) {
+    const headerRow = document.getElementById('table-header');
+    headerRow.innerHTML = '<th>{{ i18n["node"] if "node" in i18n else "Node" }}</th>';
+    dayColumns.forEach(day => {
+        headerRow.innerHTML += `<th>${day.label}</th>`;
+    });
+    
+    const tbody = document.getElementById('table-body');
+    tbody.innerHTML = '';
+    
+    nodeRows.forEach(row => {
+        const tr = document.createElement('tr');
+        
+        // Node cell
+        tr.innerHTML = `
+            <td class="node-cell">
+                <div class="node-info">
+                    <div class="node-number">{{ i18n["nodes"] if "nodes" in i18n else "Nodes" }} ${row.node}-${Math.min(row.node + 1, row.node + 1)}</div>
+                    <div class="node-time">${row.startTime} - ${row.endTime}</div>
+                </div>
+            </td>
+        `;
+        
+        // Day cells
+        dayColumns.forEach(day => {
+            const courses = coursesByDay[day.day].filter(c => c.startNode === row.node);
+            let cellHtml = '';
+            
+            if (courses.length > 0) {
+                courses.forEach(course => {
+                    cellHtml += `
+                        <div class="course-card" style="border-color: ${course.color}; background: color-mix(in srgb, ${course.color} 10%, var(--color-canvas-subtle))">
+                            <div class="course-name">${escapeHtml(course.courseName)}</div>
+                            <div class="course-details">
+                                <div>${course.startWeek}-${course.endWeek} {{ i18n["weeksShort"] if "weeksShort" in i18n else "wks" }}</div>
+                                <div>{{ i18n["room"] if "room" in i18n else "Room" }}: ${escapeHtml(course.room || '{{ i18n["notSet"] if "notSet" in i18n else "Not set" }}')}</div>
+                                <div>{{ i18n["teacher"] if "teacher" in i18n else "Teacher" }}: ${escapeHtml(course.teacher || '{{ i18n["notSet"] if "notSet" in i18n else "Not set" }}')}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                cellHtml = '<div class="empty-cell">—</div>';
+            }
+            
+            tr.innerHTML += `<td>${cellHtml}</td>`;
+        });
+        
+        tbody.appendChild(tr);
+    });
+}
+
+function renderMobileCards(dayColumns, coursesByDay, nodeRows) {
+    const container = document.getElementById('timetable-mobile');
+    container.innerHTML = '';
+    
+    dayColumns.forEach(day => {
+        const courses = coursesByDay[day.day];
+        
+        const dayCard = document.createElement('div');
+        dayCard.className = 'day-card';
+        
+        let contentHtml = `
+            <div class="day-card-header">
+                <h3 class="day-card-title">${day.label}</h3>
+            </div>
+            <div class="day-card-content">
+        `;
+        
+        if (courses.length > 0) {
+            courses.forEach(course => {
+                const nodeInfo = nodeRows.find(n => n.node === course.startNode);
+                const timeText = nodeInfo ? `${nodeInfo.startTime} - ${nodeInfo.endTime}` : '';
+                
+                contentHtml += `
+                    <div class="mobile-course-card" style="border-color: ${course.color}; background: color-mix(in srgb, ${course.color} 10%, var(--color-canvas-subtle))">
+                        <div class="mobile-course-name">${escapeHtml(course.courseName)}</div>
+                        <div class="mobile-course-details">
+                            <div>{{ i18n["time"] if "time" in i18n else "Time" }}: ${timeText}</div>
+                            <div>{{ i18n["weeks"] if "weeks" in i18n else "Weeks" }}: ${course.startWeek}-${course.endWeek}</div>
+                            <div>{{ i18n["room"] if "room" in i18n else "Room" }}: ${escapeHtml(course.room || '{{ i18n["notSet"] if "notSet" in i18n else "Not set" }}')}</div>
+                            <div>{{ i18n["teacher"] if "teacher" in i18n else "Teacher" }}: ${escapeHtml(course.teacher || '{{ i18n["notSet"] if "notSet" in i18n else "Not set" }}')}</div>
+                        </div>
+                    </div>
+                `;
+            });
+        } else {
+            contentHtml += '<div class="day-card-empty">{{ i18n["noCourses"] if "noCourses" in i18n else "No courses this week" }}</div>';
+        }
+        
+        contentHtml += '</div>';
+        dayCard.innerHTML = contentHtml;
+        container.appendChild(dayCard);
+    });
+}
+
+function parseColor(raw) {
+    if (!raw || !raw.startsWith('#') || raw.length !== 9) return null;
+    const r = raw.slice(3, 5);
+    const g = raw.slice(5, 7);
+    const b = raw.slice(7, 9);
+    return `#${r}${g}${b}`;
+}
+
+function generateColor(courseName, courseId) {
+    const seed = hashText(`${courseName}-${courseId}`);
+    const hue = seed % 360;
+    return `hsl(${hue} 78% 68%)`;
+}
+
+function hashText(input) {
+    let hash = 0;
+    for (let i = 0; i < input.length; i++) {
+        hash = (hash * 31 + input.charCodeAt(i)) | 0;
+    }
+    return Math.abs(hash);
+}
+
+function goToPreviousWeek() {
+    if (currentWeek > 1) {
+        currentWeek--;
+        renderTimetable();
+    }
+}
+
+function goToNextWeek() {
+    if (currentWeek < maxWeek) {
+        currentWeek++;
+        renderTimetable();
+    }
+}
+
+function updateUrl() {
+    const url = new URL(window.location.href);
+    url.searchParams.set('week', currentWeek);
+    window.history.replaceState({}, '', url);
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
+{% endblock %}
