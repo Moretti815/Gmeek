@@ -399,55 +399,44 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
         enableBase64: {{ 'true' if blogBase['safego']['enableBase64Encode'] else 'false' }},
         goPagePath: '{{ blogBase["homeUrl"] }}/go.html',
         domainWhitelist: {{ blogBase['safego']['domainWhitelist'] | tojson if blogBase['safego']['domainWhitelist'] else '[]' }},
-        ignoreAttrs: {{ blogBase['safego']['ignoreAttrs'] | tojson if blogBase['safego']['ignoreAttrs'] else '["data-fancybox"]' }}
+        ignoreAttrs: {{ blogBase['safego']['ignoreAttrs'] | tojson if blogBase['safego']['ignoreAttrs'] else '["data-fancybox"]' }},
+        urlParamName: '{{ blogBase["safego"]["urlParamName"] if blogBase["safego"]["urlParamName"] else "u" }}'
     };
-    
+
     function encodeSafeUrl(url) {
         if (!SAFEGO_CONFIG.enableBase64) {
             return encodeURIComponent(url);
         }
-        
-        // Base64 encode with URL safe characters
         const base64 = btoa(encodeURIComponent(url).replace(/%([0-9A-F]{2})/g,
             function(_, p1) { return String.fromCharCode('0x' + p1); }
         ));
-        
-        // Replace URL unsafe characters
         return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     }
-    
+
     function isExternalLink(href) {
         if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:')) {
             return false;
         }
-        
-        // Relative links
         if (href.startsWith('/') && !href.startsWith('//')) {
             return false;
         }
-        
         try {
             const url = new URL(href, window.location.href);
             const currentHost = window.location.hostname;
-            
-            // Same domain
             if (url.hostname === currentHost) {
                 return false;
             }
-            
-            // Check whitelist
             for (let i = 0; i < SAFEGO_CONFIG.domainWhitelist.length; i++) {
                 if (url.hostname.includes(SAFEGO_CONFIG.domainWhitelist[i])) {
                     return false;
                 }
             }
-            
             return true;
         } catch (e) {
             return false;
         }
     }
-    
+
     function hasIgnoreAttr(element) {
         for (let i = 0; i < SAFEGO_CONFIG.ignoreAttrs.length; i++) {
             if (element.hasAttribute(SAFEGO_CONFIG.ignoreAttrs[i])) {
@@ -456,53 +445,35 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
         }
         return false;
     }
-    
+
     function processLinks() {
         const links = document.querySelectorAll('a[href]');
-        
         links.forEach(function(link) {
-            // Skip already processed
             if (link.hasAttribute('data-safego-processed')) {
                 return;
             }
-            
             const href = link.getAttribute('href');
-            
-            // Skip if has ignore attribute
             if (hasIgnoreAttr(link)) {
                 link.setAttribute('data-safego-processed', 'true');
                 return;
             }
-            
-            // Check if external link
             if (isExternalLink(href)) {
                 const encodedUrl = encodeSafeUrl(href);
-                const goUrl = SAFEGO_CONFIG.goPagePath + '?u=' + encodedUrl;
-                
+                const goUrl = SAFEGO_CONFIG.goPagePath + '?' + SAFEGO_CONFIG.urlParamName + '=' + encodedUrl;
                 link.setAttribute('href', goUrl);
                 link.setAttribute('data-safego-processed', 'true');
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
-                
-                // 点击时记录来源页面到 localStorage（同源共享）
-                link.addEventListener('click', function() {
-                    try {
-                        localStorage.setItem('safego_source', window.location.href);
-                        localStorage.setItem('safego_source_time', Date.now());
-                    } catch (e) {}
-                });
             }
         });
     }
-    
-    // Process on DOM ready
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', processLinks);
     } else {
         processLinks();
     }
-    
-    // Process dynamically added links
+
     const observer = new MutationObserver(function(mutations) {
         let shouldProcess = false;
         mutations.forEach(function(mutation) {
@@ -516,12 +487,11 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
                 });
             }
         });
-        
         if (shouldProcess) {
             processLinks();
         }
     });
-    
+
     observer.observe(document.body, { childList: true, subtree: true });
 })();
 {% endif %}
