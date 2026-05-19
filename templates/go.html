@@ -347,14 +347,7 @@ function showContent() {
     }
 }
 
-function startCountdownAfterPreloader() {
-    // 延迟一点时间确保加载动画完全消失后再开始倒计时
-    setTimeout(function() {
-        if (SAFEGO_CONFIG.countdownTime > 0) {
-            startCountdown();
-        }
-    }, 100);
-}
+
 
 function startCountdown() {
     remainingTime = SAFEGO_CONFIG.countdownTime;
@@ -439,7 +432,7 @@ function goBack() {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('load', function() {
     targetUrl = getTargetUrl();
     
     if (!targetUrl || !isValidUrl(targetUrl)) {
@@ -450,55 +443,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // 等待加载动画结束后再显示内容
-    waitForPreloader();
-});
-
-function waitForPreloader() {
-    const preloader = document.getElementById('preloader');
-    
-    // 如果加载动画不存在或已隐藏，显示内容并开始倒计时
-    if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
-        showContent();
-        startCountdownAfterPreloader();
-        return;
-    }
-    
-    // 先显示内容（倒计时显示但不开始）
-    showContent();
-    
-    let countdownStarted = false;
-    
-    function startIfNotStarted() {
-        if (!countdownStarted) {
-            countdownStarted = true;
-            startCountdownAfterPreloader();
-        }
-    }
-    
-    // 创建 MutationObserver 监听加载动画的隐藏
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes') {
-                if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
-                    observer.disconnect();
-                    // 加载动画结束后才开始倒计时
-                    startIfNotStarted();
-                }
-            }
-        });
-    });
-    
-    observer.observe(preloader, { 
-        attributes: true, 
-        attributeFilter: ['class', 'style'] 
-    });
-    
-    // 备用方案：最多等待 3.5 秒（与 base.html 的最大等待时间一致）
+    // 等待加载动画完全消失后再显示内容
     setTimeout(function() {
-        observer.disconnect();
-        startIfNotStarted();
-    }, 3500);
-}
+        showContent();
+        // 再延迟一点确保加载动画完全消失后开始倒计时
+        setTimeout(startCountdown, 100);
+    }, 600);
+});
 </script>
 {% endblock %}
