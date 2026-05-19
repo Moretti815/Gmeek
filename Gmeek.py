@@ -16,9 +16,9 @@ from jinja2 import Environment, FileSystemLoader
 from transliterate import translit
 from collections import OrderedDict
 ######################################################################################
-i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","reward":"Reward","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends","noSponsors":"No sponsors yet, be the first to support me!","rewardQrcode":"Reward Methods","wechatPay":"WeChat Pay","scanWechat":"Scan with WeChat","alipay":"Alipay","scanAlipay":"Scan with Alipay","afdian":"Afdian","clickAfdian":"Go to Afdian","rewardSponsors":"Sponsors","beSponsor":"Become a Sponsor"}
-i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","reward":"赞赏","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败","noSponsors":"暂无赞赏者，成为第一个支持我的人吧！","rewardQrcode":"赞赏方式","wechatPay":"微信支付","scanWechat":"微信扫码赞赏","alipay":"支付宝","scanAlipay":"支付宝扫码赞赏","afdian":"爱发电","clickAfdian":"点击前往爱发电","rewardSponsors":"赞赏者名单","beSponsor":"成为赞赏者"}
-i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","fcircle":"Круг друзей","applyFriend":"Подать заявку","addlink":"Подать заявку","reward":"Награда","loading":"Загрузка...","noFriends":"Пока нет друзей","loadError":"Не удалось загрузить друзей","noSponsors":"Пока нет спонсоров, станьте первым!","rewardQrcode":"Способы награды","wechatPay":"WeChat Pay","scanWechat":"Сканировать WeChat","alipay":"Alipay","scanAlipay":"Сканировать Alipay","afdian":"Afdian","clickAfdian":"Перейти на Afdian","rewardSponsors":"Спонсоры","beSponsor":"Стать спонсором"}
+i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","reward":"Reward","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends","noSponsors":"No sponsors yet, be the first to support me!","rewardQrcode":"Reward Methods","wechatPay":"WeChat Pay","scanWechat":"Scan with WeChat","alipay":"Alipay","scanAlipay":"Scan with Alipay","afdian":"Afdian","clickAfdian":"Go to Afdian","rewardSponsors":"Sponsors","beSponsor":"Become a Sponsor","memos":"Memos","memosSubtitle":"Record every moment of life","all":"All","noMemos":"No memos yet","loadMore":"Load More","retry":"Retry","noFilteredMemos":"No memos match this filter","justNow":"Just now","minutesAgo":"minutes ago","hoursAgo":"hours ago","daysAgo":"days ago","monthsAgo":"months ago","yearsAgo":"years ago","pinned":"Pinned"}
+i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","reward":"赞赏","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败","noSponsors":"暂无赞赏者，成为第一个支持我的人吧！","rewardQrcode":"赞赏方式","wechatPay":"微信支付","scanWechat":"微信扫码赞赏","alipay":"支付宝","scanAlipay":"支付宝扫码赞赏","afdian":"爱发电","clickAfdian":"点击前往爱发电","rewardSponsors":"赞赏者名单","beSponsor":"成为赞赏者","memos":"碎碎念","memosSubtitle":"记录生活的每一个瞬间","all":"全部","noMemos":"暂无动态","loadMore":"加载更多","retry":"重试","noFilteredMemos":"没有匹配该标签的动态","justNow":"刚刚","minutesAgo":"分钟前","hoursAgo":"小时前","daysAgo":"天前","monthsAgo":"个月前","yearsAgo":"年前","pinned":"置顶"}
+i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","fcircle":"Круг друзей","applyFriend":"Подать заявку","addlink":"Подать заявку","reward":"Награда","loading":"Загрузка...","noFriends":"Пока нет друзей","loadError":"Не удалось загрузить друзей","noSponsors":"Пока нет спонсоров, станьте первым!","rewardQrcode":"Способы награды","wechatPay":"WeChat Pay","scanWechat":"Сканировать WeChat","alipay":"Alipay","scanAlipay":"Сканировать Alipay","afdian":"Afdian","clickAfdian":"Перейти на Afdian","rewardSponsors":"Спонсоры","beSponsor":"Стать спонсором","memos":"Мемо","memosSubtitle":"Записывайте каждый момент жизни","all":"Все","noMemos":"Пока нет записей","loadMore":"Загрузить еще","retry":"Повторить","noFilteredMemos":"Нет записей по этому фильтру","justNow":"Только что","minutesAgo":"минут назад","hoursAgo":"часов назад","daysAgo":"дней назад","monthsAgo":"месяцев назад","yearsAgo":"лет назад","pinned":"Закреплено"}
 IconBase={
     "post":"M0 3.75C0 2.784.784 2 1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25Zm1.75-.25a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25ZM3.5 6.25a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm.75 2.25h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z",
     "link":"m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z",
@@ -270,6 +270,17 @@ class GMEEK():
                 "labels": ["reward"],
                 "postUrl": "reward.html",
                 "description": self.blogBase.get("rewardDesc", "感谢每一位支持我的朋友！"),
+                "createdAt": int(time.time())
+            }
+
+        # Add memos page to singeListJson
+        if "memos" in self.blogBase["singlePage"]:
+            import time
+            self.blogBase["singeListJson"]["memos"]={
+                "postTitle": self.i18n.get("memos", "Memos"),
+                "labels": ["memos"],
+                "postUrl": "memos.html",
+                "description": self.blogBase.get("memosDesc", "Record every moment of life"),
                 "createdAt": int(time.time())
             }
 
@@ -576,6 +587,29 @@ class GMEEK():
         self.renderHtml('reward.html',rewardBase,{},self.root_dir+"reward.html",rewardIcon)
         print("create reward.html")
 
+    def createMemosHtml(self):
+        memosBase=self.blogBase.copy()
+        memosBase["postTitle"]=self.i18n.get("memos", "Memos")
+        memosBase["description"]=memosBase.get("memosDesc", "Record every moment of life")
+        memosBase["postUrl"]=self.blogBase["homeUrl"]+"/memos.html"
+        memosBase["ogImage"]=self.blogBase["ogImage"]
+        memosBase["commentNum"]=0
+        memosBase["style"]=""
+        memosBase["script"]=""
+        memosBase["head"]=""
+        memosBase["top"]=False
+        memosBase["postSourceUrl"]=""
+        memosBase["repoName"]=self.options.repo_name
+        memosBase["bottomText"]=""
+        memosBase["needComment"]=0
+        memosBase["highlight"]=0
+
+        keys=['sun','moon','sync','home']
+        memosIcon=dict(zip(keys, map(IconBase.get, keys)))
+
+        self.renderHtml('memos.html',memosBase,{},self.root_dir+"memos.html",memosIcon)
+        print("create memos.html")
+
     def runAll(self):
         print("====== start create static html ======")
         self.cleanFile()
@@ -595,6 +629,7 @@ class GMEEK():
         self.createFcircleHtml()
         self.createAddlinkHtml()
         self.createRewardHtml()
+        self.createMemosHtml()
         self.createPlistHtml()
         self.createFeedXml()
         print("====== create static html end ======")
