@@ -480,10 +480,11 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
                 link.setAttribute('target', '_blank');
                 link.setAttribute('rel', 'noopener noreferrer');
                 
-                // 点击时记录来源页面
+                // 点击时记录来源页面到 localStorage（同源共享）
                 link.addEventListener('click', function() {
                     try {
-                        sessionStorage.setItem('safego_source', window.location.href);
+                        localStorage.setItem('safego_source', window.location.href);
+                        localStorage.setItem('safego_source_time', Date.now());
                     } catch (e) {}
                 });
             }

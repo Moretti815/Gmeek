@@ -427,9 +427,15 @@ function goBack() {
         clearInterval(countdownInterval);
     }
     
-    // 优先使用 sessionStorage 中记录的来源页面
-    const sourcePage = sessionStorage.getItem('safego_source');
-    if (sourcePage && sourcePage !== window.location.href) {
+    // 优先使用 localStorage 中记录的来源页面（30秒内有效）
+    const sourcePage = localStorage.getItem('safego_source');
+    const sourceTime = localStorage.getItem('safego_source_time');
+    const now = Date.now();
+    
+    if (sourcePage && sourceTime && (now - parseInt(sourceTime)) < 30000) {
+        // 清除记录避免重复使用
+        localStorage.removeItem('safego_source');
+        localStorage.removeItem('safego_source_time');
         window.location.href = sourcePage;
         return;
     }
