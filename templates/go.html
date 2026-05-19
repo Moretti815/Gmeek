@@ -435,7 +435,41 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    showContent();
+    // 等待加载动画结束后再显示内容
+    waitForPreloader();
 });
+
+function waitForPreloader() {
+    const preloader = document.getElementById('preloader');
+    
+    // 如果加载动画不存在或已隐藏，直接显示内容
+    if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none') {
+        showContent();
+        return;
+    }
+    
+    // 创建 MutationObserver 监听加载动画的隐藏
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes') {
+                if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
+                    observer.disconnect();
+                    showContent();
+                }
+            }
+        });
+    });
+    
+    observer.observe(preloader, { 
+        attributes: true, 
+        attributeFilter: ['class', 'style'] 
+    });
+    
+    // 备用方案：最多等待 1.5 秒（加载动画最大时间）
+    setTimeout(function() {
+        observer.disconnect();
+        showContent();
+    }, 1500);
+}
 </script>
 {% endblock %}
