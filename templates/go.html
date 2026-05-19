@@ -523,7 +523,7 @@
         var preloader = document.getElementById('preloader');
         
         // 如果加载动画不存在或已隐藏，直接开始倒计时
-        if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none') {
+        if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.visibility === 'hidden') {
             startCountdown();
             return;
         }
@@ -532,7 +532,7 @@
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'attributes') {
-                    if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
+                    if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.visibility === 'hidden' || preloader.style.opacity === '0') {
                         observer.disconnect();
                         startCountdown();
                     }
@@ -545,18 +545,24 @@
             attributeFilter: ['class', 'style'] 
         });
         
-        // 备用方案：最多等待 1.5 秒
+        // 备用方案：最多等待 2 秒
         setTimeout(function() {
             observer.disconnect();
             startCountdown();
-        }, 1500);
+        }, 2000);
     }
     
-    // 页面加载完成后等待加载动画
+    // 立即尝试开始（如果页面已经加载完成）
     if (document.readyState === 'complete') {
         waitForPreloader();
+    } else if (document.readyState === 'interactive') {
+        // DOM 已准备好，等待一小段时间让加载动画开始显示
+        setTimeout(waitForPreloader, 100);
     } else {
-        window.addEventListener('load', waitForPreloader);
+        // 页面还在加载中，等待 load 事件
+        window.addEventListener('load', function() {
+            setTimeout(waitForPreloader, 100);
+        });
     }
 })();
 </script>
