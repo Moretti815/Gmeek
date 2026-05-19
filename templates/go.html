@@ -1,0 +1,441 @@
+{% extends 'base.html' %}
+{% block head %}
+<meta name="description" content="{{ i18n['safegoSubtitle'] if 'safegoSubtitle' in i18n else 'External Link Safety Check' }}">
+<meta property="og:title" content="{{ i18n['safego'] if 'safego' in i18n else 'Safe Go' }} - {{ blogBase['title'] }}">
+<meta property="og:description" content="{{ i18n['safegoSubtitle'] if 'safegoSubtitle' in i18n else 'External Link Safety Check' }}">
+<meta property="og:type" content="website">
+<title>{{ i18n['safego'] if 'safego' in i18n else 'Safe Go' }} - {{ blogBase['title'] }}</title>
+{% endblock %}
+
+{% block style %}
+<style>
+#go-container {
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 40px;
+    background-color: var(--color-canvas-default);
+    border: 1px solid var(--color-border-default);
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.go-header {
+    margin-bottom: 32px;
+}
+
+.go-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    border: 3px solid var(--color-accent-emphasis);
+    object-fit: cover;
+}
+
+.go-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+    margin-bottom: 8px;
+}
+
+.go-subtitle {
+    font-size: 14px;
+    color: var(--color-fg-muted);
+}
+
+.go-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-border-default), transparent);
+    margin: 24px 0;
+}
+
+.go-warning {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--color-attention-fg);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.go-warning svg {
+    width: 18px;
+    height: 18px;
+}
+
+.go-target-label {
+    font-size: 13px;
+    color: var(--color-fg-muted);
+    margin-bottom: 8px;
+}
+
+.go-target-url {
+    background-color: var(--color-canvas-subtle);
+    border: 1px solid var(--color-border-default);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--color-fg-default);
+    word-break: break-all;
+    margin-bottom: 20px;
+    font-family: monospace;
+}
+
+.go-countdown {
+    font-size: 14px;
+    color: var(--color-fg-muted);
+    margin-bottom: 24px;
+}
+
+.go-countdown-number {
+    color: var(--color-accent-fg);
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.go-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.go-btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.go-btn-primary {
+    background-color: var(--color-btn-primary-bg);
+    color: var(--color-btn-primary-text);
+}
+
+.go-btn-primary:hover {
+    background-color: var(--color-btn-primary-hover-bg);
+}
+
+.go-btn-secondary {
+    background-color: var(--color-btn-bg);
+    color: var(--color-btn-text);
+    border: 1px solid var(--color-btn-border);
+}
+
+.go-btn-secondary:hover {
+    background-color: var(--color-btn-hover-bg);
+}
+
+.go-copy-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background-color: var(--color-success-emphasis);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.go-copy-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.go-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--color-fg-muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.go-loading svg {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+    #go-container {
+        margin: 20px auto;
+        padding: 24px;
+    }
+    
+    .go-avatar {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .go-title {
+        font-size: 20px;
+    }
+    
+    .go-actions {
+        flex-direction: column;
+    }
+    
+    .go-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block header %}
+<h1 class="postTitle">{{ i18n['safego'] if 'safego' in i18n else 'Safe Go' }}</h1>
+<div class="title-right">
+    <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="go-container">
+    <div class="go-loading" id="go-loading">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="10"/>
+        </svg>
+        {{ i18n['safegoLoading'] if 'safegoLoading' in i18n else 'Loading...' }}
+    </div>
+    
+    <div class="go-header" id="go-content" style="display: none;">
+        <img class="go-avatar" src="{{ blogBase['safego']['avatar'] if blogBase['safego']['avatar'] else blogBase['avatarUrl'] }}" alt="avatar">
+        <div class="go-title">{{ blogBase['safego']['title'] if blogBase['safego']['title'] else blogBase['title'] }}</div>
+        <div class="go-subtitle">{{ blogBase['safego']['subtitle'] if blogBase['safego']['subtitle'] else (i18n['safegoSubtitle'] if 'safegoSubtitle' in i18n else 'Safe Go Center') }}</div>
+    </div>
+    
+    <div class="go-divider" id="go-divider" style="display: none;"></div>
+    
+    <div class="go-warning" id="go-warning" style="display: none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        {{ i18n['safegoWarning'] if 'safegoWarning' in i18n else 'You are about to leave this site' }}
+    </div>
+    
+    <div class="go-target-label" id="go-target-label" style="display: none;">{{ i18n['safegoTarget'] if 'safegoTarget' in i18n else 'Target URL:' }}</div>
+    <div class="go-target-url" id="go-target-url" style="display: none;"></div>
+    
+    <div class="go-countdown" id="go-countdown" style="display: none;">
+        <span class="go-countdown-number" id="countdown-number">{{ blogBase['safego']['countdownTime'] if blogBase['safego']['countdownTime'] else 4 }}</span>
+        {{ i18n['safegoCountdown'] if 'safegoCountdown' in i18n else 'seconds to auto-redirect' }}
+    </div>
+    
+    <div class="go-actions" id="go-actions" style="display: none;">
+        <button class="go-btn go-btn-primary" id="btn-go" onclick="goToTarget()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                <polyline points="15 3 21 3 21 9"/>
+                <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            {{ i18n['safegoGoNow'] if 'safegoGoNow' in i18n else 'Go Now' }}
+        </button>
+        <button class="go-btn go-btn-secondary" id="btn-copy" onclick="copyUrl()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+            </svg>
+            {{ i18n['safegoCopy'] if 'safegoCopy' in i18n else 'Copy URL' }}
+        </button>
+        <button class="go-btn go-btn-secondary" id="btn-back" onclick="goBack()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"/>
+                <polyline points="12 19 5 12 12 5"/>
+            </svg>
+            {{ i18n['safegoBack'] if 'safegoBack' in i18n else 'Go Back' }}
+        </button>
+    </div>
+</div>
+
+<div class="go-copy-toast" id="copy-toast">{{ i18n['safegoCopied'] if 'safegoCopied' in i18n else 'Copied!' }}</div>
+{% endblock %}
+
+{% block script %}
+<script>
+document.getElementById("pathHome").setAttribute("d", IconList["home"]);
+
+// SafeGo Logic
+const SAFEGO_CONFIG = {
+    countdownTime: {{ blogBase['safego']['countdownTime'] if blogBase['safego']['countdownTime'] else 4 }},
+    enableBase64: {{ 'true' if blogBase['safego']['enableBase64Encode'] else 'false' }}
+};
+
+let targetUrl = '';
+let countdownInterval = null;
+let remainingTime = SAFEGO_CONFIG.countdownTime;
+
+function decodeUrlParam(str) {
+    if (!str) return '';
+    
+    // URL safe base64 decode
+    str = str.replace(/-/g, '+').replace(/_/g, '/');
+    
+    // Add padding
+    while (str.length % 4) {
+        str += '=';
+    }
+    
+    try {
+        const decoded = atob(str);
+        return decodeURIComponent(decoded.split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    } catch (e) {
+        return decodeURIComponent(str);
+    }
+}
+
+function getTargetUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const encodedUrl = params.get('u') || params.get('url') || params.get('target');
+    
+    if (!encodedUrl) {
+        return '';
+    }
+    
+    if (SAFEGO_CONFIG.enableBase64) {
+        return decodeUrlParam(encodedUrl);
+    }
+    
+    return decodeURIComponent(encodedUrl);
+}
+
+function isValidUrl(url) {
+    if (!url) return false;
+    
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch (e) {
+        return false;
+    }
+}
+
+function showContent() {
+    document.getElementById('go-loading').style.display = 'none';
+    document.getElementById('go-content').style.display = 'block';
+    document.getElementById('go-divider').style.display = 'block';
+    document.getElementById('go-warning').style.display = 'flex';
+    document.getElementById('go-target-label').style.display = 'block';
+    document.getElementById('go-target-url').style.display = 'block';
+    document.getElementById('go-target-url').textContent = targetUrl;
+    document.getElementById('go-actions').style.display = 'flex';
+    
+    if (SAFEGO_CONFIG.countdownTime > 0) {
+        document.getElementById('go-countdown').style.display = 'block';
+        startCountdown();
+    }
+}
+
+function startCountdown() {
+    remainingTime = SAFEGO_CONFIG.countdownTime;
+    document.getElementById('countdown-number').textContent = remainingTime;
+    
+    countdownInterval = setInterval(function() {
+        remainingTime--;
+        document.getElementById('countdown-number').textContent = remainingTime;
+        
+        if (remainingTime <= 0) {
+            clearInterval(countdownInterval);
+            goToTarget();
+        }
+    }, 1000);
+}
+
+function goToTarget() {
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+    
+    if (isValidUrl(targetUrl)) {
+        window.location.href = targetUrl;
+    } else {
+        alert('{{ i18n["safegoInvalidUrl"] if "safegoInvalidUrl" in i18n else "Invalid URL" }}');
+    }
+}
+
+function copyUrl() {
+    if (!targetUrl) return;
+    
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(targetUrl).then(showCopyToast);
+    } else {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = targetUrl;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showCopyToast();
+    }
+}
+
+function showCopyToast() {
+    const toast = document.getElementById('copy-toast');
+    toast.classList.add('show');
+    setTimeout(function() {
+        toast.classList.remove('show');
+    }, 2000);
+}
+
+function goBack() {
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+    
+    if (document.referrer && document.referrer.includes(window.location.hostname)) {
+        history.back();
+    } else {
+        window.location.href = '{{ blogBase["homeUrl"] }}';
+    }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    targetUrl = getTargetUrl();
+    
+    if (!targetUrl || !isValidUrl(targetUrl)) {
+        document.getElementById('go-loading').innerHTML = '<span style="color: var(--color-danger-fg);">{{ i18n["safegoNoUrl"] if "safegoNoUrl" in i18n else "No valid URL provided" }}</span>';
+        setTimeout(function() {
+            window.location.href = '{{ blogBase["homeUrl"] }}';
+        }, 2000);
+        return;
+    }
+    
+    showContent();
+});
+</script>
+{% endblock %}
