@@ -464,13 +464,20 @@
             countdownInterval = null;
         }
 
-        // 优先使用 document.referrer 返回来源页
+        // 优先使用 URL 参数中的 from 返回来源页（解决 noopener 导致 referrer 为空的问题）
+        var fromUrl = getQueryString('from');
+        if (fromUrl && fromUrl !== window.location.href) {
+            window.location.href = fromUrl;
+            return;
+        }
+
+        // 其次使用 document.referrer
         if (document.referrer && document.referrer !== window.location.href) {
             window.location.href = document.referrer;
             return;
         }
 
-        // 其次尝试 history.back()
+        // 最后尝试 history.back()
         if (window.history.length > 1) {
             window.history.back();
             return;
