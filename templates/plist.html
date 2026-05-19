@@ -34,21 +34,29 @@
     .LabelTime{display:none;}
 }
 
-/* Memos Timeline Styles */
+/* Memos Timeline Styles - Reference bbTimeList */
 .memos-timeline-container {
+    backdrop-filter: blur(15px);
     background-color: var(--color-canvas-default);
     border: 1px solid var(--color-border-default);
     border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    cursor: pointer;
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    height: 50px;
+    width: 100%;
+    justify-content: space-between;
     user-select: none;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
 }
 
 .memos-timeline-container:hover {
     border-color: var(--color-accent-emphasis);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .memos-timeline-inner {
@@ -56,6 +64,8 @@
     align-items: center;
     gap: 12px;
     overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 .memos-icon {
@@ -64,6 +74,12 @@
     flex-shrink: 0;
     color: var(--color-accent-fg);
     animation: memos-pulse 2s ease-in-out infinite;
+    transition: opacity 0.3s ease, color 0.3s ease;
+}
+
+.memos-timeline-container:hover .memos-icon {
+    opacity: 0.8;
+    color: var(--color-accent-emphasis);
 }
 
 @keyframes memos-pulse {
@@ -89,7 +105,11 @@
     text-overflow: ellipsis;
     font-size: 14px;
     color: var(--color-fg-default);
-    line-height: 1.5;
+    line-height: 25px;
+    height: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .memos-loading {
@@ -97,11 +117,26 @@
 }
 
 .memos-item {
-    display: inline;
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 25px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s ease;
+    align-items: center;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.memos-timeline-container:hover .memos-item {
+    color: var(--color-accent-fg);
 }
 
 .memos-item-text {
-    color: var(--color-fg-default);
+    color: inherit;
 }
 
 .memos-item-image {
@@ -119,6 +154,12 @@
     flex-shrink: 0;
     color: var(--color-fg-muted);
     transition: transform 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+.memos-arrow:hover {
+    opacity: 0.8;
+    color: var(--color-accent-emphasis);
 }
 
 .memos-timeline-container:hover .memos-arrow {
@@ -128,8 +169,9 @@
 
 @media (max-width: 600px) {
     .memos-timeline-container {
-        padding: 10px 12px;
-        margin-bottom: 12px;
+        margin: 0;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem 0.75rem;
     }
     
     .memos-timeline-content {
