@@ -238,10 +238,6 @@ if (theme === "auto") {
         
         setTimeout(function() {
             preloader.classList.add('hidden');
-            preloader.style.display = 'none';
-            
-            // 触发自定义事件通知加载动画已结束
-            window.dispatchEvent(new CustomEvent('preloaderHidden'));
             
             // 动画完全结束后移除元素
             setTimeout(function() {
@@ -404,43 +400,55 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
         goPagePath: '{{ blogBase["homeUrl"] }}/go.html',
         domainWhitelist: {{ blogBase['safego']['domainWhitelist'] | tojson if blogBase['safego']['domainWhitelist'] else '[]' }},
         ignoreAttrs: {{ blogBase['safego']['ignoreAttrs'] | tojson if blogBase['safego']['ignoreAttrs'] else '["data-fancybox"]' }},
-        urlParamName: '{{ blogBase["safego"]["urlParamName"] if blogBase["safego"]["urlParamName"] else "u" }}'
+        enableTargetBlank: {{ 'true' if blogBase['safego']['enableTargetBlank'] else 'false' }}
     };
-
+    
     function encodeSafeUrl(url) {
         if (!SAFEGO_CONFIG.enableBase64) {
             return encodeURIComponent(url);
         }
+        
+        // Base64 encode with URL safe characters
         const base64 = btoa(encodeURIComponent(url).replace(/%([0-9A-F]{2})/g,
             function(_, p1) { return String.fromCharCode('0x' + p1); }
         ));
+        
+        // Replace URL unsafe characters
         return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     }
-
+    
     function isExternalLink(href) {
-        if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:')) {
+        if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:')) {
             return false;
         }
+        
+        // Relative links
         if (href.startsWith('/') && !href.startsWith('//')) {
             return false;
         }
+        
         try {
             const url = new URL(href, window.location.href);
             const currentHost = window.location.hostname;
+            
+            // Same domain
             if (url.hostname === currentHost) {
                 return false;
             }
+            
+            // Check whitelist
             for (let i = 0; i < SAFEGO_CONFIG.domainWhitelist.length; i++) {
                 if (url.hostname.includes(SAFEGO_CONFIG.domainWhitelist[i])) {
                     return false;
                 }
             }
+            
             return true;
         } catch (e) {
             return false;
         }
     }
-
+    
     function hasIgnoreAttr(element) {
         for (let i = 0; i < SAFEGO_CONFIG.ignoreAttrs.length; i++) {
             if (element.hasAttribute(SAFEGO_CONFIG.ignoreAttrs[i])) {
@@ -449,34 +457,48 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
         }
         return false;
     }
-
+    
     function processLinks() {
         const links = document.querySelectorAll('a[href]');
+        
         links.forEach(function(link) {
+            // Skip already processed
             if (link.hasAttribute('data-safego-processed')) {
                 return;
             }
+            
             const href = link.getAttribute('href');
+            
+            // Skip if has ignore attribute
             if (hasIgnoreAttr(link)) {
                 link.setAttribute('data-safego-processed', 'true');
                 return;
             }
+            
+            // Check if external link
             if (isExternalLink(href)) {
                 const encodedUrl = encodeSafeUrl(href);
-                const goUrl = SAFEGO_CONFIG.goPagePath + '?' + SAFEGO_CONFIG.urlParamName + '=' + encodedUrl;
+                const goUrl = SAFEGO_CONFIG.goPagePath + '?u=' + encodedUrl;
+                
                 link.setAttribute('href', goUrl);
                 link.setAttribute('data-safego-processed', 'true');
-                // 不设置 target="_blank"，在当前页打开中转页，以便正确返回
+                link.setAttribute('rel', 'external nofollow noopener noreferrer');
+                
+                if (SAFEGO_CONFIG.enableTargetBlank) {
+                    link.setAttribute('target', '_blank');
+                }
             }
         });
     }
-
+    
+    // Process on DOM ready
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', processLinks);
     } else {
         processLinks();
     }
-
+    
+    // Process dynamically added links
     const observer = new MutationObserver(function(mutations) {
         let shouldProcess = false;
         mutations.forEach(function(mutation) {
@@ -490,11 +512,12 @@ console.log("\n %c Gmeek {{ blogBase['GMEEK_VERSION'] }} https://github.com/Meek
                 });
             }
         });
+        
         if (shouldProcess) {
             processLinks();
         }
     });
-
+    
     observer.observe(document.body, { childList: true, subtree: true });
 })();
 {% endif %}

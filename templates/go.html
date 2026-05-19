@@ -1,73 +1,37 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ i18n['safego'] if 'safego' in i18n else 'Safe Go' }}{% endblock %}
-
 {% block head %}
 <meta name="robots" content="noindex, nofollow">
-<style type="text/css">
-/* 中转页专用样式 */
-.go-container {
+<title>{{ blogBase['safego']['title'] }} - {{ i18n['safego'] if 'safego' in i18n else 'Safe Go' }}</title>
+<style>
+/* 中转页专用样式 - 使用博客主题变量 */
+.safego-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: calc(100vh - 200px);
+    min-height: 60vh;
     padding: 20px;
     flex-direction: column;
 }
 
-.go-avatar-placeholder,
-.go-avatar {
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    margin-bottom: 16px;
-    display: block;
-}
-
-.go-avatar {
-    display: none;
-}
-
-.go-avatar-placeholder {
-    background: var(--color-border-default, rgba(255, 255, 255, 0.18));
-}
-
-.go-description {
-    font-size: 22px;
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--color-fg-default, #f3f3f3);
-}
-
-.go-subtitle {
-    font-size: 14px;
-    margin: 6px 0 22px;
-    color: var(--color-fg-muted, #c4c4c4);
-    line-height: 1.7;
-}
-
-.go-loading {
+.safego-card {
     position: relative;
     text-align: center;
-    padding: 28px;
-    border-radius: 26px;
-    animation: go-fadein 0.6s ease;
-    width: 460px;
-    max-width: calc(100vw - 32px);
-    transition: all 0.3s ease-in-out;
-    border: 1px solid var(--color-border-default, #6d7682);
-    background: var(--color-canvas-overlay, rgba(57, 62, 70, 0.92));
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    padding: 32px;
+    border-radius: 16px;
+    border: 1px solid var(--color-border-default, #d0d7de);
+    background: var(--color-canvas-default, #ffffff);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 480px;
+    animation: safegoFadeIn 0.5s ease;
+    transition: all 0.3s ease;
 }
 
-.go-loading:hover {
-    box-shadow: 0 22px 46px rgba(0, 0, 0, 0.28);
-}
-
-@keyframes go-fadein {
+@keyframes safegoFadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(16px);
     }
     to {
         opacity: 1;
@@ -75,38 +39,56 @@
     }
 }
 
-.go-content {
-    margin-bottom: 18px;
+.safego-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+    object-fit: cover;
+    border: 2px solid var(--color-border-default, #d0d7de);
 }
 
-.go-url-text {
-    margin-bottom: 12px;
-    font-size: 15px;
-    letter-spacing: 0.4px;
-    color: var(--color-fg-default, #efefef);
+.safego-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-fg-default, #1f2328);
+    margin-bottom: 4px;
+    line-height: 1.4;
 }
 
-.go-jump-url {
+.safego-subtitle {
+    font-size: 13px;
+    color: var(--color-fg-muted, #656d76);
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.safego-url-label {
+    font-size: 14px;
+    color: var(--color-fg-default, #1f2328);
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.safego-url-box {
     position: relative;
     display: block;
-    margin-top: 5px;
-    margin-bottom: 22px;
-    padding: 16px 68px 16px 16px;
-    border-radius: 18px;
-    min-height: 58px;
+    padding: 14px 52px 14px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border-default, #d0d7de);
+    background-color: var(--color-canvas-subtle, #f6f8fa);
     text-align: left;
     word-break: break-all;
     line-height: 1.6;
-    font-size: 15px;
-    border: 1px solid var(--color-border-muted, #737b86);
-    background-color: var(--color-canvas-subtle, #333940);
-    color: var(--color-fg-default, #efefef);
+    font-size: 14px;
+    color: var(--color-fg-default, #1f2328);
+    margin-bottom: 20px;
+    min-height: 48px;
 }
 
-.go-jump-url-text {
+.safego-url-text {
     display: block;
     display: -webkit-box;
-    padding-right: 2px;
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.6;
@@ -117,210 +99,226 @@
     -webkit-line-clamp: 2;
 }
 
-.go-copy-btn-container {
+.safego-copy-btn {
     position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    right: 10px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
-}
-
-.go-copy-toast {
-    position: absolute;
-    top: -34px;
-    right: 0;
-    padding: 6px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    white-space: nowrap;
-    opacity: 0;
-    transform: translateY(6px);
-    pointer-events: none;
-    transition: all 0.2s ease;
-    background: var(--color-canvas-default, rgba(239, 239, 239, 0.95));
-    color: var(--color-fg-default, #222831);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
-}
-
-.go-loading[data-copy-state="success"] .go-copy-toast,
-.go-loading[data-copy-state="error"] .go-copy-toast {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.go-copy-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 12px;
-    border: 1px solid var(--color-border-muted, #737b86);
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default, #d0d7de);
+    background: var(--color-canvas-default, #ffffff);
+    color: var(--color-fg-muted, #656d76);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.25s ease-in-out;
-    background-color: var(--color-canvas-default, #222831);
-    color: var(--color-fg-muted, #c8d0da);
+    transition: all 0.2s ease;
 }
 
-.go-copy-btn:hover {
-    color: var(--color-fg-default, #ffffff);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+.safego-copy-btn:hover {
+    background: var(--color-canvas-subtle, #f6f8fa);
+    color: var(--color-fg-default, #1f2328);
+    border-color: var(--color-accent-fg, #0969da);
 }
 
-.go-copy-btn svg {
-    width: 20px;
-    height: 20px;
+.safego-copy-btn svg {
+    width: 16px;
+    height: 16px;
     fill: currentColor;
 }
 
-.go-countdown-text {
-    margin-top: 12px;
-    margin-bottom: 0;
+.safego-countdown {
     font-size: 13px;
+    color: var(--color-fg-muted, #656d76);
+    margin-bottom: 4px;
     line-height: 1.7;
-    color: var(--color-fg-default, #efefef);
 }
 
-.go-countdown-number {
+.safego-countdown-number {
     display: inline-block;
     margin: 0 2px;
     font-weight: 700;
+    color: var(--color-accent-fg, #0969da);
 }
 
-.go-button-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 20px;
-}
-
-.go-button {
-    padding: 0 20px;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    font-size: 15px;
-    font-weight: 600;
-    height: 44px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-.go-button:hover {
-    transform: translateY(-1px);
-}
-
-.go-button:active {
-    transform: translateY(0);
-}
-
-.go-cancel-button {
-    background-color: rgba(135, 44, 44, 0.16);
-    color: #ffd5d5;
-    border: 1px solid rgba(255, 118, 118, 0.12);
-}
-
-.go-confirm-button {
-    background: linear-gradient(135deg, #28566f, #2f6f90);
-    color: #fff;
-    border-color: rgba(86, 148, 182, 0.2);
-    box-shadow: 0 12px 24px rgba(40, 86, 111, 0.26);
-}
-
-.go-progress-bar {
+.safego-progress-bar {
     width: 100%;
     border-radius: 999px;
     overflow: hidden;
-    height: 8px;
-    margin-top: 16px;
-    background-color: var(--color-neutral-muted, #444);
+    height: 6px;
+    margin-bottom: 20px;
+    background-color: var(--color-border-muted, #d8dee4);
 }
 
-.go-progress {
+.safego-progress {
     width: 100%;
     height: 100%;
     transition: width 1s linear;
-    background-color: var(--color-accent-emphasis, #888);
+    background-color: var(--color-accent-fg, #0969da);
+    border-radius: 999px;
 }
 
-/* 亮色模式适配 */
-[data-color-mode="light"] .go-loading {
-    border: 1px solid var(--color-border-default, #d6d9df);
-    background: var(--color-canvas-overlay, rgba(255, 255, 255, 0.78));
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.1);
+.safego-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
 }
 
-[data-color-mode="light"] .go-loading:hover {
-    box-shadow: 0 22px 46px rgba(0, 0, 0, 0.14);
+.safego-btn {
+    padding: 0 16px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default, #d0d7de);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    height: 40px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
 }
 
-[data-color-mode="light"] .go-description {
+.safego-btn:hover {
+    transform: translateY(-1px);
+}
+
+.safego-btn:active {
+    transform: translateY(0);
+}
+
+.safego-btn-cancel {
+    background-color: var(--color-canvas-subtle, #f6f8fa);
     color: var(--color-fg-default, #1f2328);
 }
 
-[data-color-mode="light"] .go-url-text,
-[data-color-mode="light"] .go-countdown-text {
-    color: var(--color-fg-default, #333);
+.safego-btn-cancel:hover {
+    background-color: var(--color-danger-subtle, #ffebe9);
+    border-color: var(--color-danger-fg, #cf222e);
+    color: var(--color-danger-fg, #cf222e);
 }
 
-[data-color-mode="light"] .go-jump-url {
-    border: 1px solid var(--color-border-muted, #d6dde8);
-    background-color: var(--color-canvas-subtle, #f7f9fe);
-    color: var(--color-fg-default, #333);
+.safego-btn-confirm {
+    background-color: var(--color-accent-emphasis, #0969da);
+    color: #ffffff;
+    border-color: var(--color-accent-emphasis, #0969da);
 }
 
-[data-color-mode="light"] .go-copy-toast {
-    background: var(--color-canvas-default, rgba(17, 24, 39, 0.94));
-    color: #fff;
+.safego-btn-confirm:hover {
+    background-color: var(--color-accent-fg, #0550ae);
+    border-color: var(--color-accent-fg, #0550ae);
 }
 
-[data-color-mode="light"] .go-copy-btn {
-    background-color: var(--color-canvas-default, #f7f9fe);
-    border-color: var(--color-border-muted, #d0d7e2);
-    color: #667085;
+.safego-copy-toast {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    background: var(--color-fg-default, #1f2328);
+    color: var(--color-canvas-default, #ffffff);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
 }
 
-[data-color-mode="light"] .go-copy-btn:hover {
-    color: #334155;
-    box-shadow: 0 12px 24px rgba(100, 100, 100, 0.14);
-}
-
-[data-color-mode="light"] .go-cancel-button {
-    background-color: #eef5f8;
-    color: #4b5563;
-    border: 1px solid #dde7ee;
-}
-
-[data-color-mode="light"] .go-confirm-button {
-    background: linear-gradient(135deg, #3fc1c9, #38a9b6);
-    box-shadow: 0 12px 24px rgba(63, 193, 201, 0.24);
-}
-
-[data-color-mode="light"] .go-progress-bar {
-    background-color: #ebf0f7;
-}
-
-[data-color-mode="light"] .go-progress {
-    background-color: #abedd8;
+.safego-copy-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }
 
 /* 移动端适配 */
-@media (max-width: 520px) {
-    .go-container {
+@media (max-width: 600px) {
+    .safego-container {
         padding: 16px;
-        min-height: calc(100vh - 150px);
+        min-height: 50vh;
     }
-
-    .go-loading {
-        padding: 22px 18px;
+    
+    .safego-card {
+        padding: 24px 20px;
     }
-
-    .go-button-container {
+    
+    .safego-avatar {
+        width: 64px;
+        height: 64px;
+    }
+    
+    .safego-title {
+        font-size: 18px;
+    }
+    
+    .safego-buttons {
         grid-template-columns: 1fr;
     }
+}
+
+/* 暗色模式适配 */
+[data-color-mode="dark"] .safego-card {
+    border-color: var(--color-border-default, #30363d);
+    background: var(--color-canvas-default, #0d1117);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-color-mode="dark"] .safego-title {
+    color: var(--color-fg-default, #c9d1d9);
+}
+
+[data-color-mode="dark"] .safego-subtitle {
+    color: var(--color-fg-muted, #8b949e);
+}
+
+[data-color-mode="dark"] .safego-url-label {
+    color: var(--color-fg-default, #c9d1d9);
+}
+
+[data-color-mode="dark"] .safego-url-box {
+    border-color: var(--color-border-default, #30363d);
+    background-color: var(--color-canvas-subtle, #161b22);
+    color: var(--color-fg-default, #c9d1d9);
+}
+
+[data-color-mode="dark"] .safego-copy-btn {
+    border-color: var(--color-border-default, #30363d);
+    background: var(--color-canvas-default, #0d1117);
+    color: var(--color-fg-muted, #8b949e);
+}
+
+[data-color-mode="dark"] .safego-copy-btn:hover {
+    background: var(--color-canvas-subtle, #161b22);
+    color: var(--color-fg-default, #c9d1d9);
+    border-color: var(--color-accent-fg, #58a6ff);
+}
+
+[data-color-mode="dark"] .safego-countdown {
+    color: var(--color-fg-muted, #8b949e);
+}
+
+[data-color-mode="dark"] .safego-countdown-number {
+    color: var(--color-accent-fg, #58a6ff);
+}
+
+[data-color-mode="dark"] .safego-progress-bar {
+    background-color: var(--color-border-muted, #21262d);
+}
+
+[data-color-mode="dark"] .safego-progress {
+    background-color: var(--color-accent-fg, #58a6ff);
+}
+
+[data-color-mode="dark"] .safego-btn-cancel {
+    background-color: var(--color-canvas-subtle, #161b22);
+    color: var(--color-fg-default, #c9d1d9);
+    border-color: var(--color-border-default, #30363d);
+}
+
+[data-color-mode="dark"] .safego-btn-confirm {
+    background-color: var(--color-accent-emphasis, #1f6feb);
+    border-color: var(--color-accent-emphasis, #1f6feb);
 }
 </style>
 {% endblock %}
@@ -330,302 +328,236 @@
 {% endblock %}
 
 {% block content %}
-<div class="go-container">
-    <div class="go-avatar-placeholder"></div>
-    <img src="" alt="avatar" class="go-avatar" id="go-avatar">
-    <div class="go-description">{{ blogBase['safego']['title'] if blogBase['safego'] and blogBase['safego']['title'] else blogBase['title'] }}</div>
-    <div class="go-subtitle">{{ blogBase['safego']['subtitle'] if blogBase['safego'] and blogBase['safego']['subtitle'] else 'External Link Safety Check' }}</div>
-
-    <div class="go-loading" id="go-loading" data-copy-state="idle">
-        <div class="go-content">
-            <div class="go-url-text">{{ i18n['safegoLeave'] if 'safegoLeave' in i18n else 'You are about to leave this site and jump to:' }}</div>
-            <div class="go-jump-url" id="go-jump-url">
-                <span class="go-jump-url-text" id="go-jump-url-text"></span>
-                <div class="go-copy-btn-container">
-                    <span class="go-copy-toast" id="go-copy-toast">{{ i18n['copied'] if 'copied' in i18n else 'Copied' }}</span>
-                    <button class="go-copy-btn" onclick="goCopyToClipboard()" aria-label="copy link">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+<div class="safego-container">
+    <div class="safego-card">
+        <img src="{{ blogBase['safego']['avatar'] }}" alt="avatar" class="safego-avatar" id="safego-avatar">
+        <div class="safego-title">{{ blogBase['safego']['title'] }}</div>
+        <div class="safego-subtitle">{{ blogBase['safego']['subtitle'] }}</div>
+        
+        <div class="safego-url-label">{{ i18n['jumpTo'] if 'jumpTo' in i18n else 'You are about to jump to:' }}</div>
+        <div class="safego-url-box">
+            <span class="safego-url-text" id="jump-url-text"></span>
+            <button class="safego-copy-btn" onclick="copyToClipboard()" aria-label="{{ i18n['copy'] if 'copy' in i18n else 'Copy' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                    <path d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"/>
+                </svg>
+            </button>
         </div>
-
-        <div class="go-countdown-text" id="go-countdown-text">
-            {{ i18n['safegoCountdown'] if 'safegoCountdown' in i18n else 'Will jump in' }}<span class="go-countdown-number" id="go-countdown"></span>{{ i18n['safegoSeconds'] if 'safegoSeconds' in i18n else 'seconds, please confirm link safety' }}
+        
+        <div class="safego-countdown" id="countdown-text">
+            {{ i18n['willJumpIn'] if 'willJumpIn' in i18n else 'Will jump in' }} <span class="safego-countdown-number" id="countdown">{{ blogBase['safego']['countdownTime'] }}</span> {{ i18n['seconds'] if 'seconds' in i18n else 'seconds' }}
         </div>
-        <div class="go-progress-bar" id="go-progress-bar">
-            <div class="go-progress" id="go-progress"></div>
+        
+        {%- if blogBase['safego']['countdownTime'] > 0 -%}
+        <div class="safego-progress-bar">
+            <div class="safego-progress" id="progress"></div>
         </div>
-
-        <div class="go-button-container">
-            <button class="go-button go-cancel-button" onclick="goBack()">{{ i18n['safegoCancel'] if 'safegoCancel' in i18n else 'Go Back' }}</button>
-            <button class="go-button go-confirm-button" onclick="goJump()">{{ i18n['safegoJumpNow'] if 'safegoJumpNow' in i18n else 'Jump Now' }}</button>
+        {%- endif -%}
+        
+        <div class="safego-buttons">
+            <button class="safego-btn safego-btn-cancel" onclick="goBack()">{{ i18n['cancel'] if 'cancel' in i18n else 'Cancel' }}</button>
+            <button class="safego-btn safego-btn-confirm" onclick="jumpNow()">{{ i18n['jumpNow'] if 'jumpNow' in i18n else 'Jump Now' }}</button>
         </div>
     </div>
 </div>
 
+<div class="safego-copy-toast" id="copy-toast">{{ i18n['copySuccess'] if 'copySuccess' in i18n else 'Copied!' }}</div>
+{% endblock %}
+
+{% block script %}
 <script>
 (function() {
-    // 配置
     const SAFEGO_CONFIG = {
-        countdown: {{ blogBase['safego']['countdownTime'] if blogBase['safego'] and blogBase['safego']['countdownTime'] else 5 }},
-        enableBase64: {{ 'true' if blogBase['safego'] and blogBase['safego']['enableBase64Encode'] else 'false' }},
-        avatar: '{{ blogBase["safego"]["avatar"] if blogBase["safego"] and blogBase["safego"]["avatar"] else blogBase["avatarUrl"] }}',
-        urlParamName: '{{ blogBase["safego"]["urlParamName"] if blogBase["safego"] and blogBase["safego"]["urlParamName"] else "u" }}'
+        countdownTime: {{ blogBase['safego']['countdownTime'] }},
+        enableBase64: {{ 'true' if blogBase['safego']['enableBase64Encode'] else 'false' }}
     };
-
-    let countdown = SAFEGO_CONFIG.countdown;
-    let jumpUrl = '';
+    
+    let countdown = SAFEGO_CONFIG.countdownTime;
     let countdownInterval = null;
-    let copyToastTimer = null;
-
-    // 获取 URL 参数
+    let jumpUrl = '';
+    
     function getQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
         var r = window.location.search.substr(1).match(reg);
-        return r ? decodeURI(r[2]) : null;
+        return r ? decodeURIComponent(r[2]) : null;
     }
-
-    // Base64 解码
-    function decodeSafeUrl(paramStr) {
+    
+    function decodeSafeUrlParam(paramStr) {
         if (!paramStr) return paramStr;
         var base64 = paramStr.replace(/-/g, "+").replace(/_/g, "/");
         var paddingLength = (4 - (base64.length % 4)) % 4;
         if (paddingLength) {
             base64 += "=".repeat(paddingLength);
         }
-        return decodeURIComponent(atob(base64).split("").map(function (char) {
+        return decodeURIComponent(atob(base64).split("").map(function(char) {
             return "%" + ("00" + char.charCodeAt(0).toString(16)).slice(-2);
         }).join(""));
     }
-
-    // 加载头像
-    function loadAvatar() {
-        const avatarImg = document.getElementById('go-avatar');
-        const placeholder = document.querySelector('.go-avatar-placeholder');
-        if (!SAFEGO_CONFIG.avatar) {
-            placeholder.style.display = 'none';
-            return;
-        }
-        const img = new Image();
-        img.onload = function() {
-            avatarImg.src = SAFEGO_CONFIG.avatar;
-            avatarImg.style.display = 'block';
-            placeholder.style.display = 'none';
-        };
-        img.onerror = function() {
-            placeholder.style.display = 'none';
-        };
-        img.src = SAFEGO_CONFIG.avatar;
-    }
-
-    // 更新复制提示
-    function updateCopyToast(state, message) {
-        const loadingEl = document.getElementById('go-loading');
-        const toastEl = document.getElementById('go-copy-toast');
-        if (!loadingEl || !toastEl) return;
-
-        loadingEl.setAttribute('data-copy-state', state);
-        toastEl.textContent = message;
-
-        if (copyToastTimer) {
-            clearTimeout(copyToastTimer);
-        }
-        if (state === 'success' || state === 'error') {
-            copyToastTimer = setTimeout(function() {
-                loadingEl.setAttribute('data-copy-state', 'idle');
-            }, 1600);
-        }
-    }
-
-    // 复制到剪贴板
-    function goCopyToClipboard() {
-        const urlText = document.getElementById('go-jump-url-text').textContent;
-        if (!urlText) {
-            updateCopyToast('error', '{{ i18n["nothingToCopy"] if "nothingToCopy" in i18n else "Nothing to copy" }}');
-            return;
-        }
-
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(urlText).then(function() {
-                updateCopyToast('success', '{{ i18n["copied"] if "copied" in i18n else "Copied" }}');
-            }).catch(function() {
-                fallbackCopy(urlText);
-            });
-        } else {
-            fallbackCopy(urlText);
-        }
-    }
-
-    // 备用复制方法
-    function fallbackCopy(text) {
-        const tempInput = document.createElement('input');
-        tempInput.value = text;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        tempInput.setSelectionRange(0, text.length);
-        try {
-            document.execCommand('copy');
-            updateCopyToast('success', '{{ i18n["copied"] if "copied" in i18n else "Copied" }}');
-        } catch (e) {
-            updateCopyToast('error', '{{ i18n["copyFailed"] if "copyFailed" in i18n else "Copy failed" }}');
-        }
-        document.body.removeChild(tempInput);
-    }
-
-    // 更新倒计时
-    function updateCountdown() {
-        const countdownEl = document.getElementById('go-countdown');
-        const progressEl = document.getElementById('go-progress');
-        const countdownTextEl = document.getElementById('go-countdown-text');
-
-        if (countdown < 0) {
-            if (countdownTextEl) {
-                countdownTextEl.innerHTML = '{{ i18n["safegoConfirm"] if "safegoConfirm" in i18n else "Please confirm link safety before continuing" }}';
-            }
-            if (progressEl) {
-                progressEl.style.width = '100%';
-            }
-            return;
-        }
-
-        if (countdownEl) {
-            countdownEl.textContent = countdown;
-        }
-        if (progressEl && SAFEGO_CONFIG.countdown > 0) {
-            progressEl.style.width = (countdown / SAFEGO_CONFIG.countdown * 100) + '%';
-        }
-
-        if (countdown === 0) {
-            goJump();
-        } else {
-            countdown--;
-        }
-    }
-
-    // 开始倒计时
-    function startCountdown() {
-        updateCountdown();
-        countdownInterval = setInterval(updateCountdown, 1000);
-    }
-
-    // 跳转
-    function goJump() {
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-        }
-        if (jumpUrl) {
-            window.location.href = jumpUrl;
-        }
-    }
-
-    // 返回
-    function goBack() {
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-        }
-        // 优先使用 document.referrer 返回来源页面
-        if (document.referrer && document.referrer !== window.location.href) {
-            window.location.href = document.referrer;
-        } else if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            window.location.href = '{{ blogBase["homeUrl"] }}';
-        }
-    }
-
-    // 初始化
-    function init() {
-        // 获取跳转链接
-        jumpUrl = getQueryString(SAFEGO_CONFIG.urlParamName);
-
+    
+    function initUrl() {
+        jumpUrl = getQueryString('u');
+        
         if (SAFEGO_CONFIG.enableBase64 && jumpUrl) {
             try {
-                jumpUrl = decodeSafeUrl(jumpUrl);
+                jumpUrl = decodeSafeUrlParam(jumpUrl);
             } catch (e) {
                 jumpUrl = null;
             }
         }
-
-        // 验证 URL
-        const urlReg = /^(http|https):\/\//i;
+        
+        var urlReg = /^(http|https|thunder|qqdl|ed2k|Flashget|qbrowser|ftp|rtsp|mms):\/\//i;
         if (!jumpUrl || !urlReg.test(jumpUrl)) {
-            document.title = '{{ i18n["invalidParam"] if "invalidParam" in i18n else "Invalid parameter" }}';
+            document.title = '{{ i18n["paramError"] if "paramError" in i18n else "Parameter Error" }}';
             jumpUrl = '{{ blogBase["homeUrl"] }}';
         }
-
-        // 显示 URL
-        document.getElementById('go-jump-url-text').textContent = jumpUrl;
-
-        // 加载头像
-        loadAvatar();
-
-        // 等待加载动画完成后开始倒计时
-        waitForPreloader();
+        
+        document.getElementById('jump-url-text').textContent = jumpUrl;
     }
-
-    // 等待加载动画
+    
+    function updateCountdown() {
+        var countdownEl = document.getElementById('countdown');
+        var progressEl = document.getElementById('progress');
+        
+        if (countdown <= 0) {
+            jumpNow();
+            return;
+        }
+        
+        countdownEl.textContent = countdown;
+        
+        if (progressEl && SAFEGO_CONFIG.countdownTime > 0) {
+            var percent = (countdown / SAFEGO_CONFIG.countdownTime) * 100;
+            progressEl.style.width = percent + '%';
+        }
+        
+        countdown--;
+    }
+    
+    function startCountdown() {
+        // 先更新一次显示
+        updateCountdown();
+        
+        if (countdown > 0) {
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+    }
+    
+    function jumpNow() {
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
+        window.location.href = jumpUrl;
+    }
+    
+    function goBack() {
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
+        
+        // 优先使用 document.referrer 返回来源页
+        if (document.referrer && document.referrer !== window.location.href) {
+            window.location.href = document.referrer;
+            return;
+        }
+        
+        // 其次使用 history.back()
+        if (window.history.length > 1) {
+            window.history.back();
+            return;
+        }
+        
+        // 最后回到首页
+        window.location.href = '{{ blogBase["homeUrl"] }}';
+    }
+    
+    function fallbackCopyText(text) {
+        var tempInput = document.createElement("input");
+        tempInput.value = text;
+        tempInput.style.position = "fixed";
+        tempInput.style.opacity = "0";
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        tempInput.setSelectionRange(0, text.length);
+        var copied = document.execCommand("copy");
+        document.body.removeChild(tempInput);
+        return copied;
+    }
+    
+    window.copyToClipboard = function() {
+        var urlText = document.getElementById("jump-url-text").textContent;
+        if (!urlText) return;
+        
+        var toast = document.getElementById("copy-toast");
+        
+        function showToast(success) {
+            toast.textContent = success ? 
+                '{{ i18n["copySuccess"] if "copySuccess" in i18n else "Copied!" }}' : 
+                '{{ i18n["copyFailed"] if "copyFailed" in i18n else "Copy Failed" }}';
+            toast.classList.add("show");
+            setTimeout(function() {
+                toast.classList.remove("show");
+            }, 1600);
+        }
+        
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(urlText).then(function() {
+                showToast(true);
+            }).catch(function() {
+                showToast(fallbackCopyText(urlText));
+            });
+        } else {
+            showToast(fallbackCopyText(urlText));
+        }
+    };
+    
+    window.jumpNow = jumpNow;
+    window.goBack = goBack;
+    
+    // 初始化
+    initUrl();
+    
+    // 适配加载动画：等待加载动画结束后再开始倒计时
     function waitForPreloader() {
-        const preloader = document.getElementById('preloader');
-
-        // 如果没有加载动画，直接开始倒计时
-        if (!preloader) {
+        var preloader = document.getElementById('preloader');
+        
+        // 如果加载动画不存在或已隐藏，直接开始倒计时
+        if (!preloader || preloader.classList.contains('hidden') || preloader.style.display === 'none') {
             startCountdown();
             return;
         }
-
-        // 如果加载动画已经隐藏，直接开始倒计时
-        if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.offsetParent === null) {
-            startCountdown();
-            return;
-        }
-
-        // 监听自定义事件
-        function onPreloaderHidden() {
-            window.removeEventListener('preloaderHidden', onPreloaderHidden);
-            startCountdown();
-        }
-        window.addEventListener('preloaderHidden', onPreloaderHidden);
-
-        // 同时监听 DOM 变化（兼容旧逻辑）
-        const observer = new MutationObserver(function(mutations) {
+        
+        // 创建 MutationObserver 监听加载动画的隐藏
+        var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'attributes') {
                     if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
                         observer.disconnect();
-                        window.removeEventListener('preloaderHidden', onPreloaderHidden);
                         startCountdown();
                     }
                 }
             });
         });
-
-        observer.observe(preloader, {
-            attributes: true,
-            attributeFilter: ['class', 'style']
+        
+        observer.observe(preloader, { 
+            attributes: true, 
+            attributeFilter: ['class', 'style'] 
         });
-
-        // 备用方案：最多等待 2 秒
+        
+        // 备用方案：最多等待 1.5 秒
         setTimeout(function() {
             observer.disconnect();
-            window.removeEventListener('preloaderHidden', onPreloaderHidden);
             startCountdown();
-        }, 2000);
+        }, 1500);
     }
-
-    // 页面加载完成后初始化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+    
+    // 页面加载完成后等待加载动画
+    if (document.readyState === 'complete') {
+        waitForPreloader();
     } else {
-        init();
+        window.addEventListener('load', waitForPreloader);
     }
-
-    // 暴露全局函数
-    window.goJump = goJump;
-    window.goBack = goBack;
-    window.goCopyToClipboard = goCopyToClipboard;
 })();
 </script>
 {% endblock %}
