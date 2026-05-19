@@ -576,13 +576,22 @@
             return;
         }
 
-        // 监听加载动画隐藏
+        let countdownStarted = false;
+        
+        function startCountdownOnce() {
+            if (!countdownStarted) {
+                countdownStarted = true;
+                startCountdown();
+            }
+        }
+
+        // 监听加载动画隐藏（属性变化）
         const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'attributes') {
                     if (preloader.classList.contains('hidden') || preloader.style.display === 'none' || preloader.style.opacity === '0') {
                         observer.disconnect();
-                        startCountdown();
+                        startCountdownOnce();
                     }
                 }
             });
@@ -593,11 +602,30 @@
             attributeFilter: ['class', 'style']
         });
 
-        // 备用方案：最多等待 800ms
+        // 监听加载动画被移除
+        const parentObserver = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    mutation.removedNodes.forEach(function(node) {
+                        if (node.id === 'preloader') {
+                            parentObserver.disconnect();
+                            startCountdownOnce();
+                        }
+                    });
+                }
+            });
+        });
+
+        if (preloader.parentNode) {
+            parentObserver.observe(preloader.parentNode, { childList: true });
+        }
+
+        // 备用方案：最多等待 2 秒
         setTimeout(function() {
             observer.disconnect();
-            startCountdown();
-        }, 800);
+            parentObserver.disconnect();
+            startCountdownOnce();
+        }, 2000);
     }
 
     // 页面加载完成后初始化
