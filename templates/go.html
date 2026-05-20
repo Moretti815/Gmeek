@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% set _ = blogBase.update({'enableWelcomeToast': false}) %}
+
 {% block head %}
 <meta name="robots" content="noindex, nofollow">
 <title>{{ blogBase['safego']['title'] }} - {{ i18n['safego'] if 'safego' in i18n else 'Safe Go' }}</title>

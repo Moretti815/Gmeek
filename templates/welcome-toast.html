@@ -1,0 +1,455 @@
+<!-- 访客欢迎通知组件 -->
+<script>
+(function() {
+    const VISIT_SESSION_KEY = 'blog_visit_flag';
+    let hasShownToast = false;
+    
+    function createWelcomeToast() {
+        const toast = document.createElement('div');
+        toast.id = 'welcome-toast';
+        toast.className = 'welcome-toast';
+        toast.innerHTML = `
+            <div class="welcome-toast-inner">
+                <div class="welcome-toast-content">
+                    <div class="welcome-toast-icon">👋</div>
+                    <div class="welcome-toast-body">
+                        <p id="welcome-message" class="welcome-toast-title">正在加载...</p>
+                        <p id="welcome-stats" class="welcome-toast-stats"></p>
+                        <p class="welcome-toast-quote">在茫茫互联网的大海中 感谢遇见你🙏</p>
+                        <div class="welcome-toast-links">
+                            <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=NZ9BP%2BPT44nu34JWAL4Jdz25Bq7ueQoOfOqA4iYPT1JvQKYktml43kgBTMfqTkNl&busi_data=eyJncm91cENvZGUiOiIxMTAzMjMyNDIyIiwidG9rZW4iOiJTZDh2RmhWbXFTL3ZHbVBXeXhJZndQTVcrOUlhNXRSNlczVG1GNUIzQnlQejFZSThWYStSSEVEWUtDcHdHSTM3IiwidWluIjoiMzY5Nzc3MzQxNiJ9&data=HZcezojmJTU_U4qRqv_3ODAb7vm86b6wP8YEp9Stz5b4EzngKNFllXJneyVO7qr4u-plsM84FyvpZl6kkuyZgg&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener noreferrer" class="welcome-toast-link welcome-toast-link-blue">
+                                👆加群
+                            </a>
+                            <span class="welcome-toast-divider">|</span>
+                            <a href="https://github.com/ImUpXuu/myblog/issues/66" class="welcome-toast-link welcome-toast-link-green">
+                                📬订阅更新
+                            </a>
+                            <span class="welcome-toast-divider">|</span>
+                            <a href="javascript:void(0)" onclick="copyRssLink()" class="welcome-toast-link welcome-toast-link-orange">
+                                📋RSS
+                            </a>
+                        </div>
+                        <p id="rss-copy-msg" class="welcome-toast-copy-msg hidden">已复制到剪贴板~</p>
+                    </div>
+                    <button onclick="closeWelcomeToast()" class="welcome-toast-close" aria-label="关闭">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        return toast;
+    }
+    
+    window.closeWelcomeToast = function() {
+        const toast = document.getElementById('welcome-toast');
+        if (toast) {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                toast.remove();
+            }, 500);
+        }
+    };
+    
+    window.copyRssLink = async function() {
+        const msg = document.getElementById('rss-copy-msg');
+        const rssUrl = window.location.origin + '/rss.xml';
+        try {
+            await navigator.clipboard.writeText(rssUrl);
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 2000);
+        } catch (e) {
+            const input = document.createElement('input');
+            input.value = rssUrl;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 2000);
+        }
+    };
+    
+    async function fetchLocation() {
+        try {
+            const response = await fetch('https://v2.xxapi.cn/api/ip');
+            const data = await response.json();
+            
+            if (data.code === 200 && data.data) {
+                const location = data.data;
+                const locationText = `HI 来自${location.address}的朋友`;
+                
+                const messageEl = document.getElementById('welcome-message');
+                if (messageEl) {
+                    messageEl.textContent = locationText;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch location:', error);
+            const messageEl = document.getElementById('welcome-message');
+            if (messageEl) {
+                messageEl.textContent = 'HI 来自远方的朋友';
+            }
+        }
+    }
+    
+    async function fetchStats() {
+        try {
+            const response = await fetch('https://upxuu.com/statsapi/alltime');
+            const data = await response.json();
+            
+            if (data && data.pageviews !== undefined) {
+                const statsText = `欢迎 我是 UpXuu 你是本站迎来的第${data.pageviews}次访问`;
+                
+                const statsEl = document.getElementById('welcome-stats');
+                if (statsEl) {
+                    statsEl.textContent = statsText;
+                }
+            }
+        } catch (error) {
+            console.error('Failed to fetch stats:', error);
+            const statsEl = document.getElementById('welcome-stats');
+            if (statsEl) {
+                statsEl.textContent = '欢迎 我是 UpXuu';
+            }
+        }
+    }
+    
+    async function showWelcomeToast() {
+        if (hasShownToast) return;
+        
+        const toast = createWelcomeToast();
+        
+        // 强制重绘以确保过渡动画生效
+        toast.offsetHeight;
+        
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+        
+        hasShownToast = true;
+        
+        await Promise.all([fetchLocation(), fetchStats()]);
+        
+        // 5秒后自动关闭
+        setTimeout(() => {
+            closeWelcomeToast();
+        }, 5000);
+    }
+    
+    function shouldShowWelcome() {
+        return !sessionStorage.getItem(VISIT_SESSION_KEY);
+    }
+    
+    function markAsVisited() {
+        sessionStorage.setItem(VISIT_SESSION_KEY, 'true');
+    }
+    
+    // 等待页面加载完成后再显示
+    function init() {
+        if (shouldShowWelcome()) {
+            markAsVisited();
+            // 延迟显示，等待页面其他元素加载
+            setTimeout(() => {
+                showWelcomeToast();
+            }, 1000);
+        }
+    }
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+
+<style>
+/* 欢迎通知样式 - 适配 Gmeek 主题 */
+.welcome-toast {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    z-index: 10000;
+    max-width: 360px;
+    width: calc(100% - 32px);
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    pointer-events: none;
+}
+
+.welcome-toast.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.welcome-toast-inner {
+    background: linear-gradient(135deg, 
+        rgba(239, 246, 255, 0.95) 0%, 
+        rgba(236, 252, 253, 0.95) 100%);
+    border: 1px solid var(--color-accent-muted, rgba(9, 105, 218, 0.2));
+    border-radius: 12px;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.1),
+        0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 16px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.welcome-toast-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.welcome-toast-icon {
+    flex-shrink: 0;
+    font-size: 24px;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.welcome-toast-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.welcome-toast-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-fg-default, #1f2328);
+    margin: 0 0 4px 0;
+    line-height: 1.4;
+}
+
+.welcome-toast-stats {
+    font-size: 12px;
+    color: var(--color-fg-muted, #656d76);
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+}
+
+.welcome-toast-quote {
+    font-size: 11px;
+    color: var(--color-fg-muted, #656d76);
+    font-style: italic;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.welcome-toast-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.welcome-toast-link {
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.welcome-toast-link:hover {
+    text-decoration: underline;
+}
+
+.welcome-toast-link-blue {
+    color: var(--color-accent-fg, #0969da);
+}
+
+.welcome-toast-link-blue:hover {
+    color: var(--color-accent-emphasis, #0550ae);
+}
+
+.welcome-toast-link-green {
+    color: #1a7f37;
+}
+
+.welcome-toast-link-green:hover {
+    color: #116329;
+}
+
+.welcome-toast-link-orange {
+    color: #cf4a02;
+}
+
+.welcome-toast-link-orange:hover {
+    color: #a03500;
+}
+
+.welcome-toast-divider {
+    color: var(--color-border-default, #d0d7de);
+    font-size: 12px;
+    user-select: none;
+}
+
+.welcome-toast-copy-msg {
+    font-size: 11px;
+    color: #1a7f37;
+    margin: 6px 0 0 0;
+    transition: opacity 0.3s ease;
+}
+
+.welcome-toast-copy-msg.hidden {
+    opacity: 0;
+}
+
+.welcome-toast-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 4px;
+    margin: -4px -4px 0 0;
+    cursor: pointer;
+    color: var(--color-fg-muted, #656d76);
+    border-radius: 6px;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.welcome-toast-close:hover {
+    color: var(--color-fg-default, #1f2328);
+    background-color: var(--color-neutral-subtle, rgba(175, 184, 193, 0.2));
+}
+
+/* 暗色模式适配 */
+[data-color-mode="dark"] .welcome-toast-inner {
+    background: linear-gradient(135deg, 
+        rgba(31, 111, 235, 0.15) 0%, 
+        rgba(9, 180, 200, 0.15) 100%);
+    border-color: rgba(56, 139, 253, 0.3);
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+[data-color-mode="dark"] .welcome-toast-title {
+    color: var(--color-fg-default, #c9d1d9);
+}
+
+[data-color-mode="dark"] .welcome-toast-stats,
+[data-color-mode="dark"] .welcome-toast-quote {
+    color: var(--color-fg-muted, #8b949e);
+}
+
+[data-color-mode="dark"] .welcome-toast-link-blue {
+    color: #58a6ff;
+}
+
+[data-color-mode="dark"] .welcome-toast-link-blue:hover {
+    color: #79c0ff;
+}
+
+[data-color-mode="dark"] .welcome-toast-link-green {
+    color: #3fb950;
+}
+
+[data-color-mode="dark"] .welcome-toast-link-green:hover {
+    color: #56d364;
+}
+
+[data-color-mode="dark"] .welcome-toast-link-orange {
+    color: #f0883e;
+}
+
+[data-color-mode="dark"] .welcome-toast-link-orange:hover {
+    color: #ffa657;
+}
+
+[data-color-mode="dark"] .welcome-toast-divider {
+    color: var(--color-border-default, #30363d);
+}
+
+[data-color-mode="dark"] .welcome-toast-close {
+    color: var(--color-fg-muted, #8b949e);
+}
+
+[data-color-mode="dark"] .welcome-toast-close:hover {
+    color: var(--color-fg-default, #c9d1d9);
+    background-color: var(--color-neutral-subtle, rgba(110, 118, 129, 0.2));
+}
+
+[data-color-mode="dark"] .welcome-toast-copy-msg {
+    color: #3fb950;
+}
+
+/* 移动端适配 */
+@media (max-width: 600px) {
+    .welcome-toast {
+        left: 50%;
+        right: auto;
+        bottom: 12px;
+        transform: translateX(-50%) translateY(100%);
+        width: calc(100% - 24px);
+        max-width: none;
+    }
+    
+    .welcome-toast.show {
+        transform: translateX(-50%) translateY(0);
+    }
+    
+    .welcome-toast-inner {
+        padding: 14px;
+    }
+    
+    .welcome-toast-icon {
+        font-size: 22px;
+    }
+    
+    .welcome-toast-title {
+        font-size: 13px;
+    }
+    
+    .welcome-toast-stats {
+        font-size: 11px;
+    }
+    
+    .welcome-toast-quote {
+        font-size: 10px;
+    }
+    
+    .welcome-toast-link {
+        font-size: 11px;
+    }
+}
+
+/* 超小屏幕适配 */
+@media (max-width: 360px) {
+    .welcome-toast {
+        width: calc(100% - 16px);
+        bottom: 8px;
+    }
+    
+    .welcome-toast-inner {
+        padding: 12px;
+    }
+    
+    .welcome-toast-content {
+        gap: 10px;
+    }
+    
+    .welcome-toast-links {
+        gap: 4px;
+    }
+    
+    .welcome-toast-divider {
+        display: none;
+    }
+    
+    .welcome-toast-link {
+        padding: 2px 6px;
+        background: var(--color-neutral-subtle, rgba(175, 184, 193, 0.2));
+        border-radius: 4px;
+    }
+}
+</style>
