@@ -17,7 +17,7 @@
                         <p id="welcome-stats" class="welcome-toast-stats"></p>
                         <p class="welcome-toast-quote">在茫茫互联网的大海中 感谢遇见你🙏</p>
                         <div class="welcome-toast-links">
-                            <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=NZ9BP%2BPT44nu34JWAL4Jdz25Bq7ueQoOfOqA4iYPT1JvQKYktml43kgBTMfqTkNl&busi_data=eyJncm91cENvZGUiOiIxMTAzMjMyNDIyIiwidG9rZW4iOiJTZDh2RmhWbXFTL3ZHbVBXeXhJZndQTVcrOUlhNXRSNlczVG1GNUIzQnlQejFZSThWYStSSEVEWUtDcHdHSTM3IiwidWluIjoiMzY5Nzc3MzQxNiJ9&data=HZcezojmJTU_U4qRqv_3ODAb7vm86b6wP8YEp9Stz5b4EzngKNFllXJneyVO7qr4u-plsM84FyvpZl6kkuyZgg&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener noreferrer" class="welcome-toast-link welcome-toast-link-blue">
+                            <a href="https://t.me/kemiaochat" target="_blank" rel="noopener noreferrer" class="welcome-toast-link welcome-toast-link-blue">
                                 👆加群
                             </a>
                             <span class="welcome-toast-divider">|</span>
@@ -101,7 +101,7 @@
             const data = await response.json();
             
             if (data && data.pageviews !== undefined) {
-                const statsText = `欢迎 我是 UpXuu 你是本站迎来的第${data.pageviews}次访问`;
+                const statsText = `欢迎 我是 Moretti 你是本站迎来的第${data.pageviews}次访问`;
                 
                 const statsEl = document.getElementById('welcome-stats');
                 if (statsEl) {
@@ -112,7 +112,7 @@
             console.error('Failed to fetch stats:', error);
             const statsEl = document.getElementById('welcome-stats');
             if (statsEl) {
-                statsEl.textContent = '欢迎 我是 UpXuu';
+                statsEl.textContent = '欢迎 我是 Moretti';
             }
         }
     }
