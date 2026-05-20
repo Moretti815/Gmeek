@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block head %}
-<meta name="description" content="{{ blogBase['guideDesc'] or '实用导航入口，快速找到所需资源' }}">
-<meta property="og:title" content="{{ i18n['guide'] }}">
-<meta property="og:description" content="{{ blogBase['guideDesc'] or '实用导航入口，快速找到所需资源' }}">
+<meta name="description" content="{{ blogBase.get('guideDesc', '本站提供的实用导航入口，点击即可跳转使用。') }}">
+<meta property="og:title" content="{{ i18n.get('guide', '导航') }}">
+<meta property="og:description" content="{{ blogBase.get('guideDesc', '本站提供的实用导航入口，点击即可跳转使用。') }}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ blogBase['homeUrl'] }}/guide.html">
 <meta property="og:image" content="{{ blogBase['ogImage'] }}">
-<title>{{ i18n['guide'] }}</title>
+<title>{{ i18n.get('guide', '导航') }}</title>
 {{ blogBase['head'] }}
 {% endblock %}
 
@@ -146,17 +146,13 @@
 {% endblock %}
 
 {% block header %}
-<h1 class="postTitle">{{ i18n['guide'] }}</h1>
+<h1 class="postTitle">{{ i18n.get('guide', '导航') }}</h1>
 <div class="title-right">
-    <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
-        <svg class="octicon" width="16" height="16">
-            <path id="pathHome" fill-rule="evenodd"></path>
-        </svg>
+    <a href="{{ blogBase['homeUrl'] }}" class="circle" aria-label="home">
+        <svg class="octicon" width="16" height="16" aria-hidden="true"><path id="pathHome" fill-rule="evenodd"></path></svg>
     </a>
-    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
-        <svg class="octicon" width="16" height="16" >
-            <path id="themeSwitch" fill-rule="evenodd"></path>
-        </svg>
+    <a class="btn btn-invisible circle" onclick="modeSwitch()" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+        <svg class="octicon" width="16" height="16" aria-hidden="true"><path id="themeSwitch" fill-rule="evenodd"></path></svg>
     </a>
 </div>
 {% endblock %}
@@ -164,39 +160,39 @@
 {% block content %}
 <div class="guide-container">
     <div class="guide-header">
-        <svg class="guide-header-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        <svg class="guide-header-icon" viewBox="0 0 1024 1024" fill="currentColor" aria-hidden="true">
+            <path d="M640 608h-64V416h64zm0 160v160a32 32 0 0 1-32 32H416a32 32 0 0 1-32-32V768h64v128h128V768zM384 608V416h64v192zm256-352h-64V128H448v128h-64V96a32 32 0 0 1 32-32h192a32 32 0 0 1 32 32z"/><path d="m220.8 256l-71.2 80l71.1 80H768V256zm-14.4-64H800a32 32 0 0 1 32 32v224a32 32 0 0 1-32 32H206.4a32 32 0 0 1-24-10.8L83 357.2a32 32 0 0 1 0-42.4l99.6-112a32 32 0 0 1 23.9-10.8m678.8 496L814 768H266.8V608H814zm-56.8-144H235a32 32 0 0 0-32 32v224a32 32 0 0 0 32 32h593.6a32 32 0 0 0 24-10.8l99.5-112a32 32 0 0 0 0-42.4l-99.6-112a32 32 0 0 0-24-10.8"/>
         </svg>
-        <h1>{{ i18n['guide'] }}</h1>
+        <h1>{{ i18n.get('guide', '导航') }}</h1>
     </div>
     
     <p class="guide-description">
-        {{ blogBase['guideDesc'] or '本站提供的实用导航入口，点击即可跳转使用。' }}
+        {{ blogBase.get('guideDesc', '本站提供的实用导航入口，点击即可跳转使用。') }}
     </p>
 
     <div class="guide-list">
-        {% if blogBase['guideItems'] and blogBase['guideItems']|length > 0 %}
+        {% if blogBase.get('guideItems') %}
             {% for item in blogBase['guideItems'] %}
             <a href="{{ item.url }}" class="guide-item" {% if item.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
                 <div class="guide-item-header">
-                    {% if item.iconType == 'custom' %}
+                    {% if item.customIcon %}
                     <img src="{{ item.icon }}" alt="" class="guide-item-icon-custom">
                     {% else %}
                     <svg class="guide-item-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="{{ item.icon }}"/>
+                        <path d="{{ item.icon }}"></path>
                     </svg>
                     {% endif %}
                     <span class="guide-item-title">{{ item.title }}</span>
                 </div>
-                <p class="guide-item-desc">{{ item.desc }}</p>
+                <p class="guide-item-desc">{{ item.description }}</p>
             </a>
             {% endfor %}
         {% else %}
             <div class="guide-empty">
-                <svg class="guide-empty-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                <svg class="guide-empty-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
-                <p>{{ i18n['noGuideItems'] or '暂无导航项目' }}</p>
+                <p>{{ i18n.get('noGuideItems', '暂无导航项目') }}</p>
             </div>
         {% endif %}
     </div>
@@ -206,6 +202,6 @@
 {% block script %}
 <script>
 document.getElementById("pathHome").setAttribute("d", IconList["home"]);
+document.getElementById("themeSwitch").setAttribute("d", IconList["sun"]);
 </script>
 {% endblock %}
-</content>

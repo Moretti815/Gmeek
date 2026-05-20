@@ -16,9 +16,9 @@ from jinja2 import Environment, FileSystemLoader
 from transliterate import translit
 from collections import OrderedDict
 ######################################################################################
-i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","reward":"Reward","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends","noSponsors":"No sponsors yet, be the first to support me!","rewardQrcode":"Reward Methods","wechatPay":"WeChat Pay","scanWechat":"Scan with WeChat","alipay":"Alipay","scanAlipay":"Scan with Alipay","afdian":"Afdian","clickAfdian":"Go to Afdian","rewardSponsors":"Sponsors","beSponsor":"Become a Sponsor","memos":"Memos","memosSubtitle":"Record every moment of life","all":"All","noMemos":"No memos yet","loadMore":"Load More","retry":"Retry","noFilteredMemos":"No memos match this filter","justNow":"Just now","minutesAgo":"minutes ago","hoursAgo":"hours ago","daysAgo":"days ago","monthsAgo":"months ago","yearsAgo":"years ago","pinned":"Pinned","timetable":"Timetable","timetableSubtitle":"Course Schedule","totalWeeks":"Total","weeks":"weeks","week":"Week","currentWeek":"Current Week","node":"Node","nodes":"Nodes","monday":"Monday","tuesday":"Tuesday","wednesday":"Wednesday","thursday":"Thursday","friday":"Friday","saturday":"Saturday","sunday":"Sunday","time":"Time","room":"Room","teacher":"Teacher","notSet":"Not set","noCourses":"No courses this week","unknownCourse":"Unknown Course","weeksShort":"wks","timetableLoadError":"Failed to load timetable","safego":"Safe Go","safegoSubtitle":"External Link Safety Check","safegoLoading":"Loading...","safegoWarning":"You are about to leave this site","safegoTarget":"Target URL:","safegoCountdown":"seconds to auto-redirect","safegoGoNow":"Go Now","safegoCopy":"Copy URL","safegoBack":"Go Back","safegoCopied":"Copied!","safegoNoUrl":"No valid URL provided","safegoInvalidUrl":"Invalid URL","guide":"Guide","noGuideItems":"No guide items yet"}
-i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","reward":"赞赏","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败","noSponsors":"暂无赞赏者，成为第一个支持我的人吧！","rewardQrcode":"赞赏方式","wechatPay":"微信支付","scanWechat":"微信扫码赞赏","alipay":"支付宝","scanAlipay":"支付宝扫码赞赏","afdian":"爱发电","clickAfdian":"点击前往爱发电","rewardSponsors":"赞赏者名单","beSponsor":"成为赞赏者","memos":"碎碎念","memosSubtitle":"记录生活的每一个瞬间","all":"全部","noMemos":"暂无动态","loadMore":"加载更多","retry":"重试","noFilteredMemos":"没有匹配该标签的动态","justNow":"刚刚","minutesAgo":"分钟前","hoursAgo":"小时前","daysAgo":"天前","monthsAgo":"个月前","yearsAgo":"年前","pinned":"置顶","timetable":"课程表","timetableSubtitle":"课程安排","totalWeeks":"共","weeks":"周","week":"第","currentWeek":"当前周","node":"节次","nodes":"第","monday":"周一","tuesday":"周二","wednesday":"周三","thursday":"周四","friday":"周五","saturday":"周六","sunday":"周日","time":"时间","room":"教室","teacher":"教师","notSet":"未填写","noCourses":"本周暂无课程","unknownCourse":"未知课程","weeksShort":"周","timetableLoadError":"加载课程表失败","safego":"安全跳转","safegoSubtitle":"外链安全检测","safegoLoading":"加载中...","safegoWarning":"您即将离开本站","safegoTarget":"目标链接：","safegoCountdown":"秒后自动跳转","safegoGoNow":"立即跳转","safegoCopy":"复制链接","safegoBack":"返回上页","safegoCopied":"已复制！","safegoNoUrl":"未提供有效的链接","safegoInvalidUrl":"无效的链接","guide":"导航","noGuideItems":"暂无导航项目"}
-i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","fcircle":"Круг друзей","applyFriend":"Подать заявку","addlink":"Подать заявку","reward":"Награда","loading":"Загрузка...","noFriends":"Пока нет друзей","loadError":"Не удалось загрузить друзей","noSponsors":"Пока нет спонсоров, станьте первым!","rewardQrcode":"Способы награды","wechatPay":"WeChat Pay","scanWechat":"Сканировать WeChat","alipay":"Alipay","scanAlipay":"Сканировать Alipay","afdian":"Afdian","clickAfdian":"Перейти на Afdian","rewardSponsors":"Спонсоры","beSponsor":"Стать спонсором","memos":"Мемо","memosSubtitle":"Записывайте каждый момент жизни","all":"Все","noMemos":"Пока нет записей","loadMore":"Загрузить еще","retry":"Повторить","noFilteredMemos":"Нет записей по этому фильтру","justNow":"Только что","minutesAgo":"минут назад","hoursAgo":"часов назад","daysAgo":"дней назад","monthsAgo":"месяцев назад","yearsAgo":"лет назад","pinned":"Закреплено","timetable":"Расписание","timetableSubtitle":"Расписание занятий","totalWeeks":"Всего","weeks":"недель","week":"Неделя","currentWeek":"Текущая неделя","node":"Пара","nodes":"Пары","monday":"Понедельник","tuesday":"Вторник","wednesday":"Среда","thursday":"Четверг","friday":"Пятница","saturday":"Суббота","sunday":"Воскресенье","time":"Время","room":"Аудитория","teacher":"Преподаватель","notSet":"Не указано","noCourses":"На этой неделе нет занятий","unknownCourse":"Неизвестный курс","weeksShort":"нед","timetableLoadError":"Не удалось загрузить расписание","safego":"Безопасный переход","safegoSubtitle":"Проверка внешней ссылки","safegoLoading":"Загрузка...","safegoWarning":"Вы покидаете этот сайт","safegoTarget":"Целевой URL:","safegoCountdown":"сек до автоперехода","safegoGoNow":"Перейти сейчас","safegoCopy":"Копировать URL","safegoBack":"Назад","safegoCopied":"Скопировано!","safegoNoUrl":"URL не указан","safegoInvalidUrl":"Неверный URL","guide":"Навигация","noGuideItems":"Пока нет элементов навигации"}
+i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","reward":"Reward","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends","noSponsors":"No sponsors yet, be the first to support me!","rewardQrcode":"Reward Methods","wechatPay":"WeChat Pay","scanWechat":"Scan with WeChat","alipay":"Alipay","scanAlipay":"Scan with Alipay","afdian":"Afdian","clickAfdian":"Go to Afdian","rewardSponsors":"Sponsors","beSponsor":"Become a Sponsor","memos":"Memos","memosSubtitle":"Record every moment of life","all":"All","noMemos":"No memos yet","loadMore":"Load More","retry":"Retry","noFilteredMemos":"No memos match this filter","justNow":"Just now","minutesAgo":"minutes ago","hoursAgo":"hours ago","daysAgo":"days ago","monthsAgo":"months ago","yearsAgo":"years ago","pinned":"Pinned","timetable":"Timetable","timetableSubtitle":"Course Schedule","totalWeeks":"Total","weeks":"weeks","week":"Week","currentWeek":"Current Week","node":"Node","nodes":"Nodes","monday":"Monday","tuesday":"Tuesday","wednesday":"Wednesday","thursday":"Thursday","friday":"Friday","saturday":"Saturday","sunday":"Sunday","time":"Time","room":"Room","teacher":"Teacher","notSet":"Not set","noCourses":"No courses this week","unknownCourse":"Unknown Course","weeksShort":"wks","timetableLoadError":"Failed to load timetable","safego":"Safe Go","safegoSubtitle":"External Link Safety Check","safegoLoading":"Loading...","safegoWarning":"You are about to leave this site","safegoTarget":"Target URL:","safegoCountdown":"seconds to auto-redirect","safegoGoNow":"Go Now","safegoCopy":"Copy URL","safegoBack":"Go Back","safegoCopied":"Copied!","safegoNoUrl":"No valid URL provided","safegoInvalidUrl":"Invalid URL","guide":"Guide","guideSubtitle":"Navigation Center","noGuideItems":"No navigation items yet"}
+i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","reward":"赞赏","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败","noSponsors":"暂无赞赏者，成为第一个支持我的人吧！","rewardQrcode":"赞赏方式","wechatPay":"微信支付","scanWechat":"微信扫码赞赏","alipay":"支付宝","scanAlipay":"支付宝扫码赞赏","afdian":"爱发电","clickAfdian":"点击前往爱发电","rewardSponsors":"赞赏者名单","beSponsor":"成为赞赏者","memos":"碎碎念","memosSubtitle":"记录生活的每一个瞬间","all":"全部","noMemos":"暂无动态","loadMore":"加载更多","retry":"重试","noFilteredMemos":"没有匹配该标签的动态","justNow":"刚刚","minutesAgo":"分钟前","hoursAgo":"小时前","daysAgo":"天前","monthsAgo":"个月前","yearsAgo":"年前","pinned":"置顶","timetable":"课程表","timetableSubtitle":"课程安排","totalWeeks":"共","weeks":"周","week":"第","currentWeek":"当前周","node":"节次","nodes":"第","monday":"周一","tuesday":"周二","wednesday":"周三","thursday":"周四","friday":"周五","saturday":"周六","sunday":"周日","time":"时间","room":"教室","teacher":"教师","notSet":"未填写","noCourses":"本周暂无课程","unknownCourse":"未知课程","weeksShort":"周","timetableLoadError":"加载课程表失败","safego":"安全跳转","safegoSubtitle":"外链安全检测","safegoLoading":"加载中...","safegoWarning":"您即将离开本站","safegoTarget":"目标链接：","safegoCountdown":"秒后自动跳转","safegoGoNow":"立即跳转","safegoCopy":"复制链接","safegoBack":"返回上页","safegoCopied":"已复制！","safegoNoUrl":"未提供有效的链接","safegoInvalidUrl":"无效的链接","guide":"导航","guideSubtitle":"导航中心","noGuideItems":"暂无导航项目"}
+i18nRU={"Search":"Поиск","switchTheme": "Сменить тему","home":"Главная","comments":"Комментарии ","run":" работает ","days":" дней","Previous":"Предыдущая","Next":"Следующая","about":"О нас","friends":"Друзья","fcircle":"Круг друзей","applyFriend":"Подать заявку","addlink":"Подать заявку","reward":"Награда","loading":"Загрузка...","noFriends":"Пока нет друзей","loadError":"Не удалось загрузить друзей","noSponsors":"Пока нет спонсоров, станьте первым!","rewardQrcode":"Способы награды","wechatPay":"WeChat Pay","scanWechat":"Сканировать WeChat","alipay":"Alipay","scanAlipay":"Сканировать Alipay","afdian":"Afdian","clickAfdian":"Перейти на Afdian","rewardSponsors":"Спонсоры","beSponsor":"Стать спонсором","memos":"Мемо","memosSubtitle":"Записывайте каждый момент жизни","all":"Все","noMemos":"Пока нет записей","loadMore":"Загрузить еще","retry":"Повторить","noFilteredMemos":"Нет записей по этому фильтру","justNow":"Только что","minutesAgo":"минут назад","hoursAgo":"часов назад","daysAgo":"дней назад","monthsAgo":"месяцев назад","yearsAgo":"лет назад","pinned":"Закреплено","timetable":"Расписание","timetableSubtitle":"Расписание занятий","totalWeeks":"Всего","weeks":"недель","week":"Неделя","currentWeek":"Текущая неделя","node":"Пара","nodes":"Пары","monday":"Понедельник","tuesday":"Вторник","wednesday":"Среда","thursday":"Четверг","friday":"Пятница","saturday":"Суббота","sunday":"Воскресенье","time":"Время","room":"Аудитория","teacher":"Преподаватель","notSet":"Не указано","noCourses":"На этой неделе нет занятий","unknownCourse":"Неизвестный курс","weeksShort":"нед","timetableLoadError":"Не удалось загрузить расписание","safego":"Безопасный переход","safegoSubtitle":"Проверка внешней ссылки","safegoLoading":"Загрузка...","safegoWarning":"Вы покидаете этот сайт","safegoTarget":"Целевой URL:","safegoCountdown":"сек до автоперехода","safegoGoNow":"Перейти сейчас","safegoCopy":"Копировать URL","safegoBack":"Назад","safegoCopied":"Скопировано!","safegoNoUrl":"URL не указан","safegoInvalidUrl":"Неверный URL","guide":"Навигация","guideSubtitle":"Навигационный центр","noGuideItems":"Пока нет элементов навигации"}
 IconBase={
     "post":"M0 3.75C0 2.784.784 2 1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25Zm1.75-.25a.25.25 0 0 0-.25.25v8.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25v-8.5a.25.25 0 0 0-.25-.25ZM3.5 6.25a.75.75 0 0 1 .75-.75h7a.75.75 0 0 1 0 1.5h-7a.75.75 0 0 1-.75-.75Zm.75 2.25h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z",
     "link":"m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z",
@@ -295,13 +295,14 @@ class GMEEK():
                 "createdAt": int(time.time())
             }
 
+        # Add guide page to singeListJson
         if "guide" in self.blogBase["singlePage"]:
             import time
             self.blogBase["singeListJson"]["guide"]={
                 "postTitle": self.i18n.get("guide", "导航"),
                 "labels": ["guide"],
                 "postUrl": "guide.html",
-                "description": self.blogBase.get("guideDesc", "实用导航入口"),
+                "description": self.blogBase.get("guideDesc", "本站提供的实用导航入口，点击即可跳转使用。"),
                 "createdAt": int(time.time())
             }
 
@@ -562,6 +563,29 @@ class GMEEK():
         self.renderHtml('timetable.html',timetableBase,{},self.root_dir+"timetable.html",timetableIcon)
         print("create timetable.html")
 
+    def createGuideHtml(self):
+        guideBase=self.blogBase.copy()
+        guideBase["postTitle"]=self.i18n.get("guide", "导航")
+        guideBase["description"]=guideBase.get("guideDesc", "本站提供的实用导航入口，点击即可跳转使用。")
+        guideBase["postUrl"]=self.blogBase["homeUrl"]+"/guide.html"
+        guideBase["ogImage"]=self.blogBase["ogImage"]
+        guideBase["commentNum"]=0
+        guideBase["style"]=""
+        guideBase["script"]=""
+        guideBase["head"]=""
+        guideBase["top"]=False
+        guideBase["postSourceUrl"]=""
+        guideBase["repoName"]=self.options.repo_name
+        guideBase["bottomText"]=""
+        guideBase["needComment"]=0
+        guideBase["highlight"]=0
+
+        keys=['sun','moon','sync','home']
+        guideIcon=dict(zip(keys, map(IconBase.get, keys)))
+
+        self.renderHtml('guide.html',guideBase,{},self.root_dir+"guide.html",guideIcon)
+        print("create guide.html")
+
     def createFcircleHtml(self):
         fcircleBase=self.blogBase.copy()
         fcircleBase["postTitle"]=self.i18n["fcircle"]
@@ -677,29 +701,6 @@ class GMEEK():
         self.renderHtml('go.html',goBase,{},self.root_dir+"go.html",goIcon)
         print("create go.html")
 
-    def createGuideHtml(self):
-        guideBase=self.blogBase.copy()
-        guideBase["postTitle"]=self.i18n.get("guide", "导航")
-        guideBase["description"]=guideBase.get("guideDesc", "实用导航入口")
-        guideBase["postUrl"]=self.blogBase["homeUrl"]+"/guide.html"
-        guideBase["ogImage"]=self.blogBase["ogImage"]
-        guideBase["commentNum"]=0
-        guideBase["style"]=""
-        guideBase["script"]=""
-        guideBase["head"]=""
-        guideBase["top"]=False
-        guideBase["postSourceUrl"]=""
-        guideBase["repoName"]=self.options.repo_name
-        guideBase["bottomText"]=""
-        guideBase["needComment"]=0
-        guideBase["highlight"]=0
-
-        keys=['sun','moon','sync','home']
-        guideIcon=dict(zip(keys, map(IconBase.get, keys)))
-
-        self.renderHtml('guide.html',guideBase,{},self.root_dir+"guide.html",guideIcon)
-        print("create guide.html")
-
     def runAll(self):
         print("====== start create static html ======")
         self.cleanFile()
@@ -717,12 +718,12 @@ class GMEEK():
         self.createAboutHtml()
         self.createFriendsHtml()
         self.createTimetableHtml()
+        self.createGuideHtml()
         self.createFcircleHtml()
         self.createAddlinkHtml()
         self.createRewardHtml()
         self.createMemosHtml()
         self.createGoHtml()
-        self.createGuideHtml()
         self.createPlistHtml()
         self.createFeedXml()
         print("====== create static html end ======")
