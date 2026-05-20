@@ -148,11 +148,15 @@
 {% block header %}
 <h1 class="postTitle">{{ i18n['guide'] }}</h1>
 <div class="title-right">
-    <a href="{{ blogBase['homeUrl'] }}" class="circle" aria-label="home">
-        <svg class="octicon" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="{{ IconList['home'] }}"></path></svg>
+    <a href="{{ blogBase['homeUrl'] }}" id="buttonHome" class="btn btn-invisible circle" title="{{ i18n['home'] }}">
+        <svg class="octicon" width="16" height="16">
+            <path id="pathHome" fill-rule="evenodd"></path>
+        </svg>
     </a>
-    <a class="circle" id="themeSwitch" aria-label="switchTheme">
-        <svg class="octicon" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="{{ IconList['sun'] }}"></path></svg>
+    <a class="btn btn-invisible circle" onclick="modeSwitch();" title="{{ i18n['switchTheme'] }}" {%- if blogBase['themeMode']=='fix' -%}style="display:none;"{%- endif -%}>
+        <svg class="octicon" width="16" height="16" >
+            <path id="themeSwitch" fill-rule="evenodd"></path>
+        </svg>
     </a>
 </div>
 {% endblock %}
