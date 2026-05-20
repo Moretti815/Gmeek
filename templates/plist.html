@@ -178,6 +178,14 @@
         font-size: 13px;
     }
 }
+
+/* Fix for guide icon with large viewBox (1024x1024) */
+{% if 'guide' in blogBase['singlePage'] -%}
+#{{ i18n['guide'] }} {
+    transform: scale(0.015);
+    transform-origin: center;
+}
+{%- endif %}
 </style>
 {{ blogBase['indexStyle'] }}
 {% endblock %}
