@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<meta name="description" content="{{ blogBase['guideDesc'] or '实用导航入口，快速找到所需资源' }}">
+<meta property="og:title" content="{{ i18n['guide'] }}">
+<meta property="og:description" content="{{ blogBase['guideDesc'] or '实用导航入口，快速找到所需资源' }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ blogBase['homeUrl'] }}/guide.html">
+<meta property="og:image" content="{{ blogBase['ogImage'] }}">
+<title>{{ i18n['guide'] }}</title>
+{{ blogBase['head'] }}
+{% endblock %}
+
+{% block style %}
+<style>
+.postTitle{margin: auto 0;font-size:40px;font-weight:bold;}
+.title-right{display:flex;margin:auto 0 0 auto;}
+.title-right .circle{padding: 14px 16px;margin-right:8px;}
+
+/* Guide Page Styles - 复刻 tools.astro 布局 */
+.guide-container {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--color-border-muted);
+}
+
+@media (max-width: 768px) {
+    .guide-container {
+        padding: 20px 16px;
+    }
+}
+
+/* Header Section */
+.guide-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.guide-header-icon {
+    width: 28px;
+    height: 28px;
+    color: var(--color-accent-fg);
+    flex-shrink: 0;
+}
+
+.guide-header h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--color-fg-default);
+    margin: 0;
+}
+
+/* Description */
+.guide-description {
+    font-size: 14px;
+    color: var(--color-fg-muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+}
+
+/* Tools List */
+.guide-list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tool Item */
+.guide-item {
+    display: block;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--color-border-muted);
+    transition: background-color 0.2s ease;
+}
+
+.guide-item:last-child {
+    border-bottom: none;
+}
+
+.guide-item:hover {
+    background-color: var(--color-canvas-subtle);
+}
+
+/* Tool Header (Icon + Title) */
+.guide-item-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.guide-item-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--color-accent-fg);
+    flex-shrink: 0;
+}
+
+/* Custom icon image styling */
+.guide-item-icon-custom {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    filter: brightness(0) saturate(100%) invert(34%) sepia(74%) saturate(1628%) hue-rotate(197deg) brightness(95%) contrast(101%);
+}
+
+[data-color-mode="dark"] .guide-item-icon-custom {
+    filter: brightness(0) saturate(100%) invert(58%) sepia(85%) saturate(1410%) hue-rotate(185deg) brightness(103%) contrast(101%);
+}
+
+.guide-item-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--color-fg-default);
+    transition: color 0.2s ease;
+}
+
+.guide-item:hover .guide-item-title {
+    color: var(--color-accent-fg);
+}
+
+/* Tool Description */
+.guide-item-desc {
+    font-size: 14px;
+    color: var(--color-fg-muted);
+    margin-left: 36px;
+    line-height: 1.5;
+}
+
+/* Empty State */
+.guide-empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--color-fg-muted);
+}
+
+.guide-empty-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+</style>
+{% endblock %}
+
+{% block header %}
+<h1 class="postTitle">{{ i18n['guide'] }}</h1>
+<div class="title-right">
+    <a href="{{ blogBase['homeUrl'] }}" class="circle" aria-label="home">
+        <svg class="octicon" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="{{ IconList['home'] }}"></path></svg>
+    </a>
+    <a class="circle" id="themeSwitch" aria-label="switchTheme">
+        <svg class="octicon" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="{{ IconList['sun'] }}"></path></svg>
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="guide-container">
+    <div class="guide-header">
+        <svg class="guide-header-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+        </svg>
+        <h1>{{ i18n['guide'] }}</h1>
+    </div>
+    
+    <p class="guide-description">
+        {{ blogBase['guideDesc'] or '本站提供的实用导航入口，点击即可跳转使用。' }}
+    </p>
+
+    <div class="guide-list">
+        {% if blogBase['guideItems'] and blogBase['guideItems']|length > 0 %}
+            {% for item in blogBase['guideItems'] %}
+            <a href="{{ item.url }}" class="guide-item" {% if item.external %}target="_blank" rel="noopener noreferrer"{% endif %}>
+                <div class="guide-item-header">
+                    {% if item.iconType == 'custom' %}
+                    <img src="{{ item.icon }}" alt="" class="guide-item-icon-custom">
+                    {% else %}
+                    <svg class="guide-item-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="{{ item.icon }}"/>
+                    </svg>
+                    {% endif %}
+                    <span class="guide-item-title">{{ item.title }}</span>
+                </div>
+                <p class="guide-item-desc">{{ item.desc }}</p>
+            </a>
+            {% endfor %}
+        {% else %}
+            <div class="guide-empty">
+                <svg class="guide-empty-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+                </svg>
+                <p>{{ i18n['noGuideItems'] or '暂无导航项目' }}</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+// 页面特定的脚本（如有需要）
+</script>
+{% endblock %}
+</content>
