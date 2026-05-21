@@ -452,10 +452,13 @@ class GMEEK():
             else:
                 self.blogBase[listJsonName][postNum]["wordCount"]=len(issue.body)
                 # 使用 AI 生成摘要
+                print(f"[Gmeek] 正在为文章 '{issue.title}' 生成 AI 摘要...")
                 ai_summary = generate_summary(issue.body)
                 if ai_summary:
+                    print(f"[Gmeek] AI 摘要生成成功，应用到文章: {issue.title}")
                     self.blogBase[listJsonName][postNum]["description"]=ai_summary.replace("\"", "\'")
                 else:
+                    print(f"[Gmeek] AI 摘要生成失败，使用默认方式（第一句）: {issue.title}")
                     # 如果 AI 摘要失败，使用原来的方式（第一句）
                     if self.blogBase["rssSplit"]=="sentence":
                         if self.blogBase["i18n"]=="CN":
