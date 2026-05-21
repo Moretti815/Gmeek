@@ -194,6 +194,17 @@ class GMEEK():
         postBase["postSourceUrl"]=issue["postSourceUrl"]
         postBase["repoName"]=options.repo_name
         
+        # 添加标签、时间等数据
+        postBase["labels"]=issue.get("labels", [])
+        postBase["createdAt"]=issue.get("createdDate", "")
+        postBase["updatedAt"]=issue.get("updatedDate", "")
+        
+        # 添加上下文导航数据
+        postBase["prevUrl"]=issue.get("prevUrl", "")
+        postBase["prevTitle"]=issue.get("prevTitle", "")
+        postBase["nextUrl"]=issue.get("nextUrl", "")
+        postBase["nextTitle"]=issue.get("nextTitle", "")
+        
         if issue["labels"][0] in self.blogBase["singlePage"]:
             postBase["bottomText"]=''
 
@@ -307,6 +318,7 @@ class GMEEK():
             }
 
         postNum=len(self.blogBase["postListJson"])
+        totalPages=1 if postNum<=self.blogBase["onePageListNum"] else (postNum+self.blogBase["onePageListNum"]-1)//self.blogBase["onePageListNum"]
         pageFlag=0
         while True:
             topNum=pageFlag*self.blogBase["onePageListNum"]
@@ -315,16 +327,20 @@ class GMEEK():
                 if pageFlag==0:
                     onePageList=dict(list(self.blogBase["postListJson"].items())[:postNum])
                     htmlDir=self.root_dir+"index.html"
+                    self.blogBase["firstUrl"]="disabled"
                     self.blogBase["prevUrl"]="disabled"
                     self.blogBase["nextUrl"]="disabled"
+                    self.blogBase["lastUrl"]="disabled"
                 else:
                     onePageList=dict(list(self.blogBase["postListJson"].items())[topNum:topNum+postNum])
                     htmlDir=self.root_dir+("page%d.html" % (pageFlag+1))
+                    self.blogBase["firstUrl"]="/index.html"
                     if pageFlag==1:
                         self.blogBase["prevUrl"]="/index.html"
                     else:
                         self.blogBase["prevUrl"]="/page%d.html" % pageFlag
                     self.blogBase["nextUrl"]="disabled"
+                    self.blogBase["lastUrl"]="disabled"
 
                 self.renderHtml('plist.html',self.blogBase,onePageList,htmlDir,plistIcon)
                 print("create "+htmlDir)
@@ -334,15 +350,23 @@ class GMEEK():
                 postNum=postNum-self.blogBase["onePageListNum"]
                 if pageFlag==0:
                     htmlDir=self.root_dir+"index.html"
+                    self.blogBase["firstUrl"]="disabled"
                     self.blogBase["prevUrl"]="disabled"
                     self.blogBase["nextUrl"]="/page2.html"
+                    self.blogBase["lastUrl"]="/page%d.html" % totalPages
                 else:
                     htmlDir=self.root_dir+("page%d.html" % (pageFlag+1))
+                    self.blogBase["firstUrl"]="/index.html"
                     if pageFlag==1:
                         self.blogBase["prevUrl"]="/index.html"
                     else:
                         self.blogBase["prevUrl"]="/page%d.html" % pageFlag
-                    self.blogBase["nextUrl"]="/page%d.html" % (pageFlag+2)
+                    if postNum<=self.blogBase["onePageListNum"]:
+                        self.blogBase["nextUrl"]="disabled"
+                        self.blogBase["lastUrl"]="disabled"
+                    else:
+                        self.blogBase["nextUrl"]="/page%d.html" % (pageFlag+2)
+                        self.blogBase["lastUrl"]="/page%d.html" % totalPages
 
                 self.renderHtml('plist.html',self.blogBase,onePageList,htmlDir,plistIcon)
                 print("create "+htmlDir)
@@ -477,8 +501,14 @@ class GMEEK():
             thisTime=datetime.datetime.fromtimestamp(self.blogBase[listJsonName][postNum]["createdAt"])
             thisTime=thisTime.astimezone(self.TZ)
             thisYear=thisTime.year
-            self.blogBase[listJsonName][postNum]["createdDate"]=thisTime.strftime("%Y-%m-%d")
+            self.blogBase[listJsonName][postNum]["createdDate"]=thisTime.strftime("%Y-%m-%d %H:%M:%S")
             self.blogBase[listJsonName][postNum]["dateLabelColor"]=self.blogBase["yearColorList"][int(thisYear)%len(self.blogBase["yearColorList"])]
+            
+            # 添加更新时间
+            updatedAt=int(time.mktime(issue.updated_at.timetuple()))
+            updatedTime=datetime.datetime.fromtimestamp(updatedAt)
+            updatedTime=updatedTime.astimezone(self.TZ)
+            self.blogBase[listJsonName][postNum]["updatedDate"]=updatedTime.strftime("%Y-%m-%d %H:%M:%S")
 
             mdFileName=re.sub(r'[<>:/\\|?*\"]|[\0-\31]', '-', issue.title)
             f = open(self.backup_dir+mdFileName+".md", 'w', encoding='UTF-8')
@@ -708,6 +738,29 @@ class GMEEK():
         issues=self.repo.get_issues()
         for issue in issues:
             self.addOnePostJson(issue)
+
+        # 对文章列表按创建时间排序（用于计算上下文导航）
+        sorted_posts = sorted(self.blogBase["postListJson"].items(), key=lambda x: x[1]["createdAt"])
+        
+        # 计算上下文导航数据
+        for i, (post_num, post_data) in enumerate(sorted_posts):
+            if i > 0:
+                # 上一篇
+                prev_post = sorted_posts[i-1][1]
+                self.blogBase["postListJson"][post_num]["prevUrl"] = self.blogBase["homeUrl"] + "/" + prev_post["postUrl"]
+                self.blogBase["postListJson"][post_num]["prevTitle"] = prev_post["postTitle"]
+            else:
+                self.blogBase["postListJson"][post_num]["prevUrl"] = ""
+                self.blogBase["postListJson"][post_num]["prevTitle"] = ""
+            
+            if i < len(sorted_posts) - 1:
+                # 下一篇
+                next_post = sorted_posts[i+1][1]
+                self.blogBase["postListJson"][post_num]["nextUrl"] = self.blogBase["homeUrl"] + "/" + next_post["postUrl"]
+                self.blogBase["postListJson"][post_num]["nextTitle"] = next_post["postTitle"]
+            else:
+                self.blogBase["postListJson"][post_num]["nextUrl"] = ""
+                self.blogBase["postListJson"][post_num]["nextTitle"] = ""
 
         for issue in self.blogBase["postListJson"].values():
             self.createPostHtml(issue)

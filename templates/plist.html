@@ -263,6 +263,12 @@
 {%- if blogBase['prevUrl']!='disabled' or blogBase['nextUrl']!='disabled' -%}
 <nav class="paginate-container" aria-label="Pagination">
     <div class="pagination">
+        {%- if blogBase['firstUrl']=='disabled' -%}
+        <span class="previous_page" aria-disabled="true">{{ i18n['First'] or '首页' }}</span>
+        {% else -%}
+        <a class="previous_page" rel="first" href="{{ blogBase['homeUrl'] }}{{ blogBase['firstUrl'] }}" aria-label="First Page">{{ i18n['First'] or '首页' }}</a>
+        {%- endif -%}
+
         {%- if blogBase['prevUrl']=='disabled' -%}
         <span class="previous_page" aria-disabled="true">{{ i18n['Previous'] }}</span>
         {% else -%}
@@ -275,6 +281,11 @@
         <a class="next_page" rel="next" href="{{ blogBase['homeUrl'] }}{{ blogBase['nextUrl'] }}" aria-label="Next Page">{{ i18n['Next'] }}</a>
         {%- endif -%}
 
+        {%- if blogBase['lastUrl']=='disabled' -%}
+        <span class="next_page" aria-disabled="true">{{ i18n['Last'] or '末页' }}</span>
+        {% else -%}
+        <a class="next_page" rel="last" href="{{ blogBase['homeUrl'] }}{{ blogBase['lastUrl'] }}" aria-label="Last Page">{{ i18n['Last'] or '末页' }}</a>
+        {%- endif -%}
     </div>
 </nav>
 {%- endif %}
