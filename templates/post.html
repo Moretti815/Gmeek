@@ -246,10 +246,174 @@
         border-radius: 0 0 9px 9px;
     }
     .post-meta-footer {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 4px 12px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+}
+
+/* 文章标签样式 */
+.post-labels {
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.post-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.4;
+    transition: opacity 0.2s ease;
+}
+
+.post-label:hover {
+    opacity: 0.85;
+}
+
+.post-label a {
+    color: #fff;
+    text-decoration: none;
+}
+
+/* 文章元信息样式 */
+.post-meta {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--color-fg-muted, #656d76);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+}
+
+.post-meta time {
+    font-weight: 500;
+    color: var(--color-fg-default, #1f2328);
+}
+
+.post-view-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.post-publish::before {
+    content: '';
+}
+
+/* 暗色模式适配 */
+[data-color-mode="dark"] .post-meta {
+    color: var(--color-fg-muted, #8b949e);
+}
+
+[data-color-mode="dark"] .post-meta time {
+    color: var(--color-fg-default, #c9d1d9);
+}
+
+/* 移动端适配 */
+@media (max-width: 600px) {
+    .post-labels {
+        margin-bottom: 10px;
+        gap: 6px;
     }
+
+    .post-label {
+        padding: 3px 8px;
+        font-size: 12px;
+        border-radius: 4px;
+    }
+
+    .post-meta {
+        font-size: 13px;
+        margin-bottom: 16px;
+        gap: 6px 10px;
+    }
+
+    .post-pagination .pagination {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .post-pagination .previous_page,
+    .post-pagination .next_page {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* 文章分页导航样式 */
+.post-pagination {
+    margin: 32px 0;
+    padding-top: 32px;
+    border-top: 1px solid var(--color-border-default, #d0d7de);
+}
+
+.post-pagination .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.post-pagination .previous_page,
+.post-pagination .next_page {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-accent-fg, #0969da);
+    text-decoration: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    max-width: 45%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.post-pagination .previous_page:hover,
+.post-pagination .next_page:hover {
+    background-color: var(--color-accent-subtle, #ddf4ff);
+    border-color: var(--color-accent-emphasis, #0969da);
+    text-decoration: none;
+}
+
+.post-pagination .previous_page svg,
+.post-pagination .next_page svg {
+    flex-shrink: 0;
+}
+
+.post-pagination .previous_page {
+    margin-right: auto;
+}
+
+.post-pagination .next_page {
+    margin-left: auto;
+}
+
+/* 暗色模式适配 */
+[data-color-mode="dark"] .post-pagination {
+    border-top-color: var(--color-border-default, #30363d);
+}
+
+[data-color-mode="dark"] .post-pagination .previous_page,
+[data-color-mode="dark"] .post-pagination .next_page {
+    color: var(--color-accent-fg, #58a6ff);
+}
+
+[data-color-mode="dark"] .post-pagination .previous_page:hover,
+[data-color-mode="dark"] .post-pagination .next_page:hover {
+    background-color: var(--color-accent-subtle, rgba(56, 139, 253, 0.15));
+    border-color: var(--color-accent-emphasis, #1f6feb);
 }
 {% if blogBase['highlight']!=0 -%}
 .copy-feedback {
@@ -293,6 +457,28 @@
 {% endblock %}
 
 {% block content %}
+<!-- 文章标签 -->
+{% if blogBase['labels'] and blogBase['labels']|length > 0 %}
+<div class="post-labels">
+    {% for label in blogBase['labels'] -%}
+        <span class="post-label" style="background-color:{{ blogBase['labelColorDict'][label] }}">
+            <a href="{{ blogBase['homeUrl'] }}/tag.html#{{ label }}">{{ label }}</a>
+        </span>
+    {%- endfor %}
+</div>
+{% endif %}
+
+<!-- 文章元信息：观看量、发布时间、更新时间 -->
+<div class="post-meta">
+    <span class="post-view-count" id="vercount_container_page_pv" style="display:none;">
+        👁 <span id="vercount_value_page_pv"></span>
+    </span>
+    <span class="post-publish">发布于 <time>{{ blogBase['createdAt'] }}</time></span>
+    {% if blogBase['createdAt'] != blogBase['updatedAt'] %}
+    <span class="post-update">更新于 <time>{{ blogBase['updatedAt'] }}</time></span>
+    {% endif %}
+</div>
+
 <div class="markdown-body" id="postBody">{{ blogBase['postBody'] }}</div>
 
 <!-- 文章版权信息 -->
@@ -366,6 +552,29 @@
     </div>
     <div class="bottom-text">{{ blogBase['bottomText'] }}</div>
 </div>
+
+{%- if blogBase['prevUrl'] or blogBase['nextUrl'] -%}
+<nav class="post-pagination" aria-label="Pagination">
+    <div class="pagination">
+        {%- if blogBase['prevTitle'] -%}
+        <a class="previous_page" rel="previous" href="{{ blogBase['prevUrl'] }}" aria-label="Previous Page">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            {{ blogBase['prevTitle'] }}
+        </a>
+        {%- endif -%}
+        {%- if blogBase['nextTitle'] -%}
+        <a class="next_page" rel="next" href="{{ blogBase['nextUrl'] }}" aria-label="Next Page">
+            {{ blogBase['nextTitle'] }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </a>
+        {%- endif -%}
+    </div>
+</nav>
+{%- endif %}
 
 {% if blogBase['needComment']==1 %}
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">{{ i18n['comments'] }}</button>
