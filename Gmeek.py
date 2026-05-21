@@ -456,15 +456,14 @@ class GMEEK():
                 self.blogBase[listJsonName][postNum]["wordCount"]=0
             else:
                 self.blogBase[listJsonName][postNum]["wordCount"]=len(issue.body)
-                # 使用 AI 生成摘要
-                print(f"[Gmeek] 正在为文章 '{issue.title}' 生成 AI 摘要...")
-                ai_summary = generate_summary(issue.body)
-                if ai_summary:
-                    print(f"[Gmeek] AI 摘要生成成功，应用到文章: {issue.title}")
-                    self.blogBase[listJsonName][postNum]["description"]=ai_summary.replace("\"", "\'")
-                else:
-                    print(f"[Gmeek] AI 摘要生成失败，使用默认方式（第一句）: {issue.title}")
-                    # 如果 AI 摘要失败，使用原来的方式（第一句）
+
+                # 获取文章标签
+                labels = [label.name for label in issue.labels]
+
+                # 检查是否有 noai 标签
+                if "noai" in labels:
+                    print(f"[Gmeek] 文章 '{issue.title}' 有 noai 标签，跳过 AI 摘要")
+                    # 使用默认方式（第一句）
                     if self.blogBase["rssSplit"]=="sentence":
                         if self.blogBase["i18n"]=="CN":
                             period="。"
@@ -473,6 +472,42 @@ class GMEEK():
                     else:
                         period=self.blogBase["rssSplit"]
                     self.blogBase[listJsonName][postNum]["description"]=issue.body.split(period)[0].replace("\"", "\'")+period
+                else:
+                    # 尝试从缓存获取摘要
+                    postNumKey = "P" + str(issue.number)
+                    cached_summary = None
+
+                    # 检查 blogBase.json 中是否有缓存的摘要
+                    if "postListJson" in self.blogBase and postNumKey in self.blogBase["postListJson"]:
+                        cached_post = self.blogBase["postListJson"][postNumKey]
+                        # 检查缓存的摘要是否对应同一篇文章（通过 updatedAt 判断）
+                        if "description" in cached_post and "updatedAt" in cached_post:
+                            cached_updated_at = cached_post["updatedAt"]
+                            current_updated_at = int(time.mktime(issue.updated_at.timetuple()))
+                            if cached_updated_at == current_updated_at and cached_post["description"]:
+                                cached_summary = cached_post["description"]
+                                print(f"[Gmeek] 使用缓存的 AI 摘要: {issue.title}")
+
+                    if cached_summary:
+                        self.blogBase[listJsonName][postNum]["description"] = cached_summary
+                    else:
+                        # 使用 AI 生成摘要
+                        print(f"[Gmeek] 正在为文章 '{issue.title}' 生成 AI 摘要...")
+                        ai_summary = generate_summary(issue.body)
+                        if ai_summary:
+                            print(f"[Gmeek] AI 摘要生成成功，应用到文章: {issue.title}")
+                            self.blogBase[listJsonName][postNum]["description"]=ai_summary.replace("\"", "\'")
+                        else:
+                            print(f"[Gmeek] AI 摘要生成失败，使用默认方式（第一句）: {issue.title}")
+                            # 如果 AI 摘要失败，使用原来的方式（第一句）
+                            if self.blogBase["rssSplit"]=="sentence":
+                                if self.blogBase["i18n"]=="CN":
+                                    period="。"
+                                else:
+                                    period="."
+                            else:
+                                period=self.blogBase["rssSplit"]
+                            self.blogBase[listJsonName][postNum]["description"]=issue.body.split(period)[0].replace("\"", "\'")+period
                 
             self.blogBase[listJsonName][postNum]["top"]=0
             for event in issue.get_events():
