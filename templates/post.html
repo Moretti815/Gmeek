@@ -199,22 +199,7 @@
     gap: 6px;
 }
 
-/* 文章底部元信息区域 */
-.post-meta-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 8px;
-    font-size: small;
-}
 
-.page-view-count {
-    color: var(--color-fg-muted);
-}
-
-.bottom-text {
-    color: var(--color-fg-muted);
-}
 
 /* 移动端适配 */
 @media (max-width: 600px) {
@@ -245,14 +230,30 @@
         padding: 8px 14px;
         border-radius: 0 0 9px 9px;
     }
-    .post-meta-footer {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 4px 12px;
 }
 
-.previous_page {text-align: left;}
-.next_page {text-align: right;}
+.previous_page {
+    text-align: left;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.next_page {
+    text-align: right;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.previous_page::before {
+    content: "‹";
+    font-size: 1.2em;
+    line-height: 1;
+}
+.next_page::after {
+    content: "›";
+    font-size: 1.2em;
+    line-height: 1;
+}
 {% if blogBase['highlight']!=0 -%}
 .copy-feedback {
     display: none;
@@ -310,6 +311,12 @@
 <span class="post-update" style="font-size: 14px; color: #666;">更新于 <time style="font-weight: bold; color: #333;">{{ blogBase['updatedAt'] }}</time></span>
 {% endif %}
 <p>
+
+{%- if blogBase['description'] and blogBase['description'] != '' -%}
+<div style="border: 1px dashed #ccc; padding: 10px; margin-bottom: 20px;">
+    <strong>AI总结:</strong> {{ blogBase['description'] }}
+</div>
+{%- endif %}
 
 <div class="markdown-body" id="postBody">{{ blogBase['postBody'] }}</div>
 
@@ -390,14 +397,7 @@
     </div>
 </div>
 
-<div class="post-meta-footer">
-    <div id="busuanzi_container_page_pv" class="page-view-count" style="display:none;">
-        <span class="page-view-label">{{ i18n['pageViews'] or '本文浏览量' }}</span>
-        <span id="busuanzi_value_page_pv"></span>
-        <span class="page-view-unit">{{ i18n['pageViewsUnit'] or '次' }}</span>
-    </div>
-    <div class="bottom-text">{{ blogBase['bottomText'] }}</div>
-</div>
+
 
 {% if blogBase['needComment']==1 %}
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">{{ i18n['comments'] }}</button>

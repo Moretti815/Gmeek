@@ -15,6 +15,7 @@ from feedgen.feed import FeedGenerator
 from jinja2 import Environment, FileSystemLoader
 from transliterate import translit
 from collections import OrderedDict
+from Summary import generate_summary
 ######################################################################################
 i18n={"Search":"Search","switchTheme":"switch theme","home":"home","comments":"comments","run":"run ","days":" day(s)","Previous":"Previous","Next":"Next","about":"About","friends":"Friends","fcircle":"Friend Circle","applyFriend":"Apply","addlink":"Apply for Link","reward":"Reward","loading":"Loading...","noFriends":"No friends yet","loadError":"Failed to load friends","noSponsors":"No sponsors yet, be the first to support me!","rewardQrcode":"Reward Methods","wechatPay":"WeChat Pay","scanWechat":"Scan with WeChat","alipay":"Alipay","scanAlipay":"Scan with Alipay","afdian":"Afdian","clickAfdian":"Go to Afdian","rewardSponsors":"Sponsors","beSponsor":"Become a Sponsor","memos":"Memos","memosSubtitle":"Record every moment of life","all":"All","noMemos":"No memos yet","loadMore":"Load More","retry":"Retry","noFilteredMemos":"No memos match this filter","justNow":"Just now","minutesAgo":"minutes ago","hoursAgo":"hours ago","daysAgo":"days ago","monthsAgo":"months ago","yearsAgo":"years ago","pinned":"Pinned","timetable":"Timetable","timetableSubtitle":"Course Schedule","totalWeeks":"Total","weeks":"weeks","week":"Week","currentWeek":"Current Week","node":"Node","nodes":"Nodes","monday":"Monday","tuesday":"Tuesday","wednesday":"Wednesday","thursday":"Thursday","friday":"Friday","saturday":"Saturday","sunday":"Sunday","time":"Time","room":"Room","teacher":"Teacher","notSet":"Not set","noCourses":"No courses this week","unknownCourse":"Unknown Course","weeksShort":"wks","timetableLoadError":"Failed to load timetable","safego":"Safe Go","safegoSubtitle":"External Link Safety Check","safegoLoading":"Loading...","safegoWarning":"You are about to leave this site","safegoTarget":"Target URL:","safegoCountdown":"seconds to auto-redirect","safegoGoNow":"Go Now","safegoCopy":"Copy URL","safegoBack":"Go Back","safegoCopied":"Copied!","safegoNoUrl":"No valid URL provided","safegoInvalidUrl":"Invalid URL","guide":"Guide","guideSubtitle":"Navigation Center","noGuideItems":"No navigation items yet"}
 i18nCN={"Search":"搜索","switchTheme":"切换主题","home":"首页","comments":"评论","run":"网站运行 ","days":" 天","Previous":"上一页","Next":"下一页","about":"关于","friends":"友链","fcircle":"朋友圈","applyFriend":"申请友链","addlink":"申请友链","reward":"赞赏","loading":"加载中...","noFriends":"暂无友链","loadError":"加载友链失败","noSponsors":"暂无赞赏者，成为第一个支持我的人吧！","rewardQrcode":"赞赏方式","wechatPay":"微信支付","scanWechat":"微信扫码赞赏","alipay":"支付宝","scanAlipay":"支付宝扫码赞赏","afdian":"爱发电","clickAfdian":"点击前往爱发电","rewardSponsors":"赞赏者名单","beSponsor":"成为赞赏者","memos":"碎碎念","memosSubtitle":"记录生活的每一个瞬间","all":"全部","noMemos":"暂无动态","loadMore":"加载更多","retry":"重试","noFilteredMemos":"没有匹配该标签的动态","justNow":"刚刚","minutesAgo":"分钟前","hoursAgo":"小时前","daysAgo":"天前","monthsAgo":"个月前","yearsAgo":"年前","pinned":"置顶","timetable":"课程表","timetableSubtitle":"课程安排","totalWeeks":"共","weeks":"周","week":"第","currentWeek":"当前周","node":"节次","nodes":"第","monday":"周一","tuesday":"周二","wednesday":"周三","thursday":"周四","friday":"周五","saturday":"周六","sunday":"周日","time":"时间","room":"教室","teacher":"教师","notSet":"未填写","noCourses":"本周暂无课程","unknownCourse":"未知课程","weeksShort":"周","timetableLoadError":"加载课程表失败","safego":"安全跳转","safegoSubtitle":"外链安全检测","safegoLoading":"加载中...","safegoWarning":"您即将离开本站","safegoTarget":"目标链接：","safegoCountdown":"秒后自动跳转","safegoGoNow":"立即跳转","safegoCopy":"复制链接","safegoBack":"返回上页","safegoCopied":"已复制！","safegoNoUrl":"未提供有效的链接","safegoInvalidUrl":"无效的链接","guide":"导航","guideSubtitle":"导航中心","noGuideItems":"暂无导航项目"}
@@ -450,14 +451,20 @@ class GMEEK():
                 self.blogBase[listJsonName][postNum]["wordCount"]=0
             else:
                 self.blogBase[listJsonName][postNum]["wordCount"]=len(issue.body)
-                if self.blogBase["rssSplit"]=="sentence":
-                    if self.blogBase["i18n"]=="CN":
-                        period="。"
-                    else:
-                        period="."
+                # 使用 AI 生成摘要
+                ai_summary = generate_summary(issue.body)
+                if ai_summary:
+                    self.blogBase[listJsonName][postNum]["description"]=ai_summary.replace("\"", "\'")
                 else:
-                    period=self.blogBase["rssSplit"]
-                self.blogBase[listJsonName][postNum]["description"]=issue.body.split(period)[0].replace("\"", "\'")+period
+                    # 如果 AI 摘要失败，使用原来的方式（第一句）
+                    if self.blogBase["rssSplit"]=="sentence":
+                        if self.blogBase["i18n"]=="CN":
+                            period="。"
+                        else:
+                            period="."
+                    else:
+                        period=self.blogBase["rssSplit"]
+                    self.blogBase[listJsonName][postNum]["description"]=issue.body.split(period)[0].replace("\"", "\'")+period
                 
             self.blogBase[listJsonName][postNum]["top"]=0
             for event in issue.get_events():
