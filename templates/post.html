@@ -263,12 +263,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 13px;
+    max-width: 100px;
+    height: 24px;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 14px;
     font-weight: 500;
-    line-height: 1.4;
+    line-height: 1;
     transition: opacity 0.2s ease;
+    background-color: var(--color-accent-subtle, #ddf4ff);
+    color: var(--color-accent-fg, #0969da);
 }
 
 .post-label:hover {
@@ -276,22 +280,35 @@
 }
 
 .post-label a {
-    color: #fff;
+    color: inherit;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 文章元信息样式 */
-.post-meta {
-    margin-bottom: 20px;
+/* 暗色模式适配 */
+[data-color-mode="dark"] .post-label {
+    background-color: var(--color-accent-subtle, rgba(56, 139, 253, 0.15));
+    color: var(--color-accent-fg, #58a6ff);
+}
+
+/* 文章元信息容器 */
+.post-meta-container {
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background-color: var(--color-canvas-subtle, #f6f8fa);
+    border: 1px solid var(--color-border-default, #d0d7de);
+    border-radius: 8px;
     font-size: 14px;
     color: var(--color-fg-muted, #656d76);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px 12px;
+    gap: 8px 16px;
 }
 
-.post-meta time {
+.post-meta-container time {
     font-weight: 500;
     color: var(--color-fg-default, #1f2328);
 }
@@ -302,16 +319,14 @@
     gap: 4px;
 }
 
-.post-publish::before {
-    content: '';
-}
-
 /* 暗色模式适配 */
-[data-color-mode="dark"] .post-meta {
+[data-color-mode="dark"] .post-meta-container {
+    background-color: var(--color-canvas-subtle, #161b22);
+    border-color: var(--color-border-default, #30363d);
     color: var(--color-fg-muted, #8b949e);
 }
 
-[data-color-mode="dark"] .post-meta time {
+[data-color-mode="dark"] .post-meta-container time {
     color: var(--color-fg-default, #c9d1d9);
 }
 
@@ -328,21 +343,22 @@
         border-radius: 4px;
     }
 
-    .post-meta {
+    .post-meta-container {
         font-size: 13px;
         margin-bottom: 16px;
+        padding: 10px 12px;
         gap: 6px 10px;
     }
 
     .post-pagination .pagination {
-        flex-direction: column;
+        flex-direction: row;
         gap: 8px;
     }
 
     .post-pagination .previous_page,
     .post-pagination .next_page {
-        width: 100%;
-        justify-content: center;
+        padding: 8px 12px;
+        font-size: 13px;
     }
 }
 
@@ -355,7 +371,7 @@
 
 .post-pagination .pagination {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: 16px;
 }
@@ -390,14 +406,6 @@
 .post-pagination .previous_page svg,
 .post-pagination .next_page svg {
     flex-shrink: 0;
-}
-
-.post-pagination .previous_page {
-    margin-right: auto;
-}
-
-.post-pagination .next_page {
-    margin-left: auto;
 }
 
 /* 暗色模式适配 */
@@ -461,7 +469,7 @@
 {% if blogBase['labels'] and blogBase['labels']|length > 0 %}
 <div class="post-labels">
     {% for label in blogBase['labels'] -%}
-        <span class="post-label" style="background-color:{{ blogBase['labelColorDict'][label] }}">
+        <span class="post-label">
             <a href="{{ blogBase['homeUrl'] }}/tag.html#{{ label }}">{{ label }}</a>
         </span>
     {%- endfor %}
@@ -469,7 +477,7 @@
 {% endif %}
 
 <!-- 文章元信息：观看量、发布时间、更新时间 -->
-<div class="post-meta">
+<div class="post-meta-container">
     <span class="post-view-count" id="vercount_container_page_pv" style="display:none;">
         👁 <span id="vercount_value_page_pv"></span>
     </span>
