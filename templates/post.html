@@ -293,30 +293,31 @@
     color: var(--color-accent-fg, #58a6ff);
 }
 
-/* 文章元信息容器 */
-.post-meta-container {
-    margin-bottom: 24px;
-    padding: 12px 16px;
-    background-color: var(--color-canvas-subtle);
-    border: 1px solid var(--color-border-default);
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--color-fg-muted);
+/* 文章元信息样式 */
+.post-meta-wrapper {
+    margin-bottom: 20px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--color-border-default);
+}
+
+.post-meta-items {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 8px 16px;
+    font-size: 14px;
 }
 
-.post-meta-container time {
-    font-weight: 500;
-    color: var(--color-fg-default);
-}
-
-.post-view-count {
+.post-meta-item {
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    color: var(--color-fg-muted);
+}
+
+.post-meta-item time {
+    font-weight: 500;
+    color: var(--color-fg-default);
 }
 
 /* 移动端适配 */
@@ -332,11 +333,14 @@
         border-radius: 4px;
     }
 
-    .post-meta-container {
-        font-size: 13px;
+    .post-meta-wrapper {
         margin-bottom: 16px;
-        padding: 10px 12px;
-        gap: 6px 10px;
+        padding: 8px 0;
+    }
+    
+    .post-meta-items {
+        font-size: 13px;
+        gap: 6px 12px;
     }
 
     .post-pagination .pagination {
@@ -360,8 +364,9 @@
 
 .post-pagination .pagination {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    gap: 16px;
 }
 
 .post-pagination .previous_page,
@@ -394,14 +399,6 @@
 .post-pagination .previous_page svg,
 .post-pagination .next_page svg {
     flex-shrink: 0;
-}
-
-.post-pagination .previous_page {
-    margin-right: auto;
-}
-
-.post-pagination .next_page {
-    margin-left: auto;
 }
 
 /* 暗色模式适配 */
@@ -473,17 +470,46 @@
 {% endif %}
 
 <!-- 文章元信息：观看量、发布时间、更新时间 -->
-<div class="post-meta-container">
-    <span class="post-view-count" id="vercount_container_page_pv" style="display:none;">
-        👁 <span id="vercount_value_page_pv"></span>
-    </span>
-    <span class="post-publish">发布于 <time>{{ blogBase['createdAt'] }}</time></span>
-    {% if blogBase['createdAt'] != blogBase['updatedAt'] %}
-    <span class="post-update">更新于 <time>{{ blogBase['updatedAt'] }}</time></span>
-    {% endif %}
+<div class="post-meta-wrapper">
+    <div class="post-meta-items">
+        <span class="post-meta-item" id="vercount_container_page_pv" style="display:none;">
+            👁 <span id="vercount_value_page_pv"></span>
+        </span>
+        <span class="post-meta-item">
+            发布于 <time>{{ blogBase['createdAt'] }}</time>
+        </span>
+        {% if blogBase['createdAt'] != blogBase['updatedAt'] %}
+        <span class="post-meta-item">
+            更新于 <time>{{ blogBase['updatedAt'] }}</time>
+        </span>
+        {% endif %}
+    </div>
 </div>
 
 <div class="markdown-body" id="postBody">{{ blogBase['postBody'] }}</div>
+
+{%- if blogBase['prevUrl'] or blogBase['nextUrl'] -%}
+<nav class="post-pagination" aria-label="Pagination">
+    <div class="pagination">
+        {%- if blogBase['prevTitle'] -%}
+        <a class="previous_page" rel="previous" href="{{ blogBase['prevUrl'] }}" aria-label="Previous Page">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            {{ blogBase['prevTitle'] }}
+        </a>
+        {%- endif -%}
+        {%- if blogBase['nextTitle'] -%}
+        <a class="next_page" rel="next" href="{{ blogBase['nextUrl'] }}" aria-label="Next Page">
+            {{ blogBase['nextTitle'] }}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </a>
+        {%- endif -%}
+    </div>
+</nav>
+{%- endif %}
 
 <!-- 文章版权信息 -->
 <div class="post-copyright">
@@ -556,33 +582,6 @@
     </div>
     <div class="bottom-text">{{ blogBase['bottomText'] }}</div>
 </div>
-
-{%- if blogBase['prevUrl'] or blogBase['nextUrl'] -%}
-<nav class="post-pagination" aria-label="Pagination">
-    <div class="pagination">
-        {%- if blogBase['prevTitle'] -%}
-        <a class="previous_page" rel="previous" href="{{ blogBase['prevUrl'] }}" aria-label="Previous Page">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-            {{ blogBase['prevTitle'] }}
-        </a>
-        {%- else -%}
-        <span class="previous_page" aria-disabled="true"></span>
-        {%- endif -%}
-        {%- if blogBase['nextTitle'] -%}
-        <a class="next_page" rel="next" href="{{ blogBase['nextUrl'] }}" aria-label="Next Page">
-            {{ blogBase['nextTitle'] }}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-        </a>
-        {%- else -%}
-        <span class="next_page" aria-disabled="true"></span>
-        {%- endif -%}
-    </div>
-</nav>
-{%- endif %}
 
 {% if blogBase['needComment']==1 %}
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">{{ i18n['comments'] }}</button>
