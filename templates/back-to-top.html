@@ -1,0 +1,163 @@
+<!-- 回到顶部按钮 - 参考 BackToTop.astro -->
+<div id="back-to-top-wrapper" class="back-to-top-wrapper">
+    <button id="back-to-top-btn" class="back-to-top-btn" aria-label="Back to Top" onclick="backToTop()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+            <g fill="none" fill-rule="evenodd">
+                <path d="M24 0v24H0V0zM12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/>
+                <path fill="currentColor" d="M11.293 8.293a1 1 0 0 1 1.414 0l5.657 5.657a1 1 0 0 1-1.414 1.414L12 10.414l-4.95 4.95a1 1 0 0 1-1.414-1.414z"/>
+            </g>
+        </svg>
+    </button>
+</div>
+
+<style>
+/* 回到顶部按钮样式 */
+.back-to-top-wrapper {
+    position: fixed;
+    right: 24px;
+    bottom: 80px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.back-to-top-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border-default, #d0d7de);
+    background-color: var(--color-canvas-default, #ffffff);
+    color: var(--color-accent-fg, #0969da);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.9);
+    pointer-events: auto;
+}
+
+.back-to-top-btn:hover {
+    background-color: var(--color-canvas-subtle, #f6f8fa);
+    border-color: var(--color-accent-emphasis, #0969da);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.back-to-top-btn:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.back-to-top-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* 显示状态 */
+.back-to-top-wrapper.visible .back-to-top-btn {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* 暗色模式适配 */
+[data-color-mode="dark"] .back-to-top-btn {
+    border-color: var(--color-border-default, #30363d);
+    background-color: var(--color-canvas-default, #0d1117);
+    color: var(--color-accent-fg, #58a6ff);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-color-mode="dark"] .back-to-top-btn:hover {
+    background-color: var(--color-canvas-subtle, #161b22);
+    border-color: var(--color-accent-emphasis, #1f6feb);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .back-to-top-wrapper {
+        right: 16px;
+        bottom: 72px;
+    }
+
+    .back-to-top-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+    }
+
+    .back-to-top-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+/* 小屏幕移动端 */
+@media (max-width: 480px) {
+    .back-to-top-wrapper {
+        right: 12px;
+        bottom: 68px;
+    }
+
+    .back-to-top-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+    }
+
+    .back-to-top-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+</style>
+
+<script>
+(function() {
+    // 回到顶部功能
+    function backToTop() {
+        window.scroll({ top: 0, behavior: 'smooth' });
+    }
+
+    // 滚动监听，控制按钮显示/隐藏
+    function handleScroll() {
+        const wrapper = document.getElementById('back-to-top-wrapper');
+        if (!wrapper) return;
+
+        // 当滚动超过 300px 时显示按钮
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > 300) {
+            wrapper.classList.add('visible');
+        } else {
+            wrapper.classList.remove('visible');
+        }
+    }
+
+    // 节流函数，优化性能
+    function throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(function() {
+                    inThrottle = false;
+                }, limit);
+            }
+        };
+    }
+
+    // 绑定滚动事件（节流处理，每 100ms 执行一次）
+    window.addEventListener('scroll', throttle(handleScroll, 100));
+
+    // 初始化一次
+    handleScroll();
+
+    // 暴露到全局
+    window.backToTop = backToTop;
+})();
+</script>

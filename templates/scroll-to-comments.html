@@ -1,0 +1,193 @@
+<!-- 直达评论按钮 - 文章页专用 -->
+<div id="scroll-to-comments-wrapper" class="scroll-to-comments-wrapper">
+    <button id="scroll-to-comments-btn" class="scroll-to-comments-btn" aria-label="Scroll to Comments" onclick="scrollToComments()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M6 14h12v-2H6zm0-3h12V9H6zm0-3h12V6H6zM4 18q-.825 0-1.412-.587T2 16V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v18l-4-4z"/>
+        </svg>
+    </button>
+</div>
+
+<style>
+/* 直达评论按钮样式 */
+.scroll-to-comments-wrapper {
+    position: fixed;
+    right: 24px;
+    bottom: 136px;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.scroll-to-comments-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 1px solid var(--color-border-default, #d0d7de);
+    background-color: var(--color-canvas-default, #ffffff);
+    color: var(--color-accent-fg, #0969da);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.9);
+    pointer-events: auto;
+}
+
+.scroll-to-comments-btn:hover {
+    background-color: var(--color-canvas-subtle, #f6f8fa);
+    border-color: var(--color-accent-emphasis, #0969da);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.scroll-to-comments-btn:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.scroll-to-comments-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* 显示状态 */
+.scroll-to-comments-wrapper.visible .scroll-to-comments-btn {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+/* 暗色模式适配 */
+[data-color-mode="dark"] .scroll-to-comments-btn {
+    border-color: var(--color-border-default, #30363d);
+    background-color: var(--color-canvas-default, #0d1117);
+    color: var(--color-accent-fg, #58a6ff);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+[data-color-mode="dark"] .scroll-to-comments-btn:hover {
+    background-color: var(--color-canvas-subtle, #161b22);
+    border-color: var(--color-accent-emphasis, #1f6feb);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .scroll-to-comments-wrapper {
+        right: 16px;
+        bottom: 124px;
+    }
+
+    .scroll-to-comments-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+    }
+
+    .scroll-to-comments-btn svg {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+/* 小屏幕移动端 */
+@media (max-width: 480px) {
+    .scroll-to-comments-wrapper {
+        right: 12px;
+        bottom: 116px;
+    }
+
+    .scroll-to-comments-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+    }
+
+    .scroll-to-comments-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+</style>
+
+<script>
+(function() {
+    // 直达评论功能
+    function scrollToComments() {
+        const commentsSection = document.getElementById('comments');
+        const cmButton = document.getElementById('cmButton');
+        
+        // 优先滚动到评论按钮（如果存在且未展开）
+        if (cmButton && cmButton.offsetParent !== null) {
+            cmButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // 自动点击按钮展开评论
+            setTimeout(function() {
+                cmButton.click();
+            }, 500);
+        } else if (commentsSection) {
+            // 如果评论已展开，滚动到评论区
+            commentsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    // 滚动监听，控制按钮显示/隐藏
+    function handleScroll() {
+        const wrapper = document.getElementById('scroll-to-comments-wrapper');
+        if (!wrapper) return;
+
+        // 获取评论区位置
+        const commentsSection = document.getElementById('comments');
+        const cmButton = document.getElementById('cmButton');
+        
+        // 如果没有评论区或评论按钮，不显示按钮
+        if (!commentsSection && !cmButton) {
+            wrapper.classList.remove('visible');
+            return;
+        }
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        
+        // 获取评论区域的位置
+        let commentsTop = Infinity;
+        if (cmButton && cmButton.offsetParent !== null) {
+            commentsTop = cmButton.getBoundingClientRect().top + scrollTop;
+        } else if (commentsSection) {
+            commentsTop = commentsSection.getBoundingClientRect().top + scrollTop;
+        }
+
+        // 当滚动超过 300px 且还没有滚动到评论区时显示按钮
+        if (scrollTop > 300 && scrollTop + windowHeight < commentsTop + 100) {
+            wrapper.classList.add('visible');
+        } else {
+            wrapper.classList.remove('visible');
+        }
+    }
+
+    // 节流函数，优化性能
+    function throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(function() {
+                    inThrottle = false;
+                }, limit);
+            }
+        };
+    }
+
+    // 绑定滚动事件（节流处理，每 100ms 执行一次）
+    window.addEventListener('scroll', throttle(handleScroll, 100));
+
+    // 初始化一次
+    handleScroll();
+
+    // 暴露到全局
+    window.scrollToComments = scrollToComments;
+})();
+</script>

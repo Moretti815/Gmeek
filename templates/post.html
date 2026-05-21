@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% set noBackToTop = true %}
+
 {% block head %}
 <meta name="description" content="{{ blogBase['description'] }}">
 <meta property="og:title" content="{{ blogBase['postTitle'] }}">
@@ -369,6 +371,7 @@
 <button class="btn btn-block" type="button" onclick="openComments()" id="cmButton">{{ i18n['comments'] }}</button>
 <div class="comments" id="comments"></div>
 {% endif %}
+{% include 'scroll-to-comments.html' %}
 {% endblock %}
 
 {% block script %}
