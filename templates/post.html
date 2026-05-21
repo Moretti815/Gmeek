@@ -254,6 +254,63 @@
     font-size: 1.2em;
     line-height: 1;
 }
+
+/* 代码块折叠复制按钮样式 */
+.code-block-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+.code-block-controls {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    z-index: 2;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.code-block-wrapper:hover .code-block-controls {
+    opacity: 1;
+}
+.fold-btn, .copy-btn {
+    border: none;
+    background: var(--color-canvas-subtle, #f6f8fa);
+    color: var(--color-fg-muted, #656d76);
+    cursor: pointer;
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 6px;
+    outline: none;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fold-btn:hover, .copy-btn:hover {
+    background: var(--color-btn-hover-bg, #f3f4f6);
+    color: var(--color-fg-default, #1f2328);
+}
+.fold-btn:active, .copy-btn:active {
+    transform: scale(0.95);
+}
+/* 暗色模式适配 */
+[data-color-mode="dark"] .code-block-controls {
+    opacity: 0.8;
+}
+[data-color-mode="dark"] .fold-btn,
+[data-color-mode="dark"] .copy-btn {
+    background: var(--color-canvas-subtle, #21262d);
+    color: var(--color-fg-muted, #848d97);
+}
+[data-color-mode="dark"] .fold-btn:hover,
+[data-color-mode="dark"] .copy-btn:hover {
+    background: var(--color-btn-hover-bg, #30363d);
+    color: var(--color-fg-default, #c9d1d9);
+}
+
 {% if blogBase['highlight']!=0 -%}
 .copy-feedback {
     display: none;
@@ -561,6 +618,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 {%- endif %}
+
+
+// 代码块折叠复制功能
+document.addEventListener('DOMContentLoaded', () => {
+    // 复制功能
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const code = btn.parentElement.parentElement.querySelector('pre code').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                // 复制成功，显示对勾图标
+                btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 20 20" style="vertical-align:middle"><path fill="var(--color-success-fg, #1f883d)" d="M7.629 15.314l-4.243-4.243 1.414-1.414 2.829 2.828 6.364-6.364 1.414 1.414z"/></svg>';
+                setTimeout(() => {
+                    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 20 20" style="vertical-align:middle"><rect x="6" y="2" width="9" height="13" rx="2" fill="currentColor"/><rect x="3" y="5" width="9" height="13" rx="2" fill="currentColor" opacity="0.6"/></svg>';
+                }, 1500);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                // 降级方案
+                const textarea = document.createElement('textarea');
+                textarea.value = code;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+            });
+        });
+    });
+
+    // 折叠功能
+    document.addEventListener('click', e => {
+        if (e.target.classList.contains('fold-btn')) {
+            const code = e.target.parentElement.parentElement.querySelector('pre code');
+            const collapsed = code.style.display === 'none';
+            code.style.display = collapsed ? 'block' : 'none';
+            e.target.textContent = collapsed ? '▲' : '▼';
+            e.target.title = collapsed ? '折叠' : '展开';
+        }
+    });
+});
 
 </script>
 {{ blogBase['script'] }}
