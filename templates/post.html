@@ -297,11 +297,11 @@
 .post-meta-container {
     margin-bottom: 24px;
     padding: 12px 16px;
-    background-color: var(--color-canvas-subtle, #f6f8fa);
-    border: 1px solid var(--color-border-default, #d0d7de);
+    background-color: var(--color-canvas-subtle);
+    border: 1px solid var(--color-border-default);
     border-radius: 8px;
     font-size: 14px;
-    color: var(--color-fg-muted, #656d76);
+    color: var(--color-fg-muted);
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -310,24 +310,13 @@
 
 .post-meta-container time {
     font-weight: 500;
-    color: var(--color-fg-default, #1f2328);
+    color: var(--color-fg-default);
 }
 
 .post-view-count {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-}
-
-/* 暗色模式适配 */
-[data-color-mode="dark"] .post-meta-container {
-    background-color: var(--color-canvas-subtle, #161b22);
-    border-color: var(--color-border-default, #30363d);
-    color: var(--color-fg-muted, #8b949e);
-}
-
-[data-color-mode="dark"] .post-meta-container time {
-    color: var(--color-fg-default, #c9d1d9);
 }
 
 /* 移动端适配 */
@@ -371,9 +360,8 @@
 
 .post-pagination .pagination {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 16px;
 }
 
 .post-pagination .previous_page,
@@ -406,6 +394,14 @@
 .post-pagination .previous_page svg,
 .post-pagination .next_page svg {
     flex-shrink: 0;
+}
+
+.post-pagination .previous_page {
+    margin-right: auto;
+}
+
+.post-pagination .next_page {
+    margin-left: auto;
 }
 
 /* 暗色模式适配 */
@@ -571,6 +567,8 @@
             </svg>
             {{ blogBase['prevTitle'] }}
         </a>
+        {%- else -%}
+        <span class="previous_page" aria-disabled="true"></span>
         {%- endif -%}
         {%- if blogBase['nextTitle'] -%}
         <a class="next_page" rel="next" href="{{ blogBase['nextUrl'] }}" aria-label="Next Page">
@@ -579,6 +577,8 @@
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
         </a>
+        {%- else -%}
+        <span class="next_page" aria-disabled="true"></span>
         {%- endif -%}
     </div>
 </nav>
