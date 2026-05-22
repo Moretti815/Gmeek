@@ -530,12 +530,12 @@
                     </button>
                 </div>
                 <div class="addlink-code-content"><code id="code-yml">- name: {{ blogBase['addlinkSiteName'] or blogBase['title'] or 'Moretti\'s Blog' }}
-  link: {{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://moretti815.github.io/blog' }}
+  link: {{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://blog.2005815.xyz' }}
   avatar: {{ blogBase['addlinkSiteAvatar'] or blogBase['avatarUrl'] or 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/kemiao.gif' }}
   descr: {{ blogBase['addlinkSiteDescr'] or blogBase['description'] or '这是最好的时代，也是最坏的时代。' }}
   siteshot: {{ blogBase['addlinkSiteSiteshot'] or 'https://jsd.268682.xyz/gh/Kemeow0815/img@main/img/screenshot.webp' }}
   /*/---下面是选填项---/*/
-  atom(options): {{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://moretti815.github.io/blog') + '/rss.xml' }}</code></div>
+  atom(options): {{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://blog.2005815.xyz') + '/rss.xml' }}</code></div>
             </div>
         </div>
 
@@ -548,7 +548,7 @@
                 </li>
                 <li>
                     <span class="label">{{ i18n['siteUrl'] or '网址' }}</span>
-                    <span class="value">{{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://moretti815.github.io/blog/' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteLink'] or blogBase['homeUrl'] or 'https://blog.2005815.xyz/' }}</span>
                 </li>
                 <li>
                     <span class="label">{{ i18n['siteIcon'] or '网站图标' }}</span>
@@ -564,7 +564,7 @@
                 </li>
                 <li>
                     <span class="label">{{ i18n['siteAtom'] or 'Atom(可选)' }}</span>
-                    <span class="value">{{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://moretti815.github.io/blog') + '/rss.xml' }}</span>
+                    <span class="value">{{ blogBase['addlinkSiteAtom'] or blogBase['homeUrl']|default('https://blog.2005815.xyz') + '/rss.xml' }}</span>
                 </li>
             </ul>
         </div>
