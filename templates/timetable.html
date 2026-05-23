@@ -610,14 +610,26 @@ function renderDesktopTable(dayColumns, nodeRows, coursesByDay) {
         
         // Day cells
         dayColumns.forEach(day => {
-            const courses = coursesByDay[day.day].filter(c => c.startNode === row.node);
+            // 修改过滤逻辑：显示在当前行范围内的课程
+            const courses = coursesByDay[day.day].filter(c => {
+                const courseStart = c.startNode;
+                const courseEnd = c.endNode || courseStart;
+                const rowStart = row.node;
+                const rowEnd = row.node + 1;
+                // 课程与当前行有重叠
+                return courseStart <= rowEnd && courseEnd >= rowStart;
+            });
             let cellHtml = '';
             
             if (courses.length > 0) {
                 courses.forEach(course => {
+                    // 计算课程跨越的节数
+                    const step = course.step || 1;
+                    const isStartRow = course.startNode === row.node || (course.startNode % 2 === 0 && course.startNode === row.node - 1);
+                    
                     cellHtml += `
-                        <div class="course-card" style="border-color: ${course.color}; background: color-mix(in srgb, ${course.color} 10%, var(--color-canvas-subtle))">
-                            <div class="course-name">${escapeHtml(course.courseName)}</div>
+                        <div class="course-card" style="border-color: ${course.color}; background: color-mix(in srgb, ${course.color} 10%, var(--color-canvas-subtle)); ${step > 2 ? 'min-height: 80px;' : ''}">
+                            <div class="course-name">${escapeHtml(course.courseName)} ${step > 2 ? '<span style="font-size: 11px; opacity: 0.8;">(' + course.startNode + '-' + course.endNode + '节)</span>' : ''}</div>
                             <div class="course-details">
                                 <div>${course.startWeek}-${course.endWeek} {{ i18n["weeksShort"] if "weeksShort" in i18n else "wks" }}</div>
                                 <div>{{ i18n["room"] if "room" in i18n else "Room" }}: ${escapeHtml(course.room || '{{ i18n["notSet"] if "notSet" in i18n else "Not set" }}')}</div>
@@ -656,12 +668,18 @@ function renderMobileCards(dayColumns, coursesByDay, nodeRows) {
         
         if (courses.length > 0) {
             courses.forEach(course => {
-                const nodeInfo = nodeRows.find(n => n.node === course.startNode);
-                const timeText = nodeInfo ? `${nodeInfo.startTime} - ${nodeInfo.endTime}` : '';
+                // 计算课程的实际结束时间
+                const step = course.step || 1;
+                const endNode = course.endNode || course.startNode;
+                const startNodeInfo = nodeRows.find(n => n.node === course.startNode);
+                const endNodeInfo = nodeRows.find(n => n.node === endNode) || startNodeInfo;
+                const timeText = startNodeInfo && endNodeInfo 
+                    ? `${startNodeInfo.startTime} - ${endNodeInfo.endTime}` 
+                    : '';
                 
                 contentHtml += `
                     <div class="mobile-course-card" style="border-color: ${course.color}; background: color-mix(in srgb, ${course.color} 10%, var(--color-canvas-subtle))">
-                        <div class="mobile-course-name">${escapeHtml(course.courseName)}</div>
+                        <div class="mobile-course-name">${escapeHtml(course.courseName)} ${step > 2 ? '<span style="font-size: 12px; opacity: 0.8;">(' + course.startNode + '-' + endNode + '节)</span>' : ''}</div>
                         <div class="mobile-course-details">
                             <div>{{ i18n["time"] if "time" in i18n else "Time" }}: ${timeText}</div>
                             <div>{{ i18n["weeks"] if "weeks" in i18n else "Weeks" }}: ${course.startWeek}-${course.endWeek}</div>
