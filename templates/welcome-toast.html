@@ -104,7 +104,7 @@
         const maxAttempts = 30; // 最多等待3秒
         
         while (attempts < maxAttempts) {
-            const sitePvEl = document.getElementById('vercount_value_site_pv');
+            const sitePvEl = document.getElementById('busuanzi_value_site_pv');
             if (sitePvEl && sitePvEl.textContent) {
                 const pageviews = sitePvEl.textContent.trim();
                 const statsText = `欢迎 我是 Moretti 你是本站迎来的第${pageviews}次访问`;
