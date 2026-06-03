@@ -115,6 +115,9 @@ body{box-sizing: border-box;min-width: 200px;max-width: 900px;margin: 20px auto;
     {%- if not noBackToTop -%}
     {% include 'back-to-top.html' %}
     {%- endif -%}
+    {%- if blogBase.get('enablePJAX', true) -%}
+    {% include 'pjax.html' %}
+    {%- endif -%}
 </body>
 <script>
 var IconList={{ IconList }};
