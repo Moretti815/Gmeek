@@ -291,21 +291,41 @@ window.addEventListener('pjax:complete', function(event) {
         pathHome.setAttribute('d', IconList['home']);
     }
     
-    // Re-initialize memos timeline if on home page
-    if (typeof loadMemosTimeline === 'function') {
-        const timeline = document.getElementById('memos-timeline');
-        if (timeline) {
-            // Clear existing interval
-            if (window.memosCarouselInterval) {
-                clearInterval(window.memosCarouselInterval);
-                window.memosCarouselInterval = null;
-            }
-            // Reset state
-            window.currentMemoIndex = 0;
-            window.publicMemos = [];
-            // Reload timeline
-            loadMemosTimeline();
+    // Re-initialize header icons (search, RSS, etc.)
+    if (typeof IconList !== 'undefined') {
+        // Search icon
+        const pathSearch = document.getElementById('pathSearch');
+        if (pathSearch) pathSearch.setAttribute('d', IconList['search']);
+        
+        // RSS icon
+        const pathRSS = document.getElementById('pathRSS');
+        if (pathRSS) pathRSS.setAttribute('d', IconList['rss']);
+        
+        // Top/Post icons in article list
+        const iconTOP = document.getElementsByClassName('svgTop1');
+        const iconPost = document.getElementsByClassName('svgTop0');
+        for (let i = 0; i < iconTOP.length; i++) {
+            iconTOP[i].setAttribute('d', IconList['upload']);
+            iconTOP[i].parentNode.style.color = 'red';
         }
+        for (let i = 0; i < iconPost.length; i++) {
+            iconPost[i].setAttribute('d', IconList['post']);
+        }
+    }
+    
+    // Re-initialize memos timeline if on home page
+    const timeline = document.getElementById('memos-timeline');
+    if (timeline && typeof window.loadMemosTimeline === 'function') {
+        // Clear existing interval
+        if (window.memosCarouselInterval) {
+            clearInterval(window.memosCarouselInterval);
+            window.memosCarouselInterval = null;
+        }
+        // Reset state
+        window.currentMemoIndex = 0;
+        window.publicMemos = [];
+        // Reload timeline
+        window.loadMemosTimeline();
     }
     
     // Re-initialize Vercount stats
@@ -327,9 +347,6 @@ window.addEventListener('pjax:complete', function(event) {
         // Reset scroll state
         window.handleScroll();
     }
-    
-    // Re-run all DOMContentLoaded handlers
-    document.dispatchEvent(new Event('DOMContentLoaded'));
     
     console.log('PJAX: Page initialized for', url);
 });

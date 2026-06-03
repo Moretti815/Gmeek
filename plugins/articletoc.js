@@ -7,9 +7,12 @@ function loadResource(type, attributes) {
 }
 
 function createTOC() {
+    const contentContainer = document.querySelector('.markdown-body');
+    // Check if content container exists (not on home page)
+    if (!contentContainer) return;
+    
     const tocElement = document.createElement('div');
     tocElement.className = 'toc';
-    const contentContainer = document.querySelector('.markdown-body');
     contentContainer.appendChild(tocElement);
 
     const headings = contentContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
