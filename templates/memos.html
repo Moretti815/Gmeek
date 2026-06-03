@@ -642,13 +642,7 @@ const API_CONFIG = {
 
 // State - get first enabled source from config
 {% set memosSources = blogBase.get('memosSources', {}) %}
-{% set ns = namespace(firstSource='memos') %}
-{% for sourceKey, sourceConfig in memosSources.items() %}
-{% if ns.firstSource == 'memos' and sourceConfig.get('enabled', true) %}
-{% set ns.firstSource = sourceKey %}
-{% endif %}
-{% endfor %}
-let currentSource = '{{ ns.firstSource }}';
+let currentSource = {% if memosSources %}{% for sourceKey, sourceConfig in memosSources.items() %}{% if sourceConfig.get('enabled', true) %}'{{ sourceKey }}'{% break %}{% endif %}{% endfor %}{% else %}'memos'{% endif %};
 let memosData = [];
 let nextPageToken = '';
 let currentFilter = 'all';
