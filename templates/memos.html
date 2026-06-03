@@ -641,8 +641,11 @@ const API_CONFIG = {
 };
 
 // State - get first enabled source from config
-// Get first enabled source from API_CONFIG keys
-let currentSource = Object.keys(API_CONFIG)[0] || 'memos';
+// Use configured default source, fallback to first enabled source
+{% set defaultSource = blogBase.get('memosDefaultSource', '') %}
+{% set memosSources = blogBase.get('memosSources', {}) %}
+{% set isValidDefault = defaultSource and memosSources.get(defaultSource, {}).get('enabled', false) %}
+let currentSource = '{% if isValidDefault %}{{ defaultSource }}{% else %}{{ memosSources.keys() | list | first | default('memos') }}{% endif %}';
 let memosData = [];
 let nextPageToken = '';
 let currentFilter = 'all';
