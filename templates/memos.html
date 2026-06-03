@@ -641,8 +641,8 @@ const API_CONFIG = {
 };
 
 // State - get first enabled source from config
-{% set memosSources = blogBase.get('memosSources', {}) %}
-let currentSource = {% if memosSources %}{% for sourceKey, sourceConfig in memosSources.items() %}{% if sourceConfig.get('enabled', true) %}'{{ sourceKey }}'{% break %}{% endif %}{% endfor %}{% else %}'memos'{% endif %};
+// Get first enabled source from API_CONFIG keys
+let currentSource = Object.keys(API_CONFIG)[0] || 'memos';
 let memosData = [];
 let nextPageToken = '';
 let currentFilter = 'all';
