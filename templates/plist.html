@@ -320,20 +320,17 @@ document.getElementById("{{ key }}").setAttribute("d",value=IconList["{{ key }}"
 document.getElementById("{{ blogBase['singeListJson'][num]['postTitle'] }}").setAttribute("d",value=IconList["{{ blogBase['singeListJson'][num]['labels'][0] }}"]);
 {%- endfor %}
 
+// Memos Timeline
 {%- set timelineSource = blogBase.get('timelineSource', {}) -%}
-// Memos Timeline Configuration
-window.MEMOS_TIMELINE_CONFIG = {
-    url: '{{ timelineSource.get('url', 'https://m.314926.xyz/api/v1/memos') }}',
-    type: '{{ timelineSource.get('type', 'memos') }}',
-    pageUrl: '{{ blogBase["homeUrl"] }}/memos.html',
-    enabled: {{ 'true' if timelineSource.get('enabled', true) else 'false' }},
-    limit: {{ timelineSource.get('limit', 5) }}
-};
+const MEMOS_API_URL = '{{ timelineSource.get('url', 'https://m.314926.xyz/api/v1/memos') }}';
+const MEMOS_API_TYPE = '{{ timelineSource.get('type', 'memos') }}';
+const MEMOS_PAGE_URL = '{{ blogBase["homeUrl"] }}/memos.html';
+const MEMOS_TIMELINE_ENABLED = {{ 'true' if timelineSource.get('enabled', true) else 'false' }};
+const MEMOS_TIMELINE_LIMIT = {{ timelineSource.get('limit', 5) }};
 
-// State variables (exposed to window for PJAX)
-window.memosCarouselInterval = null;
-window.currentMemoIndex = 0;
-window.publicMemos = [];
+let memosCarouselInterval = null;
+let currentMemoIndex = 0;
+let publicMemos = [];
 
 function escapeHtml(text) {
     const div = document.createElement('div');
@@ -393,15 +390,15 @@ function renderMemoItem(memo, index) {
 }
 
 function startCarousel() {
-    if (window.publicMemos.length <= 1) return;
+    if (publicMemos.length <= 1) return;
     
-    if (window.memosCarouselInterval) {
-        clearInterval(window.memosCarouselInterval);
+    if (memosCarouselInterval) {
+        clearInterval(memosCarouselInterval);
     }
     
-    window.memosCarouselInterval = setInterval(() => {
-        window.currentMemoIndex = (window.currentMemoIndex + 1) % window.publicMemos.length;
-        renderMemoItem(window.publicMemos[window.currentMemoIndex], window.currentMemoIndex);
+    memosCarouselInterval = setInterval(() => {
+        currentMemoIndex = (currentMemoIndex + 1) % publicMemos.length;
+        renderMemoItem(publicMemos[currentMemoIndex], currentMemoIndex);
     }, 4000); // 每4秒切换
 }
 
@@ -411,70 +408,61 @@ async function loadMemosTimeline() {
     
     if (!container || !contentEl) return;
     
-    // Get config from window (set by plist.html or use defaults)
-    const config = window.MEMOS_TIMELINE_CONFIG || {
-        url: 'https://m.314926.xyz/api/v1/memos',
-        type: 'memos',
-        pageUrl: '/memos.html',
-        enabled: true,
-        limit: 5
-    };
-    
     // Check if timeline is enabled
-    if (!config.enabled) {
+    if (!MEMOS_TIMELINE_ENABLED) {
         container.style.display = 'none';
         return;
     }
     
     try {
-        const response = await fetch(`${config.url}?limit=${config.limit}&_t=${Date.now()}`);
+        const response = await fetch(`${MEMOS_API_URL}?limit=${MEMOS_TIMELINE_LIMIT}&_t=${Date.now()}`);
         if (!response.ok) throw new Error('Failed to fetch');
         
         // Parse data based on API type
         let memos = [];
         
-        if (config.type === 'memos') {
+        if (MEMOS_API_TYPE === 'memos') {
             const data = await response.json();
             memos = data.memos || [];
             // Filter only public memos
-            window.publicMemos = memos.filter(m => m.visibility === 'PUBLIC');
-        } else if (config.type === 'json') {
+            publicMemos = memos.filter(m => m.visibility === 'PUBLIC');
+        } else if (MEMOS_API_TYPE === 'json') {
             // TGTalk format
             const data = await response.json();
             if (data.success && data.data) {
-                window.publicMemos = transformTGTalkForTimeline(data.data);
+                publicMemos = transformTGTalkForTimeline(data.data);
             }
-        } else if (config.type === 'rss') {
+        } else if (MEMOS_API_TYPE === 'rss') {
             // Jike RSS format
             const rssText = await response.text();
             const parser = new DOMParser();
             const xmlDoc = parser.parseFromString(rssText, 'text/xml');
             const items = xmlDoc.querySelectorAll('item');
-            window.publicMemos = transformJikeForTimeline(items);
+            publicMemos = transformJikeForTimeline(items);
         }
         
-        if (window.publicMemos.length === 0) {
+        if (publicMemos.length === 0) {
             contentEl.innerHTML = '<span class="memos-loading">暂无动态</span>';
             return;
         }
         
         // Display first memo
-        window.currentMemoIndex = 0;
-        renderMemoItem(window.publicMemos[0], 0);
+        currentMemoIndex = 0;
+        renderMemoItem(publicMemos[0], 0);
         
         // Start carousel
         startCarousel();
         
         // Click to navigate
         container.addEventListener('click', () => {
-            window.location.href = config.pageUrl;
+            window.location.href = MEMOS_PAGE_URL;
         });
         
         // Pause on hover
         container.addEventListener('mouseenter', () => {
-            if (window.memosCarouselInterval) {
-                clearInterval(window.memosCarouselInterval);
-                window.memosCarouselInterval = null;
+            if (memosCarouselInterval) {
+                clearInterval(memosCarouselInterval);
+                memosCarouselInterval = null;
             }
         });
         
@@ -490,8 +478,7 @@ async function loadMemosTimeline() {
 
 // Transform TGTalk data for timeline
 function transformTGTalkForTimeline(data) {
-    const config = window.MEMOS_TIMELINE_CONFIG || { limit: 5 };
-    return data.slice(0, config.limit).map(item => {
+    return data.slice(0, MEMOS_TIMELINE_LIMIT).map(item => {
         let text = item.text || '';
         
         // Remove HTML tags for display
@@ -516,11 +503,10 @@ function transformTGTalkForTimeline(data) {
 
 // Transform Jike RSS data for timeline
 function transformJikeForTimeline(items) {
-    const config = window.MEMOS_TIMELINE_CONFIG || { limit: 5 };
     const result = [];
     let count = 0;
     items.forEach(item => {
-        if (count >= config.limit) return;
+        if (count >= MEMOS_TIMELINE_LIMIT) return;
         
         const description = item.querySelector('description')?.textContent || '';
         
@@ -548,13 +534,6 @@ function transformJikeForTimeline(items) {
     });
     return result;
 }
-
-// Expose functions to window for PJAX
-window.loadMemosTimeline = loadMemosTimeline;
-window.startCarousel = startCarousel;
-window.renderMemoItem = renderMemoItem;
-window.transformTGTalkForTimeline = transformTGTalkForTimeline;
-window.transformJikeForTimeline = transformJikeForTimeline;
 
 // Initialize
 document.addEventListener('DOMContentLoaded', loadMemosTimeline);
