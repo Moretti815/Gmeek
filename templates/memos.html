@@ -48,6 +48,43 @@
     margin: 0;
 }
 
+/* Source Tabs */
+.source-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--color-border-default);
+    padding-bottom: 12px;
+}
+
+.source-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-default);
+    background-color: var(--color-canvas-default);
+    color: var(--color-fg-default);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.source-tab:hover {
+    background-color: var(--color-canvas-subtle);
+}
+
+.source-tab.active {
+    background-color: var(--color-accent-emphasis, #0969da);
+    color: white;
+    border-color: var(--color-accent-emphasis, #0969da);
+}
+
+.source-tab iconify-icon {
+    font-size: 16px;
+}
+
 /* Filter Tabs */
 .memos-filter {
     display: flex;
@@ -235,6 +272,22 @@
     font-weight: 600;
 }
 
+/* TGTalk specific styles */
+.memo-content .emoji {
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+    margin: 0 2px;
+}
+
+.memo-content .emoji b {
+    display: none;
+}
+
 /* Memo Images (from attachments) */
 .memo-images {
     display: grid;
@@ -336,6 +389,16 @@
     font-size: 13px;
 }
 
+.memo-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background-color: var(--color-canvas-subtle);
+    border-radius: 4px;
+    font-size: 11px;
+}
+
 /* Loading State */
 .memos-loading {
     display: flex;
@@ -426,6 +489,15 @@
         font-size: 22px;
     }
 
+    .source-tabs {
+        gap: 6px;
+    }
+
+    .source-tab {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+
     .memos-filter {
         gap: 6px;
     }
@@ -506,6 +578,21 @@
         <p>{{ i18n['memosSubtitle'] if 'memosSubtitle' in i18n else 'Record every moment of life' }}</p>
     </div>
 
+    <!-- Source Tabs -->
+    <div class="source-tabs" id="source-tabs">
+        {%- set memosSources = blogBase.get('memosSources', {}) -%}
+        {%- set firstSource = true -%}
+        {%- for sourceKey, sourceConfig in memosSources.items() -%}
+        {%- if sourceConfig.get('enabled', true) -%}
+        <button class="source-tab {{ 'active' if firstSource else '' }}" data-source="{{ sourceKey }}" onclick="switchSource('{{ sourceKey }}')">
+            <iconify-icon icon="{{ sourceConfig.get('icon', 'material-symbols:chat') }}"></iconify-icon>
+            <span>{{ sourceConfig.get('label', sourceKey) }}</span>
+        </button>
+        {%- set firstSource = false -%}
+        {%- endif -%}
+        {%- endfor -%}
+    </div>
+
     <!-- Filter Tabs -->
     <div class="memos-filter" id="memos-filter">
         <button class="filter-btn active" data-filter="all">
@@ -539,17 +626,35 @@
 
 {% block script %}
 <script>
-// Memos API Configuration
-const MEMOS_API_URL = 'https://m.314926.xyz/api/v1/memos';
-const MEMOS_PAGE_SIZE = 20;
+// API Configuration from config.json
+const API_CONFIG = {
+    {%- set memosSources = blogBase.get('memosSources', {}) -%}
+    {%- for sourceKey, sourceConfig in memosSources.items() -%}
+    {%- if sourceConfig.get('enabled', true) -%}
+    {{ sourceKey }}: {
+        url: '{{ sourceConfig.get('url', '') }}',
+        type: '{{ sourceConfig.get('type', 'memos') }}'
+        {%- if sourceConfig.get('pageSize') -%}, pageSize: {{ sourceConfig.get('pageSize') }}{%- endif -%}
+    }{{ ',' if not loop.last }}
+    {%- endif -%}
+    {%- endfor -%}
+};
 
-// State - 每次页面加载都重新初始化
+// State - get first enabled source from config
+{%- set memosSources = blogBase.get('memosSources', {}) -%}
+{%- set firstEnabledSource = '' -%}
+{%- for sourceKey, sourceConfig in memosSources.items() -%}
+{%- if firstEnabledSource == '' and sourceConfig.get('enabled', true) -%}
+{%- set firstEnabledSource = sourceKey -%}
+{%- endif -%}
+{%- endfor -%}
+let currentSource = '{{ firstEnabledSource or 'memos' }}';
 let memosData = [];
 let nextPageToken = '';
 let currentFilter = 'all';
 let allTags = new Set();
 
-// Configure marked.js for safe rendering
+// Configure marked.js
 marked.setOptions({
     breaks: true,
     gfm: true,
@@ -561,15 +666,22 @@ marked.setOptions({
     xhtml: false
 });
 
-// Initialize - 每次页面加载都会执行
-async function initMemos() {
-    // 重置状态
+// Switch Source
+async function switchSource(source) {
+    if (currentSource === source) return;
+    
+    currentSource = source;
     memosData = [];
     nextPageToken = '';
     currentFilter = 'all';
     allTags = new Set();
     
-    // 显示加载状态
+    // Update tab UI
+    document.querySelectorAll('.source-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.source === source);
+    });
+    
+    // Show loading
     document.getElementById('memos-list').innerHTML = `
         <div class="memos-loading">
             <iconify-icon icon="material-symbols:sync"></iconify-icon>
@@ -577,34 +689,90 @@ async function initMemos() {
         </div>
     `;
     
-    await loadMemos();
+    // Load data based on source type
+    const config = API_CONFIG[source];
+    if (!config) {
+        console.error(`Unknown source: ${source}`);
+        return;
+    }
+    
+    if (config.type === 'memos') {
+        await loadMemosData();
+    } else if (config.type === 'json') {
+        await loadTGTalkData();
+    } else if (config.type === 'rss') {
+        await loadJikeData();
+    } else {
+        // Try generic loader
+        await loadGenericData(source, config);
+    }
 }
 
-// Load Memos from API
-async function loadMemos() {
+// Generic data loader for custom sources
+async function loadGenericData(source, config) {
     const listContainer = document.getElementById('memos-list');
-
+    
     try {
-        // 添加时间戳防止缓存
-        let url = `${MEMOS_API_URL}?pageSize=${MEMOS_PAGE_SIZE}&_t=${Date.now()}`;
+        const response = await fetch(`${config.url}?_t=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        let data;
+        if (config.type === 'json') {
+            data = await response.json();
+        } else {
+            data = await response.text();
+        }
+        
+        // Try to transform using source-specific function or generic
+        const transformer = window[`transform${source.charAt(0).toUpperCase() + source.slice(1)}`];
+        if (transformer) {
+            memosData = transformer(data);
+        } else {
+            // Generic fallback
+            memosData = [{
+                id: Date.now(),
+                content: '无法解析此数据源格式',
+                date: new Date().toISOString(),
+                tags: [],
+                images: [],
+                source: source
+            }];
+        }
+        
+        memosData.forEach(memo => {
+            if (memo.tags) memo.tags.forEach(tag => allTags.add(tag));
+        });
+        
+        renderMemos();
+        updateFilterTabs();
+        document.getElementById('load-more').style.display = 'none';
+        
+    } catch (error) {
+        console.error(`Failed to load ${source}:`, error);
+        listContainer.innerHTML = `
+            <div class="memos-error">
+                <iconify-icon icon="material-symbols:error-outline"></iconify-icon>
+                <p>加载 ${source} 数据失败</p>
+            </div>
+        `;
+    }
+}
+
+// Load Memos Data
+async function loadMemosData() {
+    const listContainer = document.getElementById('memos-list');
+    
+    try {
+        let url = `${API_CONFIG.memos.url}?pageSize=${API_CONFIG.memos.pageSize}&_t=${Date.now()}`;
         if (nextPageToken) {
             url += `&pageToken=${encodeURIComponent(nextPageToken)}`;
         }
-
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Cache-Control': 'no-cache'
-            }
-        });
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
         const data = await response.json();
-
+        
         if (!data.memos || data.memos.length === 0) {
             if (memosData.length === 0) {
                 listContainer.innerHTML = `
@@ -617,45 +785,112 @@ async function loadMemos() {
             document.getElementById('load-more').style.display = 'none';
             return;
         }
-
-        // Transform and store memos
+        
         const newMemos = transformMemos(data.memos);
         memosData = [...memosData, ...newMemos];
-
-        // Collect tags
+        
         newMemos.forEach(memo => {
-            if (memo.tags) {
-                memo.tags.forEach(tag => allTags.add(tag));
-            }
+            if (memo.tags) memo.tags.forEach(tag => allTags.add(tag));
         });
-
-        // Update next page token
+        
         nextPageToken = data.nextPageToken || '';
-
-        // Render memos
         renderMemos();
-
-        // Update filter tabs
         updateFilterTabs();
-
-        // Show/hide load more button
         document.getElementById('load-more').style.display = nextPageToken ? 'flex' : 'none';
-
+        
     } catch (error) {
         console.error('Failed to load memos:', error);
         listContainer.innerHTML = `
             <div class="memos-error">
                 <iconify-icon icon="material-symbols:error-outline"></iconify-icon>
                 <p>{{ i18n['loadError'] if 'loadError' in i18n else 'Failed to load memos' }}</p>
-                <button class="load-more-btn" onclick="loadMemos()" style="margin-top: 16px;">
-                    {{ i18n['retry'] if 'retry' in i18n else 'Retry' }}
-                </button>
             </div>
         `;
     }
 }
 
-// Transform Memos API response to internal format
+// Load TGTalk Data
+async function loadTGTalkData() {
+    const listContainer = document.getElementById('memos-list');
+    
+    try {
+        const response = await fetch(`${API_CONFIG.tgtalk.url}?_t=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const data = await response.json();
+        
+        if (!data.success || !data.data || data.data.length === 0) {
+            listContainer.innerHTML = `
+                <div class="memos-empty">
+                    <iconify-icon icon="material-symbols:chat-bubble-outline"></iconify-icon>
+                    <p>暂无 TGTalk 数据</p>
+                </div>
+            `;
+            document.getElementById('load-more').style.display = 'none';
+            return;
+        }
+        
+        memosData = transformTGTalk(data.data);
+        memosData.forEach(memo => {
+            if (memo.tags) memo.tags.forEach(tag => allTags.add(tag));
+        });
+        
+        renderMemos();
+        updateFilterTabs();
+        document.getElementById('load-more').style.display = 'none';
+        
+    } catch (error) {
+        console.error('Failed to load TGTalk:', error);
+        listContainer.innerHTML = `
+            <div class="memos-error">
+                <iconify-icon icon="material-symbols:error-outline"></iconify-icon>
+                <p>加载 TGTalk 数据失败</p>
+            </div>
+        `;
+    }
+}
+
+// Load Jike RSS Data
+async function loadJikeData() {
+    const listContainer = document.getElementById('memos-list');
+    
+    try {
+        const response = await fetch(`${API_CONFIG.jike.url}?_t=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const rssText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(rssText, 'text/xml');
+        
+        const items = xmlDoc.querySelectorAll('item');
+        if (items.length === 0) {
+            listContainer.innerHTML = `
+                <div class="memos-empty">
+                    <iconify-icon icon="material-symbols:chat-bubble-outline"></iconify-icon>
+                    <p>暂无即刻数据</p>
+                </div>
+            `;
+            document.getElementById('load-more').style.display = 'none';
+            return;
+        }
+        
+        memosData = transformJike(items);
+        renderMemos();
+        updateFilterTabs();
+        document.getElementById('load-more').style.display = 'none';
+        
+    } catch (error) {
+        console.error('Failed to load Jike:', error);
+        listContainer.innerHTML = `
+            <div class="memos-error">
+                <iconify-icon icon="material-symbols:error-outline"></iconify-icon>
+                <p>加载即刻数据失败</p>
+            </div>
+        `;
+    }
+}
+
+// Transform Memos
 function transformMemos(memos) {
     return memos
         .filter(m => m.visibility === 'PUBLIC' && m.state === 'NORMAL')
@@ -668,26 +903,114 @@ function transformMemos(memos) {
                 .filter(a => a.type && a.type.startsWith('image/'))
                 .map(a => `https://m.314926.xyz/file/${a.name}/${a.filename}`),
             location: m.location?.placeholder,
-            pinned: m.pinned
+            pinned: m.pinned,
+            source: 'memos'
         }))
         .sort((a, b) => {
-            // Pinned first, then by date
             if (a.pinned && !b.pinned) return -1;
             if (!a.pinned && b.pinned) return 1;
             return new Date(b.date).getTime() - new Date(a.date).getTime();
         });
 }
 
+// Transform TGTalk
+function transformTGTalk(data) {
+    return data.map(item => {
+        // Parse HTML content
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(item.text, 'text/html');
+        
+        // Extract tags from links like <a href="?q=%23%E6%97%A5%E5%B8%B8">#日常</a>
+        const tags = [];
+        doc.querySelectorAll('a[href^="?q=%23"]').forEach(link => {
+            const tagText = link.textContent.trim();
+            if (tagText.startsWith('#')) {
+                tags.push(tagText.substring(1));
+            }
+        });
+        
+        // Process content: remove tag links but keep other content
+        let content = item.text;
+        // Remove tag links but keep the text
+        content = content.replace(/<a href="\?q=%23[^"]+">([^<]+)<\/a>/g, '$1');
+        // Convert <br/> to newlines for markdown
+        content = content.replace(/<br\s*\/?>/gi, '\n');
+        
+        // Process images - filter out emoji images
+        const images = [];
+        if (item.image && Array.isArray(item.image)) {
+            item.image.forEach(img => {
+                // Skip telegram emoji images
+                if (img && !img.includes('telegram.org/img/emoji')) {
+                    // Ensure HTTPS
+                    const imgUrl = img.startsWith('//') ? 'https:' + img : 
+                                   img.startsWith('http') ? img : 'https://' + img;
+                    images.push(imgUrl);
+                }
+            });
+        }
+        
+        return {
+            id: item.id,
+            content: content,
+            date: new Date(item.time).toISOString(),
+            tags: tags,
+            images: images,
+            location: null,
+            pinned: false,
+            source: 'tgtalk',
+            views: item.views
+        };
+    }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+// Transform Jike RSS
+function transformJike(items) {
+    const result = [];
+    items.forEach(item => {
+        const title = item.querySelector('title')?.textContent || '';
+        const description = item.querySelector('description')?.textContent || '';
+        const pubDate = item.querySelector('pubDate')?.textContent || '';
+        const link = item.querySelector('link')?.textContent || '';
+        
+        // Parse HTML description
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(description, 'text/html');
+        
+        // Extract images
+        const images = [];
+        doc.querySelectorAll('img').forEach(img => {
+            const src = img.getAttribute('src');
+            if (src) images.push(src);
+        });
+        
+        // Get text content
+        let content = doc.body.textContent || description;
+        content = content.replace(/<[^>]+>/g, '');
+        
+        result.push({
+            id: link,
+            content: content,
+            date: new Date(pubDate).toISOString(),
+            tags: [],
+            images: images,
+            location: null,
+            pinned: false,
+            source: 'jike'
+        });
+    });
+    return result;
+}
+
 // Render Memos
 function renderMemos() {
     const listContainer = document.getElementById('memos-list');
-
-    // Filter memos
+    
     let filteredMemos = memosData;
     if (currentFilter !== 'all') {
         filteredMemos = memosData.filter(m => m.tags && m.tags.includes(currentFilter));
     }
-
+    
     if (filteredMemos.length === 0) {
         listContainer.innerHTML = `
             <div class="memos-empty">
@@ -697,10 +1020,8 @@ function renderMemos() {
         `;
         return;
     }
-
-    listContainer.innerHTML = filteredMemos.map(memo => renderMemoCard(memo)).join('');
     
-    // 重新渲染 Markdown
+    listContainer.innerHTML = filteredMemos.map(memo => renderMemoCard(memo)).join('');
     renderMarkdownContent();
 }
 
@@ -715,9 +1036,22 @@ function renderMemoCard(memo) {
             ${escapeHtml(memo.location)}
         </span>
     ` : '';
-
+    
+    const sourceLabel = {
+        'memos': 'Memos',
+        'tgtalk': 'TGTalk',
+        'jike': '即刻'
+    }[memo.source] || memo.source;
+    
+    const sourceHtml = `
+        <span class="memo-source">
+            <iconify-icon icon="material-symbols:source"></iconify-icon>
+            ${sourceLabel}
+        </span>
+    `;
+    
     return `
-        <div class="memo-card ${memo.pinned ? 'pinned' : ''}" data-tags="${memo.tags.join(',')}">
+        <div class="memo-card ${memo.pinned ? 'pinned' : ''}" data-tags="${memo.tags.join(',')}" data-source="${memo.source}">
             ${memo.pinned ? `
                 <div class="memo-pin" title="{{ i18n['pinned'] if 'pinned' in i18n else 'Pinned' }}">
                     <iconify-icon icon="material-symbols:keep"></iconify-icon>
@@ -731,6 +1065,7 @@ function renderMemoCard(memo) {
                     <iconify-icon icon="material-symbols:schedule"></iconify-icon>
                     <time datetime="${memo.date}" title="${new Date(memo.date).toLocaleString()}">${relativeTime}</time>
                 </span>
+                ${sourceHtml}
                 ${locationHtml}
             </div>
         </div>
@@ -742,15 +1077,9 @@ function renderMarkdownContent() {
     document.querySelectorAll('.memo-content[data-content]').forEach(el => {
         const content = el.getAttribute('data-content');
         if (content) {
-            // 使用 marked.js 渲染 Markdown
             let html = marked.parse(content);
-            
-            // 处理图片点击事件
             html = html.replace(/<img([^>]+)>/g, '<img$1 onclick="openLightbox(this.src)" style="cursor: pointer;">');
-            
-            // 处理链接在新窗口打开
             html = html.replace(/<a([^>]+)href=/g, '<a$1target="_blank" rel="noopener" href=');
-            
             el.innerHTML = html;
             el.removeAttribute('data-content');
         }
@@ -760,30 +1089,30 @@ function renderMarkdownContent() {
 // Render Images
 function renderImages(images, memoId) {
     if (!images || images.length === 0) return '';
-
+    
     let layoutClass = 'grid';
     if (images.length === 1) layoutClass = 'single';
     else if (images.length === 2) layoutClass = 'double';
     else if (images.length === 3) layoutClass = 'triple';
-
+    
     const imagesHtml = images.map((img, i) => `
         <img src="${escapeHtml(img)}" alt="Image ${i + 1}" loading="lazy" onclick="openLightbox('${escapeHtml(img)}')">
     `).join('');
-
+    
     return `<div class="memo-images ${layoutClass}">${imagesHtml}</div>`;
 }
 
 // Render Tags
 function renderTags(tags) {
     if (!tags || tags.length === 0) return '';
-
+    
     const tagsHtml = tags.map(tag => `
         <span class="memo-tag" onclick="filterByTag('${escapeHtml(tag)}')">
             <iconify-icon icon="material-symbols:tag"></iconify-icon>
             ${escapeHtml(tag)}
         </span>
     `).join('');
-
+    
     return `<div class="memo-tags">${tagsHtml}</div>`;
 }
 
@@ -800,19 +1129,19 @@ function formatRelativeTime(dateString) {
     const date = new Date(dateString);
     const now = new Date();
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-
+    
     if (diffInMinutes < 1) return '{{ i18n["justNow"] if "justNow" in i18n else "Just now" }}';
     if (diffInMinutes < 60) return `${diffInMinutes} {{ i18n['minutesAgo'] if 'minutesAgo' in i18n else 'minutes ago' }}`;
-
+    
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) return `${diffInHours} {{ i18n['hoursAgo'] if 'hoursAgo' in i18n else 'hours ago' }}`;
-
+    
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 30) return `${diffInDays} {{ i18n['daysAgo'] if 'daysAgo' in i18n else 'days ago' }}`;
-
+    
     const diffInMonths = Math.floor(diffInDays / 30);
     if (diffInMonths < 12) return `${diffInMonths} {{ i18n['monthsAgo'] if 'monthsAgo' in i18n else 'months ago' }}`;
-
+    
     const diffInYears = Math.floor(diffInDays / 365);
     return `${diffInYears} {{ i18n['yearsAgo'] if 'yearsAgo' in i18n else 'years ago' }}`;
 }
@@ -821,14 +1150,14 @@ function formatRelativeTime(dateString) {
 function updateFilterTabs() {
     const filterContainer = document.getElementById('memos-filter');
     const tags = Array.from(allTags).sort();
-
+    
     let filterHtml = `
         <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setFilter('all')">
             <iconify-icon icon="material-symbols:apps"></iconify-icon>
             <span>{{ i18n['all'] if 'all' in i18n else 'All' }}</span>
         </button>
     `;
-
+    
     tags.forEach(tag => {
         const count = memosData.filter(m => m.tags && m.tags.includes(tag)).length;
         filterHtml += `
@@ -838,7 +1167,7 @@ function updateFilterTabs() {
             </button>
         `;
     });
-
+    
     filterContainer.innerHTML = filterHtml;
 }
 
@@ -849,21 +1178,22 @@ function setFilter(filter) {
     updateFilterTabs();
 }
 
-// Filter by Tag (from clicking a tag)
+// Filter by Tag
 function filterByTag(tag) {
     setFilter(tag);
-    // Scroll to top of memos list
     document.getElementById('memos-list').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Load More Memos
 async function loadMoreMemos() {
+    if (currentSource !== 'memos') return;
+    
     const btn = document.querySelector('.load-more-btn');
     btn.disabled = true;
     btn.innerHTML = '<iconify-icon icon="material-symbols:sync" style="animation: spin 1s linear infinite;"></iconify-icon> {{ i18n["loading"] if "loading" in i18n else "Loading..." }}';
-
-    await loadMemos();
-
+    
+    await loadMemosData();
+    
     btn.disabled = false;
     btn.innerHTML = '<iconify-icon icon="material-symbols:expand-more"></iconify-icon> {{ i18n["loadMore"] if "loadMore" in i18n else "Load More" }}';
 }
@@ -883,18 +1213,32 @@ function closeLightbox() {
     document.body.style.overflow = '';
 }
 
-// Keyboard support for lightbox
+// Keyboard support
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeLightbox();
-    }
+    if (e.key === 'Escape') closeLightbox();
 });
 
 // Set header icons
 document.getElementById("pathHome").setAttribute("d", IconList["home"]);
 document.getElementById("themeSwitch").setAttribute("d", IconList["sun"]);
 
-// Initialize on page load - 每次页面加载都会重新获取数据
-document.addEventListener('DOMContentLoaded', initMemos);
+// Initialize - load data based on current source
+document.addEventListener('DOMContentLoaded', () => {
+    if (currentSource === 'memos') {
+        loadMemosData();
+    } else if (currentSource === 'tgtalk') {
+        loadTGTalkData();
+    } else if (currentSource === 'jike') {
+        loadJikeData();
+    } else {
+        // Try to find matching loader function
+        const loaderFunc = window[`load${currentSource.charAt(0).toUpperCase() + currentSource.slice(1)}Data`];
+        if (loaderFunc) {
+            loaderFunc();
+        } else {
+            loadMemosData();
+        }
+    }
+});
 </script>
 {% endblock %}

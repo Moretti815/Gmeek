@@ -148,6 +148,13 @@
     font-size: 12px;
 }
 
+.memos-img-placeholder {
+    display: inline-block;
+    margin: 0 2px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
 .memos-arrow {
     width: 16px;
     height: 16px;
@@ -314,8 +321,12 @@ document.getElementById("{{ blogBase['singeListJson'][num]['postTitle'] }}").set
 {%- endfor %}
 
 // Memos Timeline
-const MEMOS_API_URL = 'https://m.314926.xyz/api/v1/memos';
+{%- set timelineSource = blogBase.get('timelineSource', {}) -%}
+const MEMOS_API_URL = '{{ timelineSource.get('url', 'https://m.314926.xyz/api/v1/memos') }}';
+const MEMOS_API_TYPE = '{{ timelineSource.get('type', 'memos') }}';
 const MEMOS_PAGE_URL = '{{ blogBase["homeUrl"] }}/memos.html';
+const MEMOS_TIMELINE_ENABLED = {{ 'true' if timelineSource.get('enabled', true) else 'false' }};
+const MEMOS_TIMELINE_LIMIT = {{ timelineSource.get('limit', 5) }};
 
 let memosCarouselInterval = null;
 let currentMemoIndex = 0;
@@ -330,18 +341,38 @@ function escapeHtml(text) {
 function formatMemoContent(memo) {
     let text = memo.content || '';
     
-    // Strip HTML tags and markdown
-    text = text.replace(/<[^>]*>/g, '').replace(/!\[.*?\]\(.*?\)/g, '[图片]').replace(/\[.*?\]\(.*?\)/g, '$1');
+    // Check for images in markdown format ![alt](url) or HTML <img> tags
+    const hasMarkdownImage = /!\[.*?\]\(.*?\)/.test(text);
+    const hasHtmlImage = /<img[^>]+src\s*=\s*["'][^"']+["'][^>]*>/i.test(text);
+    
+    // Replace markdown images with placeholder [📷]
+    text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, function(match, alt, url) {
+        return `<span class="memos-img-placeholder">📷</span>`;
+    });
+    
+    // Replace HTML img tags with placeholder
+    text = text.replace(/<img[^>]+src\s*=\s*["']([^"']+)["'][^>]*>/gi, function(match, url) {
+        return `<span class="memos-img-placeholder">📷</span>`;
+    });
+    
+    // Strip remaining HTML tags
+    text = text.replace(/<[^>]*>/g, '');
+    
+    // Handle regular markdown links [text](url) - keep the text
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1');
     
     // Truncate text
     if (text.length > 60) {
         text = text.substring(0, 60) + '...';
     }
     
-    const hasImage = memo.resources && memo.resources.some(r => r.type && r.type.startsWith('image/'));
+    // Check for resources (attachments)
+    const hasResourceImage = memo.resources && memo.resources.some(r => r.type && r.type.startsWith('image/'));
+    
+    const hasImage = hasMarkdownImage || hasHtmlImage || hasResourceImage;
     
     return {
-        text: escapeHtml(text),
+        text: text,
         hasImage: hasImage
     };
 }
@@ -377,23 +408,41 @@ async function loadMemosTimeline() {
     
     if (!container || !contentEl) return;
     
+    // Check if timeline is enabled
+    if (!MEMOS_TIMELINE_ENABLED) {
+        container.style.display = 'none';
+        return;
+    }
+    
     try {
-        const response = await fetch(`${MEMOS_API_URL}?limit=5&_t=${Date.now()}`);
+        const response = await fetch(`${MEMOS_API_URL}?limit=${MEMOS_TIMELINE_LIMIT}&_t=${Date.now()}`);
         if (!response.ok) throw new Error('Failed to fetch');
         
-        const data = await response.json();
-        const memos = data.memos || [];
+        // Parse data based on API type
+        let memos = [];
         
-        if (memos.length === 0) {
-            contentEl.innerHTML = '<span class="memos-loading">暂无动态</span>';
-            return;
+        if (MEMOS_API_TYPE === 'memos') {
+            const data = await response.json();
+            memos = data.memos || [];
+            // Filter only public memos
+            publicMemos = memos.filter(m => m.visibility === 'PUBLIC');
+        } else if (MEMOS_API_TYPE === 'json') {
+            // TGTalk format
+            const data = await response.json();
+            if (data.success && data.data) {
+                publicMemos = transformTGTalkForTimeline(data.data);
+            }
+        } else if (MEMOS_API_TYPE === 'rss') {
+            // Jike RSS format
+            const rssText = await response.text();
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(rssText, 'text/xml');
+            const items = xmlDoc.querySelectorAll('item');
+            publicMemos = transformJikeForTimeline(items);
         }
         
-        // Filter only public memos
-        publicMemos = memos.filter(m => m.visibility === 'PUBLIC');
-        
         if (publicMemos.length === 0) {
-            contentEl.innerHTML = '<span class="memos-loading">暂无公开动态</span>';
+            contentEl.innerHTML = '<span class="memos-loading">暂无动态</span>';
             return;
         }
         
@@ -425,6 +474,65 @@ async function loadMemosTimeline() {
         console.error('Failed to load memos:', error);
         contentEl.innerHTML = '<span class="memos-loading">加载失败</span>';
     }
+}
+
+// Transform TGTalk data for timeline
+function transformTGTalkForTimeline(data) {
+    return data.slice(0, MEMOS_TIMELINE_LIMIT).map(item => {
+        let text = item.text || '';
+        
+        // Remove HTML tags for display
+        text = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        
+        // Truncate text
+        if (text.length > 60) {
+            text = text.substring(0, 60) + '...';
+        }
+        
+        // Check for images
+        const hasImage = item.image && item.image.some(img => 
+            img && !img.includes('telegram.org/img/emoji')
+        );
+        
+        return {
+            content: text,
+            resources: hasImage ? [{ type: 'image/jpeg' }] : []
+        };
+    });
+}
+
+// Transform Jike RSS data for timeline
+function transformJikeForTimeline(items) {
+    const result = [];
+    let count = 0;
+    items.forEach(item => {
+        if (count >= MEMOS_TIMELINE_LIMIT) return;
+        
+        const description = item.querySelector('description')?.textContent || '';
+        
+        // Parse HTML description
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(description, 'text/html');
+        
+        // Check for images
+        const hasImage = doc.querySelector('img') !== null;
+        
+        // Get text content
+        let text = doc.body.textContent || description;
+        text = text.replace(/<[^>]+>/g, '').trim();
+        
+        // Truncate text
+        if (text.length > 60) {
+            text = text.substring(0, 60) + '...';
+        }
+        
+        result.push({
+            content: text,
+            resources: hasImage ? [{ type: 'image/jpeg' }] : []
+        });
+        count++;
+    });
+    return result;
 }
 
 // Initialize
