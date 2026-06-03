@@ -641,10 +641,14 @@ const API_CONFIG = {
 };
 
 // State - get first enabled source from config
-{%- set memosSources = blogBase.get('memosSources', {}) -%}
-{%- set enabledSources = memosSources.items() | selectattr('1.enabled', 'equalto', true) | list -%}
-{%- set firstEnabledSource = enabledSources[0][0] if enabledSources else 'memos' -%}
-let currentSource = '{{ firstEnabledSource }}';
+{% set memosSources = blogBase.get('memosSources', {}) %}
+{% set ns = namespace(firstSource='memos') %}
+{% for sourceKey, sourceConfig in memosSources.items() %}
+{% if ns.firstSource == 'memos' and sourceConfig.get('enabled', true) %}
+{% set ns.firstSource = sourceKey %}
+{% endif %}
+{% endfor %}
+let currentSource = '{{ ns.firstSource }}';
 let memosData = [];
 let nextPageToken = '';
 let currentFilter = 'all';

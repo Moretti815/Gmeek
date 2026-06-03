@@ -321,18 +321,18 @@ document.getElementById("{{ blogBase['singeListJson'][num]['postTitle'] }}").set
 {%- endfor %}
 
 // Memos Timeline
-{%- if blogBase.timelineSource is defined -%}
-{%- set timelineSource = blogBase.timelineSource -%}
+{% if blogBase.timelineSource is defined %}
+{% set timelineSource = blogBase.timelineSource %}
 const MEMOS_API_URL = '{{ timelineSource.url | default('https://m.314926.xyz/api/v1/memos') }}';
 const MEMOS_API_TYPE = '{{ timelineSource.type | default('memos') }}';
 const MEMOS_TIMELINE_ENABLED = {{ 'true' if timelineSource.enabled | default(true) else 'false' }};
 const MEMOS_TIMELINE_LIMIT = {{ timelineSource.limit | default(5) }};
-{%- else -%}
+{% else %}
 const MEMOS_API_URL = 'https://m.314926.xyz/api/v1/memos';
 const MEMOS_API_TYPE = 'memos';
 const MEMOS_TIMELINE_ENABLED = true;
 const MEMOS_TIMELINE_LIMIT = 5;
-{%- endif -%}
+{% endif %}
 const MEMOS_PAGE_URL = '{{ blogBase["homeUrl"] }}/memos.html';
 
 let memosCarouselInterval = null;
