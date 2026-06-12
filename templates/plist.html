@@ -427,10 +427,15 @@ async function loadMemosTimeline() {
             // Filter only public memos
             publicMemos = memos.filter(m => m.visibility === 'PUBLIC');
         } else if (MEMOS_API_TYPE === 'json') {
-            // TGTalk format
+            // TGTalk or Mastodon format
             const data = await response.json();
             if (data.success && data.data) {
-                publicMemos = transformTGTalkForTimeline(data.data);
+                // Check if it's Mastodon format (has id, text, image fields)
+                if (data.data.length > 0 && data.data[0].id && data.data[0].time) {
+                    publicMemos = transformMastodonForTimeline(data.data);
+                } else {
+                    publicMemos = transformTGTalkForTimeline(data.data);
+                }
             }
         } else if (MEMOS_API_TYPE === 'rss') {
             // Jike RSS format
@@ -474,6 +479,29 @@ async function loadMemosTimeline() {
         console.error('Failed to load memos:', error);
         contentEl.innerHTML = '<span class="memos-loading">加载失败</span>';
     }
+}
+
+// Transform Mastodon data for timeline
+function transformMastodonForTimeline(data) {
+    return data.slice(0, MEMOS_TIMELINE_LIMIT).map(item => {
+        let text = item.text || '';
+        
+        // Remove HTML tags for display
+        text = text.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        
+        // Truncate text
+        if (text.length > 60) {
+            text = text.substring(0, 60) + '...';
+        }
+        
+        // Check for images
+        const hasImage = item.image && item.image.length > 0;
+        
+        return {
+            content: text,
+            resources: hasImage ? [{ type: 'image/jpeg' }] : []
+        };
+    });
 }
 
 // Transform TGTalk data for timeline

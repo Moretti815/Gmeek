@@ -695,6 +695,8 @@ async function switchSource(source) {
     
     if (config.type === 'memos') {
         await loadMemosData();
+    } else if (source === 'mastodon') {
+        await loadMastodonData();
     } else if (config.type === 'json') {
         await loadTGTalkData();
     } else if (config.type === 'rss') {
@@ -847,6 +849,45 @@ async function loadTGTalkData() {
     }
 }
 
+// Load Mastodon Data
+async function loadMastodonData() {
+    const listContainer = document.getElementById('memos-list');
+    
+    try {
+        const response = await fetch(`${API_CONFIG.mastodon.url}?_t=${Date.now()}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const data = await response.json();
+        if (!data.success || !data.data || data.data.length === 0) {
+            listContainer.innerHTML = `
+                <div class="memos-empty">
+                    <iconify-icon icon="material-symbols:chat-bubble-outline"></iconify-icon>
+                    <p>暂无 Mastodon 数据</p>
+                </div>
+            `;
+            document.getElementById('load-more').style.display = 'none';
+            return;
+        }
+        
+        memosData = transformMastodon(data);
+        memosData.forEach(memo => {
+            if (memo.tags) memo.tags.forEach(tag => allTags.add(tag));
+        });
+        renderMemos();
+        updateFilterTabs();
+        document.getElementById('load-more').style.display = 'none';
+        
+    } catch (error) {
+        console.error('Failed to load Mastodon:', error);
+        listContainer.innerHTML = `
+            <div class="memos-error">
+                <iconify-icon icon="material-symbols:error-outline"></iconify-icon>
+                <p>加载 Mastodon 数据失败</p>
+            </div>
+        `;
+    }
+}
+
 // Load Jike RSS Data
 async function loadJikeData() {
     const listContainer = document.getElementById('memos-list');
@@ -956,6 +997,42 @@ function transformTGTalk(data) {
             location: null,
             pinned: false,
             source: 'tgtalk',
+            views: item.views
+        };
+    }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+// Transform Mastodon
+function transformMastodon(data) {
+    if (!data.success || !data.data || !Array.isArray(data.data)) {
+        return [];
+    }
+    
+    return data.data.map(item => {
+        // Process images - Mastodon images are direct URLs
+        const images = [];
+        if (item.image && Array.isArray(item.image)) {
+            item.image.forEach(img => {
+                if (img && typeof img === 'string') {
+                    // Handle proxy URLs or direct URLs
+                    const imgUrl = img.startsWith('/proxy/') ? 
+                        'https://files.mastodon.social' + decodeURIComponent(img.substring(7)) :
+                        img.startsWith('//') ? 'https:' + img :
+                        img.startsWith('http') ? img : 'https://' + img;
+                    images.push(imgUrl);
+                }
+            });
+        }
+        
+        return {
+            id: item.id,
+            content: item.text || '',
+            date: new Date(item.time).toISOString(),
+            tags: [],
+            images: images,
+            location: null,
+            pinned: false,
+            source: 'mastodon',
             views: item.views
         };
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -1183,7 +1260,8 @@ function filterByTag(tag) {
 
 // Load More Memos
 async function loadMoreMemos() {
-    if (currentSource !== 'memos') return;
+    const config = API_CONFIG[currentSource];
+    if (!config || config.type !== 'memos') return;
     
     const btn = document.querySelector('.load-more-btn');
     btn.disabled = true;
