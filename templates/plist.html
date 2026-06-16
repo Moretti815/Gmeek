@@ -338,7 +338,47 @@ function normalizeToArray(value) {
 }
 
 function getGenericDataList(data) {
-    if (Array.isArray(data)) return data;
+    const preferredKeys = ['data', 'list', 'rows', 'items', 'records', 'result', 'memos'];
+    const icefoxKeys = ['content', 'text', 'created', 'permalink', 'linkCard', 'isTop', 'isAd', 'music', 'video', 'tags'];
+
+    function isIcefoxItem(item) {
+        return item && typeof item === 'object' && icefoxKeys.some(key => key in item);
+    }
+
+    function scan(value, depth = 0) {
+        if (depth > 6 || value === null || value === undefined) return [];
+
+        if (Array.isArray(value)) {
+            if (value.length === 0) return [];
+            if (value.some(isIcefoxItem)) return value;
+
+            for (const entry of value) {
+                const nested = scan(entry, depth + 1);
+                if (nested.length) return nested;
+            }
+            return [];
+        }
+
+        if (typeof value !== 'object') return [];
+
+        for (const key of preferredKeys) {
+            if (key in value) {
+                const nested = scan(value[key], depth + 1);
+                if (nested.length) return nested;
+            }
+        }
+
+        for (const nestedValue of Object.values(value)) {
+            const nested = scan(nestedValue, depth + 1);
+            if (nested.length) return nested;
+        }
+
+        return [];
+    }
+
+    const result = scan(data);
+    if (result.length) return result;
+
     if (Array.isArray(data?.data)) return data.data;
     if (Array.isArray(data?.list)) return data.list;
     if (Array.isArray(data?.memos)) return data.memos;
