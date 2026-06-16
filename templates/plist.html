@@ -385,10 +385,6 @@ function getGenericDataList(data) {
     return [];
 }
 
-function isPlaceholderImageUrl(url) {
-    return typeof url === 'string' && url.includes('default-light.webp');
-}
-
 function hasIcefoxImages(item) {
     const candidates = [
         ...normalizeToArray(item.images),
@@ -398,14 +394,29 @@ function hasIcefoxImages(item) {
         ...normalizeToArray(item.photo)
     ];
 
+    function normalizeCandidate(image) {
+        if (typeof image === 'string') {
+            const trimmed = image.trim();
+            if (!trimmed) return '';
+            if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+                try {
+                    const parsed = JSON.parse(trimmed);
+                    return normalizeCandidate(parsed);
+                } catch (error) {
+                    return trimmed;
+                }
+            }
+            return trimmed;
+        }
+
+        if (!image || typeof image !== 'object') return '';
+        if (image.type && !String(image.type).startsWith('image/')) return '';
+        return image.url || image.src || image.link || image.file || image.path || image.href || image.origin || image.original || image.originalUrl || image.originalURL || image.imgurl || image.imgUrl || image.thumbnail || image.thumb || image.medium || image.large || image.small || image.data?.url || image.data?.src || '';
+    }
+
     return candidates.some(image => {
-        if (!image) return false;
-        if (typeof image === 'string') return !isPlaceholderImageUrl(image);
-        if (typeof image !== 'object') return false;
-        const url = image.url || image.src || image.link || image.file || '';
-        if (!url || isPlaceholderImageUrl(String(url))) return false;
-        if (image.type && !String(image.type).startsWith('image/')) return false;
-        return true;
+        const url = normalizeCandidate(image);
+        return Boolean(url);
     });
 }
 

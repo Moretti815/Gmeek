@@ -1171,28 +1171,62 @@ function normalizeImageList(item) {
         ...normalizeToArray(item.photo)
     ];
 
+    function normalizeImageEntry(image) {
+        if (typeof image === 'string') {
+            const trimmed = image.trim();
+            if (!trimmed) return '';
+            if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+                try {
+                    const parsed = JSON.parse(trimmed);
+                    return normalizeImageEntry(parsed);
+                } catch (error) {
+                    return normalizeUrl(trimmed);
+                }
+            }
+            return normalizeUrl(trimmed);
+        }
+
+        if (!image || typeof image !== 'object') return '';
+        if (image.type && !String(image.type).startsWith('image/')) return '';
+
+        const nested = firstDefined(
+            image.url,
+            image.src,
+            image.link,
+            image.file,
+            image.path,
+            image.href,
+            image.origin,
+            image.original,
+            image.originalUrl,
+            image.originalURL,
+            image.imgurl,
+            image.imgUrl,
+            image.thumbnail,
+            image.thumb,
+            image.medium,
+            image.large,
+            image.small,
+            image.data?.url,
+            image.data?.src
+        );
+
+        return normalizeUrl(nested);
+    }
+
     const attachmentImages = normalizeToArray(item.attachments).map(attachment => {
         if (!attachment || typeof attachment !== 'object') return '';
         if (attachment.type && !String(attachment.type).startsWith('image/')) return '';
-        return normalizeUrl(firstDefined(attachment.url, attachment.src, attachment.link, attachment.file));
+        return normalizeImageEntry(attachment);
     });
 
-    const normalized = directImages.map(image => {
-        if (typeof image === 'string') return normalizeUrl(image);
-        if (!image || typeof image !== 'object') return '';
-        if (image.type && !String(image.type).startsWith('image/')) return '';
-        return normalizeUrl(firstDefined(image.url, image.src, image.link, image.file));
-    });
+    const normalized = directImages.map(normalizeImageEntry);
 
     return dedupeUrls([...normalized, ...attachmentImages]);
 }
 
-function isPlaceholderImageUrl(url) {
-    return typeof url === 'string' && url.includes('default-light.webp');
-}
-
 function normalizeIcefoxImages(item) {
-    return normalizeImageList(item).filter(url => !isPlaceholderImageUrl(url));
+    return normalizeImageList(item);
 }
 
 function stripIcefoxContentImages(text) {
@@ -1839,7 +1873,6 @@ function renderMarkdownContent() {
             if (card && card.dataset.source === 'icefox' && card.dataset.hasImages === '1') {
                 html = html.replace(/<img\b[^>]*>/gi, '');
             }
-            html = html.replace(/<img\b[^>]*src=["'][^"']*default-light\.webp[^"']*["'][^>]*>/gi, '');
             html = html.replace(/<img([^>]+)>/g, '<img$1 onclick="openLightbox(this.src)" style="cursor: pointer;">');
             html = html.replace(/<a([^>]+)href=/g, '<a$1target="_blank" rel="noopener" href=');
             el.innerHTML = html;
