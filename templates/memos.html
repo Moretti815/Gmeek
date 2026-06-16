@@ -998,6 +998,17 @@ function formatAbsoluteTime(dateString) {
     return Number.isNaN(date.getTime()) ? '' : date.toLocaleString();
 }
 
+function normalizeRichContent(text) {
+    if (text === undefined || text === null) return '';
+    return String(text)
+        .replace(/\\r\\n/g, '\n')
+        .replace(/\\n/g, '\n')
+        .replace(/\\t/g, '\t')
+        .replace(/\\\//g, '/')
+        .replace(/\\"/g, '"')
+        .replace(/\\'/g, "'");
+}
+
 function normalizeTagDetails(tagsField) {
     return normalizeToArray(tagsField).map(tag => {
         if (typeof tag === 'string') {
@@ -1174,6 +1185,22 @@ function normalizeImageList(item) {
     });
 
     return dedupeUrls([...normalized, ...attachmentImages]);
+}
+
+function isPlaceholderImageUrl(url) {
+    return typeof url === 'string' && url.includes('default-light.webp');
+}
+
+function normalizeIcefoxImages(item) {
+    return normalizeImageList(item).filter(url => !isPlaceholderImageUrl(url));
+}
+
+function stripIcefoxContentImages(text) {
+    return normalizeRichContent(text)
+        .replace(/<img\b[^>]*>/gi, '')
+        .replace(/!\[[^\]]*\]\([^)]+\)/g, '')
+        .replace(/\[!图片\]/g, '')
+        .trim();
 }
 
 function getGenericDataList(data) {
@@ -1682,6 +1709,7 @@ function transformIcefox(data) {
                 : Boolean(item.music);
         const linkCard = normalizeLinkCard(item.linkCard);
         const permalink = normalizeUrl(firstDefined(item.permalink, item.url, item.link));
+        const images = normalizeIcefoxImages(item);
         const viewCount = firstDefined(toNumber(item.view), toNumber(item.views), toNumber(item.viewsCount));
         const likesCount = firstDefined(toNumber(item.likesCount), toNumber(item.likes), toNumber(item.likeCount));
         const commentsCount = firstDefined(
@@ -1692,11 +1720,13 @@ function transformIcefox(data) {
 
         return {
             id: firstDefined(item.id, item.cid, item.mid, permalink, `icefox-${index}`),
-            content: String(firstDefined(item.content, item.text, '')),
+            content: images.length > 0
+                ? stripIcefoxContentImages(firstDefined(item.content, item.text, ''))
+                : normalizeRichContent(firstDefined(item.content, item.text, '')),
             date: normalizeDateValue(firstDefined(item.created, item.createTime, item.date)),
             tags: tagDetails.map(tag => tag.name),
             tagDetails: tagDetails,
-            images: [],
+            images: images,
             videos: videos,
             location: position?.name || '',
             position: position,
@@ -1766,7 +1796,7 @@ function renderMemoCard(memo) {
     ` : '';
 
     return `
-        <div class="memo-card ${memo.pinned ? 'pinned' : ''}" data-source="${escapeAttribute(memo.source)}">
+        <div class="memo-card ${memo.pinned ? 'pinned' : ''}" data-source="${escapeAttribute(memo.source)}" data-has-images="${memo.images && memo.images.length > 0 ? '1' : '0'}">
             ${memo.pinned ? `
                 <div class="memo-pin" title="{{ i18n['pinned'] if 'pinned' in i18n else 'Pinned' }}">
                     <iconify-icon icon="material-symbols:keep"></iconify-icon>
@@ -1803,8 +1833,13 @@ function renderMarkdownContent() {
     document.querySelectorAll('.memo-content[data-content]').forEach(el => {
         const encodedContent = el.getAttribute('data-content');
         if (encodedContent !== null) {
-            const content = decodeURIComponent(encodedContent);
+            const content = normalizeRichContent(decodeURIComponent(encodedContent));
             let html = marked.parse(content);
+            const card = el.closest('.memo-card');
+            if (card && card.dataset.source === 'icefox' && card.dataset.hasImages === '1') {
+                html = html.replace(/<img\b[^>]*>/gi, '');
+            }
+            html = html.replace(/<img\b[^>]*src=["'][^"']*default-light\.webp[^"']*["'][^>]*>/gi, '');
             html = html.replace(/<img([^>]+)>/g, '<img$1 onclick="openLightbox(this.src)" style="cursor: pointer;">');
             html = html.replace(/<a([^>]+)href=/g, '<a$1target="_blank" rel="noopener" href=');
             el.innerHTML = html;
