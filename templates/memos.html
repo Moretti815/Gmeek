@@ -1102,6 +1102,7 @@ function normalizeMusic(musicField) {
 
     if (typeof musicField === 'string') {
         const url = normalizeUrl(musicField);
+        if (!url) return null;
         return {
             title: '音乐',
             artist: '',
@@ -1112,8 +1113,10 @@ function normalizeMusic(musicField) {
     }
 
     if (typeof musicField !== 'object') {
+        const title = String(musicField || '').trim();
+        if (!title) return null;
         return {
-            title: String(musicField),
+            title: title,
             artist: '',
             cover: '',
             link: '',
@@ -1648,6 +1651,35 @@ function transformIcefox(data) {
         const position = normalizePosition(item.position);
         const videos = normalizeVideoList(item.video);
         const music = normalizeMusic(item.music);
+        const hasMusicData = typeof item.music === 'string'
+            ? Boolean(normalizeUrl(item.music))
+            : item.music && typeof item.music === 'object'
+                ? Boolean(
+                    firstDefined(
+                        item.music.audio,
+                        item.music.src,
+                        item.music.file,
+                        item.music.musicUrl,
+                        item.music.music_url,
+                        item.music.playUrl,
+                        item.music.play_url,
+                        item.music.url,
+                        item.music.link,
+                        item.music.jumpUrl,
+                        item.music.jump_url,
+                        item.music.cover,
+                        item.music.image,
+                        item.music.pic,
+                        item.music.poster,
+                        item.music.title,
+                        item.music.name,
+                        item.music.song,
+                        item.music.artist,
+                        item.music.author,
+                        item.music.singer
+                    )
+                )
+                : Boolean(item.music);
         const linkCard = normalizeLinkCard(item.linkCard);
         const permalink = normalizeUrl(firstDefined(item.permalink, item.url, item.link));
         const viewCount = firstDefined(toNumber(item.view), toNumber(item.views), toNumber(item.viewsCount));
@@ -1664,7 +1696,7 @@ function transformIcefox(data) {
             date: normalizeDateValue(firstDefined(item.created, item.createTime, item.date)),
             tags: tagDetails.map(tag => tag.name),
             tagDetails: tagDetails,
-            images: normalizeImageList(item),
+            images: [],
             videos: videos,
             location: position?.name || '',
             position: position,
@@ -1673,7 +1705,7 @@ function transformIcefox(data) {
             source: 'icefox',
             permalink: permalink,
             linkCard: linkCard,
-            music: music,
+            music: hasMusicData ? music : null,
             comments: comments,
             viewCount: viewCount,
             likesCount: likesCount,

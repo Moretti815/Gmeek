@@ -580,25 +580,11 @@ function transformJikeForTimeline(items) {
 function transformIcefoxForTimeline(data) {
     return data.slice(0, MEMOS_TIMELINE_LIMIT).map(item => {
         const text = truncateTimelineText(item.content || item.text || '');
-        const imageCandidates = [
-            ...normalizeToArray(item.images),
-            ...normalizeToArray(item.image),
-            ...normalizeToArray(item.pics),
-            ...normalizeToArray(item.photos),
-            ...normalizeToArray(item.photo)
-        ];
-        const hasImage = imageCandidates.some(image => {
-            if (!image) return false;
-            if (typeof image === 'string') return true;
-            if (typeof image !== 'object') return false;
-            if (image.type && !String(image.type).startsWith('image/')) return false;
-            return Boolean(image.url || image.src || image.link || image.file);
-        });
         const hasLinkCard = Boolean(item.linkCard);
 
         return {
-            content: `${text}${hasImage ? ' [!图片]' : ''}${hasLinkCard ? ' [!卡片]' : ''}`.trim(),
-            resources: hasImage ? [{ type: 'image/jpeg' }] : [],
+            content: `${text}${hasLinkCard ? ' [!卡片]' : ''}`.trim(),
+            resources: [],
             linkCard: item.linkCard || null
         };
     });
