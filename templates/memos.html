@@ -358,17 +358,18 @@
     font-size: 11px;
 }
 
-/* Memo Meta */
-.memo-meta {
-    display: flex;
+.memo-tag-link {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 12px;
-    color: var(--color-fg-muted);
+    color: inherit;
+    text-decoration: none;
 }
 
+.memo-tag-link:hover {
+    text-decoration: underline;
+}
+
+/* Memo Meta */
 .memo-time {
     display: inline-flex;
     align-items: center;
@@ -397,6 +398,258 @@
     background-color: var(--color-canvas-subtle);
     border-radius: 4px;
     font-size: 11px;
+}
+
+.memo-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.memo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background-color: var(--color-canvas-subtle);
+    color: var(--color-fg-muted);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.memo-badge.top {
+    background-color: rgba(9, 105, 218, 0.12);
+    color: var(--color-accent-emphasis, #0969da);
+}
+
+.memo-badge.ad {
+    background-color: rgba(188, 76, 0, 0.12);
+    color: #bc4c00;
+}
+
+.memo-link-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--color-border-default);
+    border-radius: 12px;
+    background-color: var(--color-canvas-subtle);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.memo-link-card:hover {
+    transform: translateY(-1px);
+    border-color: var(--color-accent-emphasis, #0969da);
+    text-decoration: none;
+}
+
+.memo-link-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.memo-link-card-body {
+    min-width: 0;
+}
+
+.memo-link-card-title {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+}
+
+.memo-link-card-desc,
+.memo-link-card-url {
+    margin: 0;
+    font-size: 12px;
+    color: var(--color-fg-muted);
+    word-break: break-word;
+}
+
+.memo-link-card-url {
+    margin-top: 6px;
+}
+
+.memo-videos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.memo-video {
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: #000;
+}
+
+.memo-video video {
+    display: block;
+    width: 100%;
+    max-height: 420px;
+}
+
+.memo-music {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--color-border-default);
+    border-radius: 12px;
+    background-color: var(--color-canvas-subtle);
+}
+
+.memo-music-main {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.memo-music-cover {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.memo-music-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+}
+
+.memo-music-artist {
+    margin: 4px 0 0 0;
+    font-size: 12px;
+    color: var(--color-fg-muted);
+}
+
+.memo-music audio {
+    width: 100%;
+}
+
+.memo-music-link,
+.memo-meta-link,
+.memo-location-link,
+.memo-comment-author {
+    color: var(--color-accent-emphasis, #0969da);
+    text-decoration: none;
+}
+
+.memo-music-link:hover,
+.memo-meta-link:hover,
+.memo-location-link:hover,
+.memo-comment-author:hover {
+    text-decoration: underline;
+}
+
+.memo-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    color: var(--color-fg-muted);
+}
+
+.memo-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.memo-stat iconify-icon {
+    font-size: 14px;
+}
+
+.memo-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--color-fg-muted);
+}
+
+.memo-meta-main,
+.memo-meta-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+}
+
+.memo-meta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.memo-comments {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border-default);
+}
+
+.memo-comments-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-fg-default);
+}
+
+.memo-comment-list,
+.memo-comment-replies {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.memo-comment {
+    padding: 12px;
+    border-radius: 10px;
+    background-color: var(--color-canvas-subtle);
+}
+
+.memo-comment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--color-fg-muted);
+}
+
+.memo-comment-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-fg-default);
+    word-break: break-word;
+}
+
+.memo-comment-replies {
+    margin-top: 10px;
+    padding-left: 12px;
+    border-left: 2px solid var(--color-border-default);
 }
 
 /* Loading State */
@@ -522,6 +775,16 @@
 
     .memo-meta {
         flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .memo-meta-main,
+    .memo-meta-actions {
+        width: 100%;
+    }
+
+    .memo-link-card,
+    .memo-music-main {
         align-items: flex-start;
     }
 }
@@ -650,6 +913,13 @@ let memosData = [];
 let nextPageToken = '';
 let currentFilter = 'all';
 let allTags = new Set();
+const SOURCE_LABELS = {
+    memos: 'Memos',
+    tgtalk: 'TGTalk',
+    mastodon: 'Mastodon',
+    jike: '即刻',
+    icefox: 'Icefox'
+};
 
 // Configure marked.js
 marked.setOptions({
@@ -663,21 +933,269 @@ marked.setOptions({
     xhtml: false
 });
 
+function firstDefined(...values) {
+    return values.find(value => value !== undefined && value !== null && value !== '');
+}
+
+function normalizeToArray(value) {
+    if (Array.isArray(value)) return value.filter(Boolean);
+    if (value === undefined || value === null || value === '') return [];
+    return [value];
+}
+
+function normalizeUrl(value) {
+    if (typeof value !== 'string') return '';
+    const url = value.trim();
+    if (!url) return '';
+    return url.startsWith('//') ? `https:${url}` : url;
+}
+
+function toNumber(value) {
+    if (value === undefined || value === null || value === '') return null;
+    const num = Number(value);
+    return Number.isFinite(num) ? num : null;
+}
+
+function normalizeDateValue(value) {
+    if (value === undefined || value === null || value === '') {
+        return new Date().toISOString();
+    }
+
+    if (typeof value === 'number') {
+        const timestamp = value > 1e12 ? value : value * 1000;
+        return new Date(timestamp).toISOString();
+    }
+
+    const stringValue = String(value).trim();
+    if (/^\d+$/.test(stringValue)) {
+        const numericValue = Number(stringValue);
+        const timestamp = numericValue > 1e12 ? numericValue : numericValue * 1000;
+        return new Date(timestamp).toISOString();
+    }
+
+    const parsed = new Date(stringValue);
+    return Number.isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+}
+
+function sortMemos(items) {
+    return items.sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+}
+
+function dedupeUrls(values) {
+    return [...new Set(values.filter(Boolean))];
+}
+
+function getSourceLabel(source) {
+    return SOURCE_LABELS[source] || source;
+}
+
+function formatAbsoluteTime(dateString) {
+    const date = new Date(dateString);
+    return Number.isNaN(date.getTime()) ? '' : date.toLocaleString();
+}
+
+function normalizeTagDetails(tagsField) {
+    return normalizeToArray(tagsField).map(tag => {
+        if (typeof tag === 'string') {
+            const name = tag.trim();
+            return name ? { name, slug: name, permalink: '' } : null;
+        }
+
+        if (!tag || typeof tag !== 'object') return null;
+        const name = firstDefined(tag.name, tag.slug, tag.title);
+        if (!name) return null;
+
+        return {
+            name: String(name),
+            slug: String(firstDefined(tag.slug, name)),
+            permalink: normalizeUrl(firstDefined(tag.permalink, tag.url, tag.link))
+        };
+    }).filter(Boolean);
+}
+
+function normalizeLinkCard(linkCard) {
+    if (!linkCard) return null;
+
+    if (typeof linkCard === 'string') {
+        const url = normalizeUrl(linkCard);
+        return url ? { title: url, description: '', url, link: '' } : null;
+    }
+
+    if (typeof linkCard !== 'object') return null;
+
+    const url = normalizeUrl(firstDefined(linkCard.url, linkCard.link));
+    const title = firstDefined(linkCard.title, linkCard.name, url);
+    if (!title && !url) return null;
+
+    return {
+        icon: normalizeUrl(linkCard.icon),
+        title: title || '链接卡片',
+        description: firstDefined(linkCard.description, linkCard.desc, ''),
+        url,
+        link: normalizeUrl(linkCard.link)
+    };
+}
+
+function normalizePosition(position) {
+    if (!position) return null;
+
+    if (typeof position === 'string') {
+        const name = position.trim();
+        return name ? { name, url: '' } : null;
+    }
+
+    if (typeof position !== 'object') return null;
+
+    const name = firstDefined(position.name, position.title, position.label);
+    if (!name) return null;
+
+    return {
+        name: String(name),
+        url: normalizeUrl(firstDefined(position.url, position.link))
+    };
+}
+
+function normalizeComment(comment) {
+    if (!comment || typeof comment !== 'object') return null;
+
+    const id = firstDefined(comment.coid, comment.id, `${comment.author || 'comment'}-${comment.created || Date.now()}`);
+    return {
+        id,
+        author: String(firstDefined(comment.author, '匿名')),
+        authorUrl: normalizeUrl(firstDefined(comment.url, comment.link)),
+        text: String(firstDefined(comment.text, comment.content, '')),
+        created: normalizeDateValue(comment.created),
+        replies: normalizeComments(comment.replies)
+    };
+}
+
+function normalizeComments(commentsField) {
+    return normalizeToArray(commentsField).map(normalizeComment).filter(Boolean);
+}
+
+function normalizeVideoList(videoField) {
+    return normalizeToArray(videoField).map(video => {
+        if (typeof video === 'string') {
+            const url = normalizeUrl(video);
+            return url ? { url, cover: '', title: '' } : null;
+        }
+
+        if (!video || typeof video !== 'object') return null;
+
+        const url = normalizeUrl(firstDefined(video.url, video.src, video.link, video.playUrl, video.play_url, video.file));
+        if (!url) return null;
+
+        return {
+            url,
+            cover: normalizeUrl(firstDefined(video.cover, video.poster, video.image, video.pic)),
+            title: String(firstDefined(video.title, video.name, ''))
+        };
+    }).filter(Boolean);
+}
+
+function normalizeMusic(musicField) {
+    if (!musicField) return null;
+
+    if (typeof musicField === 'string') {
+        const url = normalizeUrl(musicField);
+        return {
+            title: '音乐',
+            artist: '',
+            cover: '',
+            link: url,
+            audio: url
+        };
+    }
+
+    if (typeof musicField !== 'object') {
+        return {
+            title: String(musicField),
+            artist: '',
+            cover: '',
+            link: '',
+            audio: ''
+        };
+    }
+
+    const audio = normalizeUrl(firstDefined(
+        musicField.audio,
+        musicField.src,
+        musicField.file,
+        musicField.musicUrl,
+        musicField.music_url,
+        musicField.playUrl,
+        musicField.play_url
+    ));
+
+    const link = normalizeUrl(firstDefined(
+        musicField.url,
+        musicField.link,
+        musicField.jumpUrl,
+        musicField.jump_url,
+        audio
+    ));
+
+    return {
+        title: String(firstDefined(musicField.title, musicField.name, musicField.song, '音乐')),
+        artist: String(firstDefined(musicField.artist, musicField.author, musicField.singer, '')),
+        cover: normalizeUrl(firstDefined(musicField.cover, musicField.image, musicField.pic, musicField.poster)),
+        link,
+        audio
+    };
+}
+
+function normalizeImageList(item) {
+    const directImages = [
+        ...normalizeToArray(item.images),
+        ...normalizeToArray(item.image),
+        ...normalizeToArray(item.pics),
+        ...normalizeToArray(item.photos),
+        ...normalizeToArray(item.photo)
+    ];
+
+    const attachmentImages = normalizeToArray(item.attachments).map(attachment => {
+        if (!attachment || typeof attachment !== 'object') return '';
+        if (attachment.type && !String(attachment.type).startsWith('image/')) return '';
+        return normalizeUrl(firstDefined(attachment.url, attachment.src, attachment.link, attachment.file));
+    });
+
+    const normalized = directImages.map(image => {
+        if (typeof image === 'string') return normalizeUrl(image);
+        if (!image || typeof image !== 'object') return '';
+        if (image.type && !String(image.type).startsWith('image/')) return '';
+        return normalizeUrl(firstDefined(image.url, image.src, image.link, image.file));
+    });
+
+    return dedupeUrls([...normalized, ...attachmentImages]);
+}
+
+function getGenericDataList(data) {
+    if (Array.isArray(data)) return data;
+    if (Array.isArray(data?.data)) return data.data;
+    if (Array.isArray(data?.list)) return data.list;
+    if (Array.isArray(data?.memos)) return data.memos;
+    return [];
+}
+
 // Switch Source
 async function switchSource(source) {
     if (currentSource === source) return;
-    
+
     currentSource = source;
     memosData = [];
     nextPageToken = '';
     currentFilter = 'all';
     allTags = new Set();
-    
+
     // Update tab UI
     document.querySelectorAll('.source-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.source === source);
     });
-    
+
     // Show loading
     document.getElementById('memos-list').innerHTML = `
         <div class="memos-loading">
@@ -685,24 +1203,26 @@ async function switchSource(source) {
             <span>{{ i18n['loading'] if 'loading' in i18n else 'Loading...' }}</span>
         </div>
     `;
-    
-    // Load data based on source type
+
+    await loadCurrentSourceData(source);
+}
+
+async function loadCurrentSourceData(source = currentSource) {
     const config = API_CONFIG[source];
     if (!config) {
         console.error(`Unknown source: ${source}`);
         return;
     }
-    
+
     if (config.type === 'memos') {
         await loadMemosData();
     } else if (source === 'mastodon') {
         await loadMastodonData();
-    } else if (config.type === 'json') {
+    } else if (source === 'tgtalk') {
         await loadTGTalkData();
-    } else if (config.type === 'rss') {
-        await loadJikeData();
+    } else if (source === 'jike' || config.type === 'rss') {
+        await loadJikeData(source);
     } else {
-        // Try generic loader
         await loadGenericData(source, config);
     }
 }
@@ -710,48 +1230,58 @@ async function switchSource(source) {
 // Generic data loader for custom sources
 async function loadGenericData(source, config) {
     const listContainer = document.getElementById('memos-list');
-    
+
     try {
         const response = await fetch(`${config.url}?_t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
         let data;
         if (config.type === 'json') {
             data = await response.json();
         } else {
             data = await response.text();
         }
-        
-        // Try to transform using source-specific function or generic
+
         const transformer = window[`transform${source.charAt(0).toUpperCase() + source.slice(1)}`];
         if (transformer) {
             memosData = transformer(data);
         } else {
-            // Generic fallback
             memosData = [{
                 id: Date.now(),
                 content: '无法解析此数据源格式',
                 date: new Date().toISOString(),
                 tags: [],
+                tagDetails: [],
                 images: [],
                 source: source
             }];
         }
-        
+
         memosData.forEach(memo => {
             if (memo.tags) memo.tags.forEach(tag => allTags.add(tag));
         });
-        
+
+        if (memosData.length === 0) {
+            listContainer.innerHTML = `
+                <div class="memos-empty">
+                    <iconify-icon icon="material-symbols:chat-bubble-outline"></iconify-icon>
+                    <p>暂无 ${escapeHtml(getSourceLabel(source))} 数据</p>
+                </div>
+            `;
+            document.getElementById('load-more').style.display = 'none';
+            return;
+        }
+
         renderMemos();
         updateFilterTabs();
         document.getElementById('load-more').style.display = 'none';
-        
+
     } catch (error) {
         console.error(`Failed to load ${source}:`, error);
         listContainer.innerHTML = `
             <div class="memos-error">
                 <iconify-icon icon="material-symbols:error-outline"></iconify-icon>
-                <p>加载 ${source} 数据失败</p>
+                <p>加载 ${escapeHtml(getSourceLabel(source))} 数据失败</p>
             </div>
         `;
     }
@@ -760,18 +1290,18 @@ async function loadGenericData(source, config) {
 // Load Memos Data
 async function loadMemosData() {
     const listContainer = document.getElementById('memos-list');
-    
+
     try {
         let url = `${API_CONFIG.memos.url}?pageSize=${API_CONFIG.memos.pageSize}&_t=${Date.now()}`;
         if (nextPageToken) {
             url += `&pageToken=${encodeURIComponent(nextPageToken)}`;
         }
-        
+
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
         const data = await response.json();
-        
+
         if (!data.memos || data.memos.length === 0) {
             if (memosData.length === 0) {
                 listContainer.innerHTML = `
@@ -784,19 +1314,19 @@ async function loadMemosData() {
             document.getElementById('load-more').style.display = 'none';
             return;
         }
-        
+
         const newMemos = transformMemos(data.memos);
         memosData = [...memosData, ...newMemos];
-        
+
         newMemos.forEach(memo => {
             if (memo.tags) memo.tags.forEach(tag => allTags.add(tag));
         });
-        
+
         nextPageToken = data.nextPageToken || '';
         renderMemos();
         updateFilterTabs();
         document.getElementById('load-more').style.display = nextPageToken ? 'flex' : 'none';
-        
+
     } catch (error) {
         console.error('Failed to load memos:', error);
         listContainer.innerHTML = `
@@ -811,13 +1341,13 @@ async function loadMemosData() {
 // Load TGTalk Data
 async function loadTGTalkData() {
     const listContainer = document.getElementById('memos-list');
-    
+
     try {
         const response = await fetch(`${API_CONFIG.tgtalk.url}?_t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
         const data = await response.json();
-        
+
         if (!data.success || !data.data || data.data.length === 0) {
             listContainer.innerHTML = `
                 <div class="memos-empty">
@@ -828,16 +1358,16 @@ async function loadTGTalkData() {
             document.getElementById('load-more').style.display = 'none';
             return;
         }
-        
+
         memosData = transformTGTalk(data.data);
         memosData.forEach(memo => {
             if (memo.tags) memo.tags.forEach(tag => allTags.add(tag));
         });
-        
+
         renderMemos();
         updateFilterTabs();
         document.getElementById('load-more').style.display = 'none';
-        
+
     } catch (error) {
         console.error('Failed to load TGTalk:', error);
         listContainer.innerHTML = `
@@ -852,11 +1382,11 @@ async function loadTGTalkData() {
 // Load Mastodon Data
 async function loadMastodonData() {
     const listContainer = document.getElementById('memos-list');
-    
+
     try {
         const response = await fetch(`${API_CONFIG.mastodon.url}?_t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
         const data = await response.json();
         if (!data.success || !data.data || data.data.length === 0) {
             listContainer.innerHTML = `
@@ -868,7 +1398,7 @@ async function loadMastodonData() {
             document.getElementById('load-more').style.display = 'none';
             return;
         }
-        
+
         memosData = transformMastodon(data);
         memosData.forEach(memo => {
             if (memo.tags) memo.tags.forEach(tag => allTags.add(tag));
@@ -876,7 +1406,7 @@ async function loadMastodonData() {
         renderMemos();
         updateFilterTabs();
         document.getElementById('load-more').style.display = 'none';
-        
+
     } catch (error) {
         console.error('Failed to load Mastodon:', error);
         listContainer.innerHTML = `
@@ -889,40 +1419,41 @@ async function loadMastodonData() {
 }
 
 // Load Jike RSS Data
-async function loadJikeData() {
+async function loadJikeData(source = 'jike') {
     const listContainer = document.getElementById('memos-list');
-    
+
     try {
-        const response = await fetch(`${API_CONFIG.jike.url}?_t=${Date.now()}`);
+        const config = API_CONFIG[source];
+        const response = await fetch(`${config.url}?_t=${Date.now()}`);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
         const rssText = await response.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(rssText, 'text/xml');
-        
+
         const items = xmlDoc.querySelectorAll('item');
         if (items.length === 0) {
             listContainer.innerHTML = `
                 <div class="memos-empty">
                     <iconify-icon icon="material-symbols:chat-bubble-outline"></iconify-icon>
-                    <p>暂无即刻数据</p>
+                    <p>暂无 ${escapeHtml(getSourceLabel(source))} 数据</p>
                 </div>
             `;
             document.getElementById('load-more').style.display = 'none';
             return;
         }
-        
-        memosData = transformJike(items);
+
+        memosData = transformJike(items, source);
         renderMemos();
         updateFilterTabs();
         document.getElementById('load-more').style.display = 'none';
-        
+
     } catch (error) {
-        console.error('Failed to load Jike:', error);
+        console.error(`Failed to load ${source}:`, error);
         listContainer.innerHTML = `
             <div class="memos-error">
                 <iconify-icon icon="material-symbols:error-outline"></iconify-icon>
-                <p>加载即刻数据失败</p>
+                <p>加载 ${escapeHtml(getSourceLabel(source))} 数据失败</p>
             </div>
         `;
     }
@@ -930,35 +1461,29 @@ async function loadJikeData() {
 
 // Transform Memos
 function transformMemos(memos) {
-    return memos
+    return sortMemos(memos
         .filter(m => m.visibility === 'PUBLIC' && m.state === 'NORMAL')
         .map(m => ({
             id: m.name,
             content: m.content,
-            date: m.createTime,
+            date: normalizeDateValue(m.createTime),
             tags: m.tags || [],
+            tagDetails: normalizeTagDetails(m.tags || []),
             images: (m.attachments || [])
                 .filter(a => a.type && a.type.startsWith('image/'))
                 .map(a => `https://m.314926.xyz/file/${a.name}/${a.filename}`),
             location: m.location?.placeholder,
             pinned: m.pinned,
             source: 'memos'
-        }))
-        .sort((a, b) => {
-            if (a.pinned && !b.pinned) return -1;
-            if (!a.pinned && b.pinned) return 1;
-            return new Date(b.date).getTime() - new Date(a.date).getTime();
-        });
+        })));
 }
 
 // Transform TGTalk
 function transformTGTalk(data) {
-    return data.map(item => {
-        // Parse HTML content
+    return sortMemos(data.map(item => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(item.text, 'text/html');
-        
-        // Extract tags from links like <a href="?q=%23%E6%97%A5%E5%B8%B8">#日常</a>
+
         const tags = [];
         doc.querySelectorAll('a[href^="?q=%23"]').forEach(link => {
             const tagText = link.textContent.trim();
@@ -966,40 +1491,35 @@ function transformTGTalk(data) {
                 tags.push(tagText.substring(1));
             }
         });
-        
-        // Process content: remove tag links but keep other content
+
         let content = item.text;
-        // Remove tag links but keep the text
         content = content.replace(/<a href="\?q=%23[^"]+">([^<]+)<\/a>/g, '$1');
-        // Convert <br/> to newlines for markdown
         content = content.replace(/<br\s*\/?>/gi, '\n');
-        
-        // Process images - filter out emoji images
+
         const images = [];
         if (item.image && Array.isArray(item.image)) {
             item.image.forEach(img => {
-                // Skip telegram emoji images
                 if (img && !img.includes('telegram.org/img/emoji')) {
-                    // Ensure HTTPS
-                    const imgUrl = img.startsWith('//') ? 'https:' + img : 
+                    const imgUrl = img.startsWith('//') ? 'https:' + img :
                                    img.startsWith('http') ? img : 'https://' + img;
                     images.push(imgUrl);
                 }
             });
         }
-        
+
         return {
             id: item.id,
             content: content,
-            date: new Date(item.time).toISOString(),
+            date: normalizeDateValue(item.time),
             tags: tags,
+            tagDetails: normalizeTagDetails(tags),
             images: images,
             location: null,
             pinned: false,
             source: 'tgtalk',
-            views: item.views
+            viewCount: toNumber(item.views)
         };
-    }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }));
 }
 
 // Transform Mastodon
@@ -1007,84 +1527,123 @@ function transformMastodon(data) {
     if (!data.success || !data.data || !Array.isArray(data.data)) {
         return [];
     }
-    
-    return data.data.map(item => {
-        // Process images - Mastodon images are direct URLs
+
+    return sortMemos(data.data.map(item => {
         const images = [];
         if (item.image && Array.isArray(item.image)) {
             item.image.forEach(img => {
                 if (img && typeof img === 'string') {
-                    // Handle proxy URLs or direct URLs
-                    const imgUrl = img.startsWith('/proxy/') ? 
-                        'https://files.mastodon.social' + decodeURIComponent(img.substring(7)) :
-                        img.startsWith('//') ? 'https:' + img :
-                        img.startsWith('http') ? img : 'https://' + img;
+                    const imgUrl = img.startsWith('/proxy/')
+                        ? 'https://files.mastodon.social' + decodeURIComponent(img.substring(7))
+                        : img.startsWith('//') ? 'https:' + img
+                        : img.startsWith('http') ? img : 'https://' + img;
                     images.push(imgUrl);
                 }
             });
         }
-        
+
         return {
             id: item.id,
             content: item.text || '',
-            date: new Date(item.time).toISOString(),
+            date: normalizeDateValue(item.time),
             tags: [],
+            tagDetails: [],
             images: images,
             location: null,
             pinned: false,
             source: 'mastodon',
-            views: item.views
+            viewCount: toNumber(item.views)
         };
-    }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    }));
 }
 
 // Transform Jike RSS
-function transformJike(items) {
+function transformJike(items, source = 'jike') {
     const result = [];
     items.forEach(item => {
-        const title = item.querySelector('title')?.textContent || '';
         const description = item.querySelector('description')?.textContent || '';
         const pubDate = item.querySelector('pubDate')?.textContent || '';
         const link = item.querySelector('link')?.textContent || '';
-        
-        // Parse HTML description
+
         const parser = new DOMParser();
         const doc = parser.parseFromString(description, 'text/html');
-        
-        // Extract images
+
         const images = [];
         doc.querySelectorAll('img').forEach(img => {
             const src = img.getAttribute('src');
             if (src) images.push(src);
         });
-        
-        // Get text content
+
         let content = doc.body.textContent || description;
         content = content.replace(/<[^>]+>/g, '');
-        
+
         result.push({
             id: link,
             content: content,
-            date: new Date(pubDate).toISOString(),
+            date: normalizeDateValue(pubDate),
             tags: [],
+            tagDetails: [],
             images: images,
             location: null,
             pinned: false,
-            source: 'jike'
+            source: source
         });
     });
-    return result;
+    return sortMemos(result);
+}
+
+function transformIcefox(data) {
+    const items = getGenericDataList(data);
+
+    return sortMemos(items.map((item, index) => {
+        const tagDetails = normalizeTagDetails(item.tags);
+        const comments = normalizeComments(firstDefined(item.comments, item.commentList, item.comment_list));
+        const position = normalizePosition(item.position);
+        const videos = normalizeVideoList(item.video);
+        const music = normalizeMusic(item.music);
+        const linkCard = normalizeLinkCard(item.linkCard);
+        const permalink = normalizeUrl(firstDefined(item.permalink, item.url, item.link));
+        const viewCount = firstDefined(toNumber(item.view), toNumber(item.views), toNumber(item.viewsCount));
+        const likesCount = firstDefined(toNumber(item.likesCount), toNumber(item.likes), toNumber(item.likeCount));
+        const commentsCount = firstDefined(
+            toNumber(item.commentsCount),
+            toNumber(item.comentsCount),
+            comments.length ? comments.length : null
+        );
+
+        return {
+            id: firstDefined(item.id, item.cid, item.mid, permalink, `icefox-${index}`),
+            content: String(firstDefined(item.content, item.text, '')),
+            date: normalizeDateValue(firstDefined(item.created, item.createTime, item.date)),
+            tags: tagDetails.map(tag => tag.name),
+            tagDetails: tagDetails,
+            images: normalizeImageList(item),
+            videos: videos,
+            location: position?.name || '',
+            position: position,
+            pinned: Boolean(firstDefined(item.isTop, item.top, item.pinned)),
+            isAd: Boolean(item.isAd),
+            source: 'icefox',
+            permalink: permalink,
+            linkCard: linkCard,
+            music: music,
+            comments: comments,
+            viewCount: viewCount,
+            likesCount: likesCount,
+            commentsCount: commentsCount
+        };
+    }));
 }
 
 // Render Memos
 function renderMemos() {
     const listContainer = document.getElementById('memos-list');
-    
+
     let filteredMemos = memosData;
     if (currentFilter !== 'all') {
         filteredMemos = memosData.filter(m => m.tags && m.tags.includes(currentFilter));
     }
-    
+
     if (filteredMemos.length === 0) {
         listContainer.innerHTML = `
             <div class="memos-empty">
@@ -1094,7 +1653,7 @@ function renderMemos() {
         `;
         return;
     }
-    
+
     listContainer.innerHTML = filteredMemos.map(memo => renderMemoCard(memo)).join('');
     renderMarkdownContent();
 }
@@ -1102,46 +1661,60 @@ function renderMemos() {
 // Render Single Memo Card
 function renderMemoCard(memo) {
     const relativeTime = formatRelativeTime(memo.date);
-    const imagesHtml = renderImages(memo.images, memo.id);
-    const tagsHtml = renderTags(memo.tags);
-    const locationHtml = memo.location ? `
-        <span class="memo-location">
-            <iconify-icon icon="material-symbols:location-on"></iconify-icon>
-            ${escapeHtml(memo.location)}
-        </span>
-    ` : '';
-    
-    const sourceLabel = {
-        'memos': 'Memos',
-        'tgtalk': 'TGTalk',
-        'jike': '即刻'
-    }[memo.source] || memo.source;
-    
+    const imagesHtml = renderImages(memo.images);
+    const videosHtml = renderVideos(memo.videos);
+    const tagsHtml = renderTags(memo);
+    const badgesHtml = renderBadges(memo);
+    const linkCardHtml = renderLinkCard(memo.linkCard);
+    const musicHtml = renderMusic(memo.music);
+    const statsHtml = renderStats(memo);
+    const commentsHtml = renderComments(memo.comments);
+    const locationHtml = renderLocation(memo);
+    const sourceLabel = getSourceLabel(memo.source);
+
     const sourceHtml = `
         <span class="memo-source">
             <iconify-icon icon="material-symbols:source"></iconify-icon>
             ${sourceLabel}
         </span>
     `;
-    
+
+    const permalinkHtml = memo.permalink ? `
+        <a class="memo-meta-link" href="${escapeAttribute(memo.permalink)}" target="_blank" rel="noopener">
+            <iconify-icon icon="material-symbols:open-in-new"></iconify-icon>
+            原文
+        </a>
+    ` : '';
+
     return `
-        <div class="memo-card ${memo.pinned ? 'pinned' : ''}" data-tags="${memo.tags.join(',')}" data-source="${memo.source}">
+        <div class="memo-card ${memo.pinned ? 'pinned' : ''}" data-source="${escapeAttribute(memo.source)}">
             ${memo.pinned ? `
                 <div class="memo-pin" title="{{ i18n['pinned'] if 'pinned' in i18n else 'Pinned' }}">
                     <iconify-icon icon="material-symbols:keep"></iconify-icon>
                 </div>
             ` : ''}
-            <div class="memo-content markdown-body" data-content="${escapeHtml(memo.content)}"></div>
+            ${badgesHtml}
+            <div class="memo-content markdown-body" data-content="${encodeURIComponent(memo.content || '')}"></div>
             ${imagesHtml}
+            ${videosHtml}
+            ${musicHtml}
+            ${linkCardHtml}
             ${tagsHtml}
+            ${statsHtml}
             <div class="memo-meta">
-                <span class="memo-time">
-                    <iconify-icon icon="material-symbols:schedule"></iconify-icon>
-                    <time datetime="${memo.date}" title="${new Date(memo.date).toLocaleString()}">${relativeTime}</time>
-                </span>
-                ${sourceHtml}
-                ${locationHtml}
+                <div class="memo-meta-main">
+                    <span class="memo-time">
+                        <iconify-icon icon="material-symbols:schedule"></iconify-icon>
+                        <time datetime="${memo.date}" title="${formatAbsoluteTime(memo.date)}">${relativeTime}</time>
+                    </span>
+                    ${sourceHtml}
+                    ${locationHtml}
+                </div>
+                <div class="memo-meta-actions">
+                    ${permalinkHtml}
+                </div>
             </div>
+            ${commentsHtml}
         </div>
     `;
 }
@@ -1149,8 +1722,9 @@ function renderMemoCard(memo) {
 // Render Markdown Content
 function renderMarkdownContent() {
     document.querySelectorAll('.memo-content[data-content]').forEach(el => {
-        const content = el.getAttribute('data-content');
-        if (content) {
+        const encodedContent = el.getAttribute('data-content');
+        if (encodedContent !== null) {
+            const content = decodeURIComponent(encodedContent);
             let html = marked.parse(content);
             html = html.replace(/<img([^>]+)>/g, '<img$1 onclick="openLightbox(this.src)" style="cursor: pointer;">');
             html = html.replace(/<a([^>]+)href=/g, '<a$1target="_blank" rel="noopener" href=');
@@ -1161,41 +1735,224 @@ function renderMarkdownContent() {
 }
 
 // Render Images
-function renderImages(images, memoId) {
+function renderImages(images) {
     if (!images || images.length === 0) return '';
-    
+
     let layoutClass = 'grid';
     if (images.length === 1) layoutClass = 'single';
     else if (images.length === 2) layoutClass = 'double';
     else if (images.length === 3) layoutClass = 'triple';
-    
+
     const imagesHtml = images.map((img, i) => `
-        <img src="${escapeHtml(img)}" alt="Image ${i + 1}" loading="lazy" onclick="openLightbox('${escapeHtml(img)}')">
+        <img src="${escapeAttribute(img)}" alt="Image ${i + 1}" loading="lazy" onclick='openLightbox(${JSON.stringify(img)})'>
     `).join('');
-    
+
     return `<div class="memo-images ${layoutClass}">${imagesHtml}</div>`;
 }
 
+function renderVideos(videos) {
+    if (!videos || videos.length === 0) return '';
+
+    const videosHtml = videos.map(video => `
+        <div class="memo-video">
+            <video controls preload="metadata"${video.cover ? ` poster="${escapeAttribute(video.cover)}"` : ''}>
+                <source src="${escapeAttribute(video.url)}">
+            </video>
+        </div>
+    `).join('');
+
+    return `<div class="memo-videos">${videosHtml}</div>`;
+}
+
+function renderBadges(memo) {
+    const badges = [];
+
+    if (memo.pinned) {
+        badges.push(`
+            <span class="memo-badge top">
+                <iconify-icon icon="material-symbols:keep"></iconify-icon>
+                置顶
+            </span>
+        `);
+    }
+
+    if (memo.isAd) {
+        badges.push(`
+            <span class="memo-badge ad">
+                <iconify-icon icon="material-symbols:campaign"></iconify-icon>
+                广告
+            </span>
+        `);
+    }
+
+    return badges.length ? `<div class="memo-badges">${badges.join('')}</div>` : '';
+}
+
+function renderLinkCard(linkCard) {
+    if (!linkCard) return '';
+
+    const targetUrl = linkCard.url || linkCard.link;
+    if (!targetUrl) return '';
+
+    return `
+        <a class="memo-link-card" href="${escapeAttribute(targetUrl)}" target="_blank" rel="noopener">
+            ${linkCard.icon ? `<img class="memo-link-card-icon" src="${escapeAttribute(linkCard.icon)}" alt="${escapeAttribute(linkCard.title || 'Link card')}">` : ''}
+            <div class="memo-link-card-body">
+                <p class="memo-link-card-title">${escapeHtml(linkCard.title || '链接卡片')}</p>
+                ${linkCard.description ? `<p class="memo-link-card-desc">${escapeHtml(linkCard.description)}</p>` : ''}
+                <p class="memo-link-card-url">${escapeHtml(targetUrl)}</p>
+            </div>
+        </a>
+    `;
+}
+
+function renderMusic(music) {
+    if (!music) return '';
+
+    const audioHtml = music.audio ? `<audio controls preload="none" src="${escapeAttribute(music.audio)}"></audio>` : '';
+    const linkHtml = music.link ? `<a class="memo-music-link" href="${escapeAttribute(music.link)}" target="_blank" rel="noopener">打开音乐</a>` : '';
+
+    return `
+        <div class="memo-music">
+            <div class="memo-music-main">
+                ${music.cover ? `<img class="memo-music-cover" src="${escapeAttribute(music.cover)}" alt="${escapeAttribute(music.title || 'Music cover')}">` : ''}
+                <div>
+                    <p class="memo-music-title">${escapeHtml(music.title || '音乐')}</p>
+                    ${music.artist ? `<p class="memo-music-artist">${escapeHtml(music.artist)}</p>` : ''}
+                </div>
+            </div>
+            ${audioHtml}
+            ${linkHtml}
+        </div>
+    `;
+}
+
+function renderStats(memo) {
+    const stats = [];
+    const viewCount = firstDefined(memo.viewCount, memo.views);
+
+    if (viewCount !== null && viewCount !== undefined) {
+        stats.push(`
+            <span class="memo-stat">
+                <iconify-icon icon="material-symbols:visibility"></iconify-icon>
+                ${escapeHtml(viewCount)}
+            </span>
+        `);
+    }
+
+    if (memo.likesCount !== null && memo.likesCount !== undefined) {
+        stats.push(`
+            <span class="memo-stat">
+                <iconify-icon icon="material-symbols:favorite"></iconify-icon>
+                ${escapeHtml(memo.likesCount)}
+            </span>
+        `);
+    }
+
+    if (memo.commentsCount !== null && memo.commentsCount !== undefined) {
+        stats.push(`
+            <span class="memo-stat">
+                <iconify-icon icon="material-symbols:comment"></iconify-icon>
+                ${escapeHtml(memo.commentsCount)}
+            </span>
+        `);
+    }
+
+    return stats.length ? `<div class="memo-stats">${stats.join('')}</div>` : '';
+}
+
+function renderLocation(memo) {
+    const position = memo.position || (memo.location ? { name: memo.location, url: '' } : null);
+    if (!position || !position.name) return '';
+
+    const label = position.url
+        ? `<a class="memo-location-link" href="${escapeAttribute(position.url)}" target="_blank" rel="noopener">${escapeHtml(position.name)}</a>`
+        : escapeHtml(position.name);
+
+    return `
+        <span class="memo-location">
+            <iconify-icon icon="material-symbols:location-on"></iconify-icon>
+            ${label}
+        </span>
+    `;
+}
+
 // Render Tags
-function renderTags(tags) {
-    if (!tags || tags.length === 0) return '';
-    
-    const tagsHtml = tags.map(tag => `
-        <span class="memo-tag" onclick="filterByTag('${escapeHtml(tag)}')">
+function renderTags(memo) {
+    const tagDetails = memo.tagDetails && memo.tagDetails.length
+        ? memo.tagDetails
+        : (memo.tags || []).map(tag => ({ name: tag, permalink: '' }));
+
+    if (!tagDetails || tagDetails.length === 0) return '';
+
+    const tagsHtml = tagDetails.map(tag => `
+        <span class="memo-tag" onclick='filterByTag(${JSON.stringify(tag.name)})'>
             <iconify-icon icon="material-symbols:tag"></iconify-icon>
-            ${escapeHtml(tag)}
+            <span>${escapeHtml(tag.name)}</span>
+            ${tag.permalink ? `
+                <a class="memo-tag-link" href="${escapeAttribute(tag.permalink)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+                    <iconify-icon icon="material-symbols:open-in-new"></iconify-icon>
+                </a>
+            ` : ''}
         </span>
     `).join('');
-    
+
     return `<div class="memo-tags">${tagsHtml}</div>`;
+}
+
+function renderComments(comments) {
+    if (!comments || comments.length === 0) return '';
+
+    return `
+        <div class="memo-comments">
+            <div class="memo-comments-title">
+                <iconify-icon icon="material-symbols:comment"></iconify-icon>
+                评论
+            </div>
+            <div class="memo-comment-list">
+                ${comments.map(renderCommentItem).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function renderCommentItem(comment) {
+    const authorHtml = comment.authorUrl
+        ? `<a class="memo-comment-author" href="${escapeAttribute(comment.authorUrl)}" target="_blank" rel="noopener">${escapeHtml(comment.author)}</a>`
+        : `<span class="memo-comment-author">${escapeHtml(comment.author)}</span>`;
+
+    const repliesHtml = comment.replies && comment.replies.length ? `
+        <div class="memo-comment-replies">
+            ${comment.replies.map(renderCommentItem).join('')}
+        </div>
+    ` : '';
+
+    return `
+        <div class="memo-comment">
+            <div class="memo-comment-header">
+                ${authorHtml}
+                <time datetime="${comment.created}" title="${formatAbsoluteTime(comment.created)}">${formatRelativeTime(comment.created)}</time>
+            </div>
+            <div class="memo-comment-text">${renderPlainText(comment.text)}</div>
+            ${repliesHtml}
+        </div>
+    `;
 }
 
 // Escape HTML
 function escapeHtml(text) {
-    if (!text) return '';
+    if (text === undefined || text === null) return '';
     const div = document.createElement('div');
-    div.textContent = text;
+    div.textContent = String(text);
     return div.innerHTML;
+}
+
+function escapeAttribute(text) {
+    return escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function renderPlainText(text) {
+    return escapeHtml(text).replace(/\n/g, '<br>');
 }
 
 // Format Relative Time
@@ -1203,19 +1960,19 @@ function formatRelativeTime(dateString) {
     const date = new Date(dateString);
     const now = new Date();
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
-    
+
     if (diffInMinutes < 1) return '{{ i18n["justNow"] if "justNow" in i18n else "Just now" }}';
     if (diffInMinutes < 60) return `${diffInMinutes} {{ i18n['minutesAgo'] if 'minutesAgo' in i18n else 'minutes ago' }}`;
-    
+
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) return `${diffInHours} {{ i18n['hoursAgo'] if 'hoursAgo' in i18n else 'hours ago' }}`;
-    
+
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 30) return `${diffInDays} {{ i18n['daysAgo'] if 'daysAgo' in i18n else 'days ago' }}`;
-    
+
     const diffInMonths = Math.floor(diffInDays / 30);
     if (diffInMonths < 12) return `${diffInMonths} {{ i18n['monthsAgo'] if 'monthsAgo' in i18n else 'months ago' }}`;
-    
+
     const diffInYears = Math.floor(diffInDays / 365);
     return `${diffInYears} {{ i18n['yearsAgo'] if 'yearsAgo' in i18n else 'years ago' }}`;
 }
@@ -1224,24 +1981,24 @@ function formatRelativeTime(dateString) {
 function updateFilterTabs() {
     const filterContainer = document.getElementById('memos-filter');
     const tags = Array.from(allTags).sort();
-    
+
     let filterHtml = `
         <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="setFilter('all')">
             <iconify-icon icon="material-symbols:apps"></iconify-icon>
             <span>{{ i18n['all'] if 'all' in i18n else 'All' }}</span>
         </button>
     `;
-    
+
     tags.forEach(tag => {
         const count = memosData.filter(m => m.tags && m.tags.includes(tag)).length;
         filterHtml += `
-            <button class="filter-btn ${currentFilter === tag ? 'active' : ''}" data-filter="${escapeHtml(tag)}" onclick="setFilter('${escapeHtml(tag)}')">
+            <button class="filter-btn ${currentFilter === tag ? 'active' : ''}" data-filter="${escapeAttribute(tag)}" onclick='setFilter(${JSON.stringify(tag)})'>
                 <iconify-icon icon="material-symbols:tag"></iconify-icon>
                 <span>${escapeHtml(tag)} (${count})</span>
             </button>
         `;
     });
-    
+
     filterContainer.innerHTML = filterHtml;
 }
 
@@ -1262,13 +2019,13 @@ function filterByTag(tag) {
 async function loadMoreMemos() {
     const config = API_CONFIG[currentSource];
     if (!config || config.type !== 'memos') return;
-    
+
     const btn = document.querySelector('.load-more-btn');
     btn.disabled = true;
     btn.innerHTML = '<iconify-icon icon="material-symbols:sync" style="animation: spin 1s linear infinite;"></iconify-icon> {{ i18n["loading"] if "loading" in i18n else "Loading..." }}';
-    
+
     await loadMemosData();
-    
+
     btn.disabled = false;
     btn.innerHTML = '<iconify-icon icon="material-symbols:expand-more"></iconify-icon> {{ i18n["loadMore"] if "loadMore" in i18n else "Load More" }}';
 }
@@ -1299,21 +2056,7 @@ document.getElementById("themeSwitch").setAttribute("d", IconList["sun"]);
 
 // Initialize - load data based on current source
 document.addEventListener('DOMContentLoaded', () => {
-    if (currentSource === 'memos') {
-        loadMemosData();
-    } else if (currentSource === 'tgtalk') {
-        loadTGTalkData();
-    } else if (currentSource === 'jike') {
-        loadJikeData();
-    } else {
-        // Try to find matching loader function
-        const loaderFunc = window[`load${currentSource.charAt(0).toUpperCase() + currentSource.slice(1)}Data`];
-        if (loaderFunc) {
-            loaderFunc();
-        } else {
-            loadMemosData();
-        }
-    }
+    loadCurrentSourceData(currentSource);
 });
 </script>
 {% endblock %}
